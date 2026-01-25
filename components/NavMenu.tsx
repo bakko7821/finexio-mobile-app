@@ -6,8 +6,14 @@ import UserIcon from '../assets/user-rounded-svgrepo-com.svg';
 import CategoryIcon from '../assets/category-1-svgrepo-com.svg';
 import ListIcon from '../assets/list-clipboard-svgrepo-com.svg';
 import { useTheme } from "../hooks/useTheme";
+import { ScreenKey } from "../utils/types";
 
-export const NavMenu = () => {
+type NavMenuProps = {
+    active: ScreenKey;
+    onNavigate: (screen: ScreenKey) => void;
+};
+
+export const NavMenu = ({active, onNavigate}: NavMenuProps) => {
     const theme = useTheme();
 
     return (
@@ -18,32 +24,36 @@ export const NavMenu = () => {
             ]}
         >
             <TouchableOpacity
+                onPress={() => onNavigate('categories')}
                 style={[
                     styles.button,
                 ]}
             >
-                <CategoryIcon width={40} height={40} color={theme.text} />
+                <CategoryIcon width={44} height={44} color={theme.text} />
             </TouchableOpacity>
             <TouchableOpacity
+                onPress={() => onNavigate('categories')}
                 style={[
                     styles.button,
                 ]}
             >
-                <ChartIcon width={40} height={40} color={theme.text} />
+                <ChartIcon width={44} height={44} color={theme.text} />
             </TouchableOpacity>
             <TouchableOpacity
+                onPress={() => onNavigate('categories')}
                 style={[
                     styles.button,
                 ]}
             >
-                <ListIcon width={40} height={40} color={theme.text} />
+                <ListIcon width={44} height={44} color={theme.text} />
             </TouchableOpacity>
             <TouchableOpacity
+                onPress={() => onNavigate('profile')}
                 style={[
                     styles.button,
                 ]}
             >
-                <UserIcon width={40} height={40} color={theme.text} />
+                <UserIcon width={44} height={44} color={theme.text} />
             </TouchableOpacity>
         </View>
     );
@@ -51,19 +61,17 @@ export const NavMenu = () => {
 
 const styles = StyleSheet.create({
     container: {   
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        borderRadius: 12,
+        justifyContent: 'flex-start',
+        gap: 12,
         alignSelf: 'center',
-        padding: 8,
+        padding: 16,
     },
     button: {
         alignItems: 'center',
-        padding: 10,
-        borderRadius: 10,
     },
     buttonText: {
         fontSize: 16,

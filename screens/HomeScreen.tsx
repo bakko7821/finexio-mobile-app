@@ -3,8 +3,6 @@ import { NavMenu } from "../components/NavMenu"
 
 export const HomeScreen = () => {
     return (
-        <View>
-            <NavMenu/>
-        </View>
+        <Text>Home Screen</Text>
     )
 }
