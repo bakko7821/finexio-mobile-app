@@ -1,16 +1,20 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { StackNavigator } from './navigation/StackNavigator';
-import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Header } from './components/Header';
-import img from './assets/eb7a6bb8c4d598fcb0521894bd9275d8.jpg'
 import { NavMenu } from './components/NavMenu';
+import { useTheme } from './hooks/useTheme';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function App() {
+  const theme = useTheme();
+
   return (
-    <View style={styles.screen}>
+    <View 
+      style={[
+          styles.screen,
+          { backgroundColor: theme.background },
+      ]}>
       <Header title='Категории'/>
       <NavMenu />
     </View>
@@ -25,8 +29,8 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     flex: 1,
-    padding: 16,
-    paddingTop: 40,
+    padding: 0,
+    paddingBottom: 12,
     backgroundColor: '#ffffff'
   },
   content: {

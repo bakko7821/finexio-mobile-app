@@ -2,33 +2,70 @@ import { StyleSheet, Button, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ChartIcon from '../assets/chart-pie-svgrepo-com.svg';
+import UserIcon from '../assets/user-rounded-svgrepo-com.svg';
+import CategoryIcon from '../assets/category-1-svgrepo-com.svg';
+import ListIcon from '../assets/list-clipboard-svgrepo-com.svg';
+import { useTheme } from "../hooks/useTheme";
 
 export const NavMenu = () => {
+    const theme = useTheme();
+
     return (
-        <View style={styles.container}>
+        <View 
+            style={[
+                styles.container,
+                {backgroundColor: theme.card}
+            ]}
+        >
             <TouchableOpacity
-                style={styles.button}
+                style={[
+                    styles.button,
+                ]}
             >
-                <ChartIcon width={36} height={36} fill="#000" />
+                <CategoryIcon width={40} height={40} color={theme.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[
+                    styles.button,
+                ]}
+            >
+                <ChartIcon width={40} height={40} color={theme.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[
+                    styles.button,
+                ]}
+            >
+                <ListIcon width={40} height={40} color={theme.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[
+                    styles.button,
+                ]}
+            >
+                <UserIcon width={40} height={40} color={theme.text} />
             </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {    
-        backgroundColor: '#f0f0f0',
+    container: {   
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
         borderRadius: 12,
+        alignSelf: 'center',
+        padding: 8,
     },
     button: {
         alignItems: 'center',
-        marginHorizontal: 10,
         padding: 10,
-        backgroundColor: '#eee',
         borderRadius: 10,
     },
     buttonText: {
-        marginTop: 5,
         fontSize: 16,
         color: '#000',
     },
