@@ -13,18 +13,19 @@ export default function App() {
 
   const [screen, setScreen] = React.useState<ScreenKey>('categories');
 
-
   const screenConfig: Record<ScreenKey, { title: string }> = {
     categories: { title: 'Категории' },
     profile: { title: 'Профиль' },
     settings: { title: 'Настройки' },
+    income: {title: 'Доходы'},
+    expenses: {title: 'Расходы'},
   };
 
   return (
     <View style={[styles.screen, { backgroundColor: theme.background }]}>
       <Header title={screenConfig[screen].title} />
 
-      <Layout screen={screen} style={{ flex: 1 }}/>
+      <Layout screen={screen} onNavigate={setScreen} style={{ flex: 1 }}/>
 
       <NavMenu
         active={screen}

@@ -1,8 +1,13 @@
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import ArrowIcon from '../assets/arrow-sm-up-svgrepo-com.svg'
+import { ScreenKey } from '../utils/types';
 
-export const IncomeBox = () => {
+interface IncomeNavigateProps {
+    onNavigate: (screen: ScreenKey) => void;
+}
+
+export const IncomeNavigate = ({onNavigate}: IncomeNavigateProps) => {
     const theme = useTheme()
     return (
         <View style={styles.incomeBox}>
@@ -11,6 +16,7 @@ export const IncomeBox = () => {
                     styles.incomeButton,
                     {backgroundColor: theme.card}
                 ]}
+                onPress={() => onNavigate('income')}
             >
                 <ArrowIcon width={24} height={24} color="#0A8A00" />
                 <Text 
@@ -28,6 +34,7 @@ export const IncomeBox = () => {
                     styles.incomeButton,
                     {backgroundColor: theme.card}
                 ]}
+                onPress={() => onNavigate('expenses')}
             >
                 <ArrowIcon width={24} height={24} color="#8a0000" style={{ transform: [{ scaleY: -1 }] }}/>
                 <Text 

@@ -1,1 +1,6 @@
-export type ScreenKey = 'categories' | 'profile' | 'settings';
+export type ScreenKey = 
+    'categories' | 
+    'profile' | 
+    'settings' | 
+    'income' |
+    'expenses'; 

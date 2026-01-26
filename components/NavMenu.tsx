@@ -24,7 +24,7 @@ export const NavMenu = ({active, onNavigate}: NavMenuProps) => {
             ]}
         >
             <TouchableOpacity
-                onPress={() => onNavigate('categories')}
+                onPress={() => onNavigate('income')}
                 style={[
                     styles.button,
                 ]}
