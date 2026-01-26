@@ -4,12 +4,11 @@ import { BlurView } from 'expo-blur';
 import { StackHeaderProps } from '@react-navigation/stack';
 import BurgerMenuIcon from '../assets/burger-menu-svgrepo-com.svg';
 import { useTheme } from '../hooks/useTheme';
+import { SCREEN_WIDTH } from '../utils/types';
 
 interface HeaderProps {
     title: string
 }
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export const Header = ({title}: HeaderProps) => {
   const theme = useTheme();

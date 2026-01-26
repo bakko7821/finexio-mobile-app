@@ -3,10 +3,8 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { Header } from './components/Header';
 import { NavMenu } from './components/NavMenu';
 import { useTheme } from './hooks/useTheme';
-import { ScreenKey } from './utils/types';
+import { SCREEN_HEIGHT, SCREEN_WIDTH, ScreenKey } from './utils/types';
 import { Layout } from './components/Layout';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function App() {
   const theme = useTheme();
