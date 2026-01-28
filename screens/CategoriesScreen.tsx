@@ -1,14 +1,16 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { useTheme } from "../hooks/useTheme"
+import { Text, View } from "react-native";
+import { CategoryHeader } from "../components/Headers/CategoryHeader";
+import { ScreenLayout } from "../layouts/ScreenLayout";
 
-export const CategoriesScreen = () => {
-    const theme = useTheme()
-
-    return (
-        <Text>Categories Screen</Text>
-    )
+export function CategoryScreen() {
+  return (
+    <ScreenLayout 
+        header={<CategoryHeader />}
+        showNav
+    >
+        <View>
+            <Text>Категории контент</Text>
+        </View>
+    </ScreenLayout>
+  );
 }
-
-const styles = StyleSheet.create({
-    
-})
