@@ -1,29 +1,23 @@
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@/utils/types/variables";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import ChartGraphIcon from "../assets/icons/chart-graph-ui-svgrepo-com.svg";
 import ChartPieIcon from "../assets/icons/chart-pie-svgrepo-com.svg";
 import ProfileIcon from "../assets/icons/profile-circle-svgrepo-com.svg";
 import ReceiptIcon from "../assets/icons/receipt-item-svgrepo-com.svg";
 import WalletIcon from "../assets/icons/wallet-money-svgrepo-com.svg";
+import MenuComponent from "./MenuComponent";
 import NavItem from "./NavItem";
 
 export default function Nav() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   return (
-    <View className="relative w-full flex flex-row items-center justify-between bg-gray-400 p-4 rounded-t-3xl">
+    <View className="w-full flex flex-row items-center justify-between bg-gray-400 p-4 rounded-t-3xl">
       {isOpenMenu && (
-        <View
-          style={{
-            zIndex: 999,
-            height: SCREEN_HEIGHT,
-            width: SCREEN_WIDTH * 0.6,
-          }}
-          className="absolute bottom-0 left-0 bg-pink-400"
-        >
-          <Text>123</Text>
-        </View>
+        <MenuComponent
+          visible={isOpenMenu}
+          onClose={() => setIsOpenMenu(false)}
+        />
       )}
       <NavItem
         icon={<ProfileIcon width={24} height={24} color={"#000"} />}
