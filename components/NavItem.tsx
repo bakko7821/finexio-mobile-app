@@ -6,18 +6,34 @@ interface NavItemProps {
   icon: React.ReactNode;
   name: string;
   path: string;
+  isButton?: boolean;
+  buttonLogic?: () => void;
 }
 
-export default function NavItem({ icon, name, path }: NavItemProps) {
+export default function NavItem({
+  icon,
+  name,
+  path,
+  isButton,
+  buttonLogic,
+}: NavItemProps) {
+  const safePath = isButton ? "__button__" : path;
+
   const router = useRouter();
   const pathname = usePathname();
 
   const normalizedPathname = pathname?.replace(/\/$/, "");
-  const isActive = normalizedPathname?.endsWith(path) || false;
+  const isActive = normalizedPathname?.endsWith(safePath) || false;
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(path as any)}
+      onPress={() => {
+        if (isButton) {
+          buttonLogic?.();
+        } else {
+          router.push(path as any);
+        }
+      }}
       className="w-16 flex-col items-center justify-center p-0 gap-1"
     >
       <View
