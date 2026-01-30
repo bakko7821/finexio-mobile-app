@@ -1,5 +1,5 @@
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from "expo-sqlite";
 
 export const getDB = async () => {
-  return await SQLite.openDatabaseAsync('finance.db');
+  return await SQLite.openDatabaseAsync("finance.db");
 };

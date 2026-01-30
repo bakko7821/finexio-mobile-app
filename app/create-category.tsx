@@ -9,7 +9,7 @@ export default function CreateCategoryScreen() {
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="bg-red-100 w-full h-full flex-1"
+      className="w-full h-full flex-1"
     >
       <CreateCategoryHeader />
     </View>

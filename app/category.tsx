@@ -1,17 +1,36 @@
 import BasicHeader from "@/components/Headers/BasicHeader";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
+import { getCategoriesByType } from "@/db/repos/categoryRepo";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import MoreIcon from "../assets/icons/more-horizontal-svgrepo-com.svg";
 import PlusIcon from "../assets/icons/plus-large-svgrepo-com.svg";
 
+export interface Category {
+  name: string;
+  icon?: string;
+  color?: string;
+  type: number;
+}
+
 export default function CategoryScreen() {
   const router = useRouter();
   const theme = useTheme();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const data = await getCategoriesByType(1);
+      setCategories(data);
+    }
+
+    fetchCategories();
+  });
 
   return (
     <View
@@ -70,7 +89,23 @@ export default function CategoryScreen() {
             >
               <PlusIcon width={32} height={32} color={theme.secondary} />
             </TouchableOpacity>
-            <View>{/* компонент категорий */}</View>
+            <View>
+              {categories.map((category) => (
+                <View
+                  key={category.name} // обязательно ключ для map
+                  style={{
+                    padding: 8,
+                    marginVertical: 4,
+                    backgroundColor: category.color || "#eee",
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, color: "#000" }}>
+                    {category.name} ({category.type === 1 ? "Доход" : "Расход"})
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </View>

@@ -1,14 +1,19 @@
 import { useTheme } from "@/hooks/useTheme";
-import React, { useState } from "react";
+import React from "react";
 import { TextInput, View } from "react-native";
 
 interface TextInputProps {
+  value: string;
+  onChange: (text: string) => void;
   placeholder: string;
 }
 
-export default function TextInputComponent({ placeholder }: TextInputProps) {
+export default function TextInputComponent({
+  value,
+  onChange,
+  placeholder,
+}: TextInputProps) {
   const theme = useTheme();
-  const [value, setValue] = useState("");
 
   return (
     <View
@@ -20,7 +25,7 @@ export default function TextInputComponent({ placeholder }: TextInputProps) {
         className="p-0 text-base font-regular"
         placeholder={placeholder}
         value={value}
-        onChangeText={setValue}
+        onChangeText={onChange}
         placeholderTextColor={`${theme.secondary}`} // цвет placeholder
       />
     </View>

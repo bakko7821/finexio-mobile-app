@@ -1,3 +1,4 @@
+import CategoryIconHeader from "@/components/Headers/CategoryIconHeader";
 import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import { View } from "react-native";
@@ -8,9 +9,9 @@ export default function CategoryIconScreen() {
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="bg-red-100 w-full h-full flex-1"
+      className="w-full h-full flex-1"
     >
-        
+      <CategoryIconHeader />
     </View>
   );
 }
