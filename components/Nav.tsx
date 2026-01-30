@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import React, { useState } from "react";
 import { View } from "react-native";
 import ChartGraphIcon from "../assets/icons/chart-graph-ui-svgrepo-com.svg";
@@ -10,9 +11,13 @@ import NavItem from "./NavItem";
 
 export default function Nav() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const theme = useTheme();
 
   return (
-    <View className="w-full flex flex-row items-center justify-between bg-gray-400 p-4 rounded-t-3xl">
+    <View
+      style={{ backgroundColor: theme.header }}
+      className="w-full flex flex-row items-center justify-between p-4 rounded-t-3xl"
+    >
       {isOpenMenu && (
         <MenuComponent
           visible={isOpenMenu}
@@ -20,29 +25,29 @@ export default function Nav() {
         />
       )}
       <NavItem
-        icon={<ProfileIcon width={24} height={24} color={"#000"} />}
+        icon={<ProfileIcon width={24} height={24} color={theme.text} />}
         name="Меню"
         path=""
         isButton={true}
         buttonLogic={() => setIsOpenMenu(true)}
       />
       <NavItem
-        icon={<WalletIcon width={24} height={24} color={"#000"} />}
+        icon={<WalletIcon width={24} height={24} color={theme.text} />}
         name="Кошелек"
         path="wallet"
       />
       <NavItem
-        icon={<ChartPieIcon width={24} height={24} color={"#000"} />}
+        icon={<ChartPieIcon width={24} height={24} color={theme.text} />}
         name="Категории"
         path="category"
       />
       <NavItem
-        icon={<ReceiptIcon width={24} height={24} color={"#000"} />}
+        icon={<ReceiptIcon width={24} height={24} color={theme.text} />}
         name="Операции"
         path="receipt"
       />
       <NavItem
-        icon={<ChartGraphIcon width={24} height={24} color={"#000"} />}
+        icon={<ChartGraphIcon width={24} height={24} color={theme.text} />}
         name="Обзор"
         path="chart"
       />

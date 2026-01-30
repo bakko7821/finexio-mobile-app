@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { usePathname, useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -25,6 +26,8 @@ export default function NavItem({
   const normalizedPathname = pathname?.replace(/\/$/, "");
   const isActive = normalizedPathname?.endsWith(safePath) || false;
 
+  const theme = useTheme();
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -37,11 +40,15 @@ export default function NavItem({
       className="w-16 flex-col items-center justify-center p-0 gap-1"
     >
       <View
-        className={`w-full items-center justify-center rounded-xl py-1 ${isActive ? "bg-blue-400" : "bg-transparent"}`}
+        style={{ backgroundColor: isActive ? theme.primary : "bg-transparent" }}
+        className={`w-full items-center justify-center rounded-xl py-1`}
       >
         {icon}
       </View>
-      <Text className={`text-xs ${isActive ? "font-medium" : "font-regular"}`}>
+      <Text
+        style={{ color: theme.text }}
+        className={`text-xs ${isActive ? "font-medium" : "font-regular"}`}
+      >
         {name}
       </Text>
     </TouchableOpacity>

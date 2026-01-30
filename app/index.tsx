@@ -1,18 +1,29 @@
+import { getDB } from "@/db";
+import { runMigrations } from "@/db/migrations";
 import "@/global.css";
-import { useRouter } from "expo-router";
-import React from "react";
-import { Button, Text, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect } from "react";
 
 export default function Index() {
+  useEffect(() => {
+    (async () => {
+      try {
+        const db = await getDB();
+        await runMigrations(db);
+        console.log("DB initialized");
+      } catch (e) {
+        console.error("DB init error", e);
+      }
+    })();
+  }, []);
+
   const router = useRouter();
 
-  return (
-    <View className="flex-1 h-full justify-center items-center bg-red-300 gap-5">
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Button
-        title="go to category"
-        onPress={() => router.push("/category")}
-      ></Button>
-    </View>
+  useFocusEffect(
+    useCallback(() => {
+      router.replace("/category");
+    }, [router]),
   );
+
+  return null;
 }
