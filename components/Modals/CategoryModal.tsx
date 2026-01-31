@@ -1,15 +1,17 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
-import React from "react";
+import React, { useState } from "react";
 import {
-    Modal,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import CategoryComponent from "../category/CategoryComponent";
+import NumberInput from "../UI/NumberInput";
 
 interface MenuComponentProps {
   visible: boolean;
@@ -25,6 +27,7 @@ export default function CategoryModal({
   type,
 }: MenuComponentProps) {
   const theme = useTheme();
+  const [transactionValue, setTransactionValue] = useState("0");
 
   return (
     <Modal
@@ -62,7 +65,44 @@ export default function CategoryModal({
                   <CategoryComponent category={category} isOpen={true} />
                 )}
               </View>
-              <View className="h-[200px]"></View>
+              <View className="flex-row w-full justify-between items-center">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Тип транзакции:
+                </Text>
+                <Text
+                  className="text-base font-regular"
+                  style={{ color: type === 1 ? "#780000" : "#00780E" }}
+                >
+                  {type === 1 ? "Расходы" : "Доходы"}
+                </Text>
+              </View>
+              <View className="w-full flex-col gap-2">
+                <View
+                  style={{ backgroundColor: theme.secondary }}
+                  className="w-full p-1 rounded-xl"
+                >
+                  <View className="flex-row gap-1 items-center justify-center">
+                    <TextInput
+                      value={transactionValue}
+                      onChangeText={setTransactionValue}
+                      style={{ color: type === 1 ? "#780000" : "#00780E" }}
+                      className="text-4xl font-medium"
+                    />
+                    <Text
+                      style={{ color: type === 1 ? "#780000" : "#00780E" }}
+                      className="text-sm font-regular"
+                    >
+                      ₽
+                    </Text>
+                  </View>
+                </View>
+                <View className="w-full">
+                  <NumberInput />
+                </View>
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </View>
