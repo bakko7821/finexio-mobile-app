@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import {
   Modal,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -82,15 +81,15 @@ export default function CategoryModal({
               <View className="w-full flex-col gap-2">
                 <View
                   style={{ backgroundColor: theme.secondary }}
-                  className="w-full p-1 rounded-xl"
+                  className="w-full p-3 rounded-xl"
                 >
                   <View className="flex-row gap-1 items-center justify-center">
-                    <TextInput
-                      value={transactionValue}
-                      onChangeText={setTransactionValue}
+                    <Text
                       style={{ color: type === 1 ? "#780000" : "#00780E" }}
                       className="text-4xl font-medium"
-                    />
+                    >
+                      {transactionValue}
+                    </Text>
                     <Text
                       style={{ color: type === 1 ? "#780000" : "#00780E" }}
                       className="text-sm font-regular"
@@ -100,7 +99,7 @@ export default function CategoryModal({
                   </View>
                 </View>
                 <View className="w-full">
-                  <NumberInput />
+                  <NumberInput value={transactionValue} setValue={setTransactionValue} />
                 </View>
               </View>
             </View>
