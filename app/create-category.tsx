@@ -1,4 +1,5 @@
 import CreateCategoryHeader from "@/components/Headers/CreateCategoryHeader";
+import HelpUsComponent from "@/components/HelpUsComponent";
 import { useTheme } from "@/hooks/useTheme";
 import { useSearchParams } from "expo-router/build/hooks";
 import React from "react";
@@ -20,6 +21,7 @@ export default function CreateCategoryScreen() {
         selectedColor={selectedColor}
         selectedIcon={selectedIcon}
       />
+      <HelpUsComponent />
     </View>
   );
 }

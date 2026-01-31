@@ -1,12 +1,12 @@
+import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import React from "react";
 import {
-    Modal,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import CrossIcon from "../assets/icons/cross-svgrepo-com.svg";
 
 interface MenuComponentProps {
   visible: boolean;

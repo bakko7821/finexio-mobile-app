@@ -1,0 +1,72 @@
+import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
+import { useTheme } from "@/hooks/useTheme";
+import { Category } from "@/utils/types/categories";
+import React from "react";
+import {
+    Modal,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
+import CategoryComponent from "../category/CategoryComponent";
+
+interface MenuComponentProps {
+  visible: boolean;
+  onClose: () => void;
+  category: Category | undefined;
+  type: number;
+}
+
+export default function CategoryModal({
+  visible,
+  onClose,
+  category,
+  type,
+}: MenuComponentProps) {
+  const theme = useTheme();
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View className="flex-1 bg-black/50 relative">
+          <TouchableWithoutFeedback>
+            <View
+              style={{ backgroundColor: theme.card }}
+              className="rounded-t-3xl flex-1 w-full bottom-0 absolute p-3 flex-col items-start justify-start gap-2"
+            >
+              <View className="w-full flex-row items-center justify-between">
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-base font-medium"
+                >
+                  Новая транзакция ({type === 1 ? "Расходы" : "Доходы"})
+                </Text>
+                <TouchableOpacity onPress={onClose}>
+                  <CrossIcon width={24} height={24} color={theme.text} />
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row w-full justify-between items-center">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Выбранная категория:
+                </Text>
+                {category && (
+                  <CategoryComponent category={category} isOpen={true} />
+                )}
+              </View>
+              <View className="h-[200px]"></View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+}

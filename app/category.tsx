@@ -1,13 +1,13 @@
 import MoreIcon from "@/assets/ui/more-horizontal-svgrepo-com.svg";
 import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
+import CategoryComponent from "@/components/category/CategoryComponent";
 import BasicHeader from "@/components/Headers/BasicHeader";
+import CategoryModal from "@/components/Modals/CategoryModal";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
-import { RenderIcon } from "@/components/UI/RenderIcon";
 import { getCategoriesByType } from "@/db/categories";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -19,6 +19,8 @@ export default function CategoryScreen() {
   const theme = useTheme();
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   useEffect(() => {
     let mounted = true;
@@ -106,32 +108,27 @@ export default function CategoryScreen() {
             </TouchableOpacity>
             <View className="flex-1 flex-wrap flex-row gap-1">
               {categories.map((category) => (
-                <TouchableOpacity
-                  key={category.name}
-                  className="p-1 rounded-lg flex-row gap-1 items-center justify-start"
-                  style={{
-                    backgroundColor: category.color || theme.secondary,
-                  }}
-                >
-                  <RenderIcon
-                    name={category.icon}
-                    width={24}
-                    height={24}
-                    color={getContrastColor(category.color)}
-                  />
-                  <Text
-                    className="text-base font-medium"
-                    style={{ color: getContrastColor(category.color) }}
-                  >
-                    {category.name}
-                  </Text>
-                </TouchableOpacity>
+                <CategoryComponent
+                  key={category.id}
+                  category={category}
+                  isOpen={isOpenCategoryModal}
+                  setOpen={setIsOpenCategoryModal}
+                  setSelectedCategory={setSelectedCategory}
+                />
               ))}
             </View>
           </View>
         </View>
       </View>
       <Nav />
+      {isOpenCategoryModal && (
+        <CategoryModal
+          category={selectedCategory}
+          visible={isOpenCategoryModal}
+          onClose={() => setIsOpenCategoryModal(false)}
+          type={type}
+        />
+      )}
     </View>
   );
 }

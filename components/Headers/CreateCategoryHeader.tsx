@@ -79,15 +79,22 @@ export default function CreateCategoryHeader({
             style={{ color: "#fff" }}
             className="px-2 py-1 rounded-xl text-sm font-medium"
           >
-            Сохранить
+            {loading ? "Создаем..." : "Сохранить"}
           </Text>
         </TouchableOpacity>
       </View>
-      <View className="relative pl-[48px] pr-[64px] py-3">
+      <View className="relative pl-[36px] pr-[64px] py-3">
         <View className="flex-col gap-1 items-start w-full">
-          <Text className="px-1" style={{ color: theme.secondary }}>
-            Название
-          </Text>
+          <View className="flex-row items-center justify-between px-1 w-full">
+            <Text style={{ color: theme.secondary }}>Название</Text>
+            <TouchableOpacity
+              className="flex-row items-center justify-center gap-1"
+              onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
+            >
+              <Text style={{ color: theme.secondary }}>Тип:</Text>
+              <Text>{type === 1 ? "Расходы" : "Доходы"}</Text>
+            </TouchableOpacity>
+          </View>
           <TextInputComponent
             value={name}
             onChange={setName}

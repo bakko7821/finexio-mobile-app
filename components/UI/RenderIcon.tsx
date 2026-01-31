@@ -24,7 +24,7 @@ export function RenderIcon({
   });
   const Icon = iconsMap[name];
 
-  if (!Icon) return null; // если имя не найдено
+  if (!Icon) return null;
 
   return <Icon width={width} height={height} color={color} />;
 }

@@ -1,8 +1,7 @@
-import { getDb } from './database';
+// migrations.ts
+import { SQLiteDatabase } from "expo-sqlite";
 
-export async function initDatabase(database: unknown) {
-  const db = await getDb();
-
+export async function initDatabase(db: SQLiteDatabase) {
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
 
@@ -10,7 +9,7 @@ export async function initDatabase(database: unknown) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       color TEXT NOT NULL,
-      icon TEXT,
+      icon TEXT NOT NULL,
       type INTEGER NOT NULL
     );
   `);
