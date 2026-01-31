@@ -11,7 +11,7 @@ export async function createCategory(
     INSERT INTO categories (name, color, icon, type)
     VALUES (?, ?, ?, ?)
     `,
-    [dto.name, dto.color, dto.icon ?? null, dto.type],
+    [dto.name, dto.color, dto.icon, dto.type],
   );
 
   return {

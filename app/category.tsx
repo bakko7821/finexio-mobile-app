@@ -3,6 +3,7 @@ import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
 import BasicHeader from "@/components/Headers/BasicHeader";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
+import { RenderIcon } from "@/components/UI/RenderIcon";
 import { getCategoriesByType } from "@/db/categories";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
@@ -112,6 +113,12 @@ export default function CategoryScreen() {
                     backgroundColor: category.color || theme.secondary,
                   }}
                 >
+                  <RenderIcon
+                    name={category.icon}
+                    width={24}
+                    height={24}
+                    color={getContrastColor(category.color)}
+                  />
                   <Text
                     className="text-base font-medium"
                     style={{ color: getContrastColor(category.color) }}

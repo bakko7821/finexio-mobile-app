@@ -1,20 +1,26 @@
 import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
-import QuestionIcon from "@/assets/ui/question-svgrepo-com.svg";
 import { createCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { RenderIcon } from "../UI/RenderIcon";
 import TextInputComponent from "../UI/TextInput";
 
-export default function CreateCategoryHeader() {
+interface CreateCategoryHeaderProps {
+  selectedColor: string;
+  selectedIcon: string;
+}
+
+export default function CreateCategoryHeader({
+  selectedColor,
+  selectedIcon,
+}: CreateCategoryHeaderProps) {
   const theme = useTheme();
   const router = useRouter();
 
   const [name, setName] = useState("");
-  const [icon, setIcon] = useState("");
-  const [color, setColor] = useState("#ff0000");
   const [type, setType] = useState(1);
 
   const [loading, setLoading] = useState(false);
@@ -26,13 +32,13 @@ export default function CreateCategoryHeader() {
       setLoading(true);
 
       await createCategory({
-        name: name.trim(),
-        icon: icon || undefined,
-        color,
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        icon: selectedIcon ?? null,
+        color: selectedColor,
         type,
       });
 
-      router.back();
+      router.push("/category");
     } catch (e) {
       console.error("Ошибка создания категории", e);
     } finally {
@@ -90,13 +96,14 @@ export default function CreateCategoryHeader() {
         </View>
         <TouchableOpacity
           onPress={() => router.push("/category-icon")}
-          style={{ backgroundColor: "#EE741D", zIndex: 999 }}
+          style={{ backgroundColor: selectedColor, zIndex: 999 }}
           className="flex items-center justify-center p-2 rounded-xl absolute bottom-[-24px] right-3"
         >
-          <QuestionIcon
+          <RenderIcon
+            name={selectedIcon}
             width={32}
             height={32}
-            color={getContrastColor("#EE741D")}
+            color={getContrastColor(selectedColor)}
           />
         </TouchableOpacity>
       </View>

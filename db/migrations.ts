@@ -1,6 +1,6 @@
 import { getDb } from './database';
 
-export async function initDatabase() {
+export async function initDatabase(database: unknown) {
   const db = await getDb();
 
   await db.execAsync(`

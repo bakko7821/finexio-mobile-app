@@ -22,6 +22,16 @@ export default function CategoryIconHeader({
   const theme = useTheme();
   const router = useRouter();
 
+  const handleDone = () => {
+    router.push({
+      pathname: "/create-category",
+      params: {
+        selectedColor,
+        selectedIcon,
+      },
+    });
+  };
+
   return (
     <View
       className="flex-col w-full p-3 pt-[52px] pb-0"
@@ -49,7 +59,7 @@ export default function CategoryIconHeader({
         <TouchableOpacity
           style={{ backgroundColor: theme.primary }}
           className="px-2 py-1 rounded-xl bg-blue-500"
-          onPress={() => router.back()}
+          onPress={handleDone}
         >
           <Text
             style={{ color: "#fff" }}

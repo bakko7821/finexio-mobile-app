@@ -2,13 +2,13 @@ export type Category = {
   id: number;
   name: string;
   color: string;
-  icon?: string | null;
+  icon: string;
   type: number;
 };
 
 export type CreateCategoryDto = {
   name: string;
   color: string;
-  icon?: string;
+  icon: string;
   type: number;
 };
