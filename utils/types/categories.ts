@@ -1,0 +1,14 @@
+export type Category = {
+  id: number;
+  name: string;
+  color: string;
+  icon?: string | null;
+  type: number;
+};
+
+export type CreateCategoryDto = {
+  name: string;
+  color: string;
+  icon?: string;
+  type: number;
+};

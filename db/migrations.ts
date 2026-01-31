@@ -1,11 +1,17 @@
-export const runMigrations = async (db: any) => {
+import { getDb } from './database';
+
+export async function initDatabase() {
+  const db = await getDb();
+
   await db.execAsync(`
-    CREATE TABLE IF NOT EXISTS finance_category (
+    PRAGMA journal_mode = WAL;
+
+    CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      icon TEXT NOT NULL,
       color TEXT NOT NULL,
+      icon TEXT,
       type INTEGER NOT NULL
     );
   `);
-};
+}

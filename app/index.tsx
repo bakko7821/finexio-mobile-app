@@ -1,5 +1,4 @@
-import { getDB } from "@/db";
-import { runMigrations } from "@/db/migrations";
+import { initDatabase} from "@/db/migrations";
 import "@/global.css";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect } from "react";
@@ -7,13 +6,7 @@ import { useCallback, useEffect } from "react";
 export default function Index() {
   useEffect(() => {
     (async () => {
-      try {
-        const db = await getDB();
-        await runMigrations(db);
-        console.log("DB initialized");
-      } catch (e) {
-        console.error("DB init error", e);
-      }
+      await initDatabase();
     })();
   }, []);
 

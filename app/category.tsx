@@ -1,36 +1,50 @@
 import BasicHeader from "@/components/Headers/BasicHeader";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
-import { getCategoriesByType } from "@/db/repos/categoryRepo";
+import { getCategoriesByType } from "@/db/categories";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
-import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { getContrastColor } from "@/utils/color";
+import { Category } from "@/utils/types/categories";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import MoreIcon from "../assets/icons/more-horizontal-svgrepo-com.svg";
 import PlusIcon from "../assets/icons/plus-large-svgrepo-com.svg";
 
-export interface Category {
-  name: string;
-  icon?: string;
-  color?: string;
-  type: number;
-}
-
 export default function CategoryScreen() {
+  const type = 1;
   const router = useRouter();
   const theme = useTheme();
 
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function fetchCategories() {
-      const data = await getCategoriesByType(1);
-      setCategories(data);
-    }
+    let mounted = true;
 
-    fetchCategories();
-  });
+    const loadCategories = async () => {
+      try {
+        const data = await getCategoriesByType(type);
+        if (mounted) {
+          setCategories(data);
+        }
+      } catch (e) {
+        console.error("Ошибка загрузки категорий", e);
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      mounted = false;
+    };
+  }, [type]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getCategoriesByType(type).then(setCategories);
+    }, [type]),
+  );
 
   return (
     <View
@@ -78,32 +92,33 @@ export default function CategoryScreen() {
               <MoreIcon width={24} height={24} color={theme.secondary} />
             </TouchableOpacity>
           </View>
-          <View className="w-full flex-row px-2 py-1 gap-3">
+          <View className="w-full flex-row items-start px-2 py-1 gap-3">
             <TouchableOpacity
               style={{
                 backgroundColor: "#CCCCCC",
                 borderColor: theme.secondary,
               }}
-              className="border-dashed border p-1 rounded-full"
+              className="flex items-center justify-center border-dashed border p-1 rounded-full"
               onPress={() => router.push("/create-category")}
             >
               <PlusIcon width={32} height={32} color={theme.secondary} />
             </TouchableOpacity>
-            <View>
+            <View className="flex-1 flex-wrap flex-row gap-1">
               {categories.map((category) => (
-                <View
-                  key={category.name} // обязательно ключ для map
+                <TouchableOpacity
+                  key={category.name}
+                  className="p-1 rounded-lg flex-row gap-1 items-center justify-start"
                   style={{
-                    padding: 8,
-                    marginVertical: 4,
-                    backgroundColor: category.color || "#eee",
-                    borderRadius: 8,
+                    backgroundColor: category.color || theme.secondary,
                   }}
                 >
-                  <Text style={{ fontSize: 16, color: "#000" }}>
-                    {category.name} ({category.type === 1 ? "Доход" : "Расход"})
+                  <Text
+                    className="text-base font-medium"
+                    style={{ color: getContrastColor(category.color) }}
+                  >
+                    {category.name}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>

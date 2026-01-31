@@ -1,6 +1,8 @@
-import BackIcon from "@/assets/icons/arrow-prev-small-svgrepo-com.svg";
-import { createCategory } from "@/db/repos/categoryRepo";
+import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
+import QuestionIcon from "@/assets/ui/question-svgrepo-com.svg";
+import { createCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
+import { getContrastColor } from "@/utils/color";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -15,15 +17,27 @@ export default function CreateCategoryHeader() {
   const [color, setColor] = useState("#FF9800");
   const [type, setType] = useState(1);
 
-  const onSubmit = async () => {
-    await createCategory({
-      name,
-      icon,
-      color,
-      type,
-    });
+  const [loading, setLoading] = useState(false);
 
-    router.back();
+  const onSubmit = async () => {
+    if (!name.trim()) return;
+
+    try {
+      setLoading(true);
+
+      await createCategory({
+        name: name.trim(),
+        icon: icon || undefined,
+        color,
+        type,
+      });
+
+      router.back();
+    } catch (e) {
+      console.error("Ошибка создания категории", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,9 +58,17 @@ export default function CreateCategoryHeader() {
           className="px-2 py-1 rounded-xl bg-blue-500"
           onPress={onSubmit}
         >
-          <Text style={{ color: "#fff" }} className="text-sm font-medium">
-            Сохранить
-          </Text>
+          <TouchableOpacity
+            disabled={loading}
+            className={`px-2 py-1 rounded-xl ${
+              loading ? "bg-blue-300" : "bg-blue-500"
+            }`}
+            onPress={onSubmit}
+          >
+            <Text style={{ color: "#fff" }} className="text-sm font-medium">
+              Сохранить
+            </Text>
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
       <View className="relative pl-[48px] pr-[64px] py-3">
@@ -63,8 +85,14 @@ export default function CreateCategoryHeader() {
         <TouchableOpacity
           onPress={() => router.push("/category-icon")}
           style={{ backgroundColor: "#EE741D", zIndex: 999 }}
-          className="w-10 h-10 rounded-xl absolute bottom-[-24px] right-3"
-        ></TouchableOpacity>
+          className="flex items-center justify-center p-2 rounded-xl absolute bottom-[-24px] right-3"
+        >
+          <QuestionIcon
+            width={24}
+            height={24}
+            color={getContrastColor("#EE741D")}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

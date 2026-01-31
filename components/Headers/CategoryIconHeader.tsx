@@ -1,12 +1,16 @@
-import BackIcon from "@/assets/icons/arrow-prev-small-svgrepo-com.svg";
+import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
+import QuetionIcon from "@/assets/ui/question-svgrepo-com.svg";
 import { useTheme } from "@/hooks/useTheme";
+import { getContrastColor } from "@/utils/color";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function CategoryIconHeader() {
   const theme = useTheme();
   const router = useRouter();
+
+  const [isColor, setIsColor] = useState(false)
 
   return (
     <View
@@ -23,13 +27,35 @@ export default function CategoryIconHeader() {
           </Text>
         </View>
         <TouchableOpacity className="px-2 py-1 rounded-xl bg-blue-500">
-          <Text style={{ color: "#fff" }} className="text-sm font-medium">
+          <Text
+            style={{ color: "#fff" }}
+            className="px-2 py-1 rounded-xl text-sm font-medium"
+          >
             Готово
           </Text>
         </TouchableOpacity>
       </View>
-      <View className="relative pl-[48px] pr-[64px] py-3">
-        
+      <View className="flex-col gap-2 items-center justify-center w-full">
+        <View className="p-3">
+          <View
+            style={{ backgroundColor: "#EE741D" }}
+            className="p-2 rounded-xl flex items-center justify-center"
+          >
+            <QuetionIcon
+              width={36}
+              height={36}
+              color={getContrastColor("#EE741D")}
+            />
+          </View>
+        </View>
+        <View className="flex-row items-center justify-center gap-2">
+          <TouchableOpacity>
+            <Text>Иконка</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Цвет</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
