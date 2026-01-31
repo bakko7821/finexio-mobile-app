@@ -14,7 +14,7 @@ export default function CreateCategoryHeader() {
 
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
-  const [color, setColor] = useState("#FF9800");
+  const [color, setColor] = useState("#ff0000");
   const [type, setType] = useState(1);
 
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,17 @@ export default function CreateCategoryHeader() {
 
   return (
     <View
-      style={{ backgroundColor: theme.header }}
+      style={{
+        backgroundColor: theme.header,
+        // iOS
+        shadowColor: theme.text,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+
+        // Android
+        elevation: 4,
+      }}
       className="flex-col w-full p-3 pt-[52px]"
     >
       <View className="flex-row items-center justify-between w-full">
@@ -55,20 +65,16 @@ export default function CreateCategoryHeader() {
           </Text>
         </View>
         <TouchableOpacity
+          style={{ backgroundColor: theme.primary }}
           className="px-2 py-1 rounded-xl bg-blue-500"
           onPress={onSubmit}
         >
-          <TouchableOpacity
-            disabled={loading}
-            className={`px-2 py-1 rounded-xl ${
-              loading ? "bg-blue-300" : "bg-blue-500"
-            }`}
-            onPress={onSubmit}
+          <Text
+            style={{ color: "#fff" }}
+            className="px-2 py-1 rounded-xl text-sm font-medium"
           >
-            <Text style={{ color: "#fff" }} className="text-sm font-medium">
-              Сохранить
-            </Text>
-          </TouchableOpacity>
+            Сохранить
+          </Text>
         </TouchableOpacity>
       </View>
       <View className="relative pl-[48px] pr-[64px] py-3">
@@ -88,8 +94,8 @@ export default function CreateCategoryHeader() {
           className="flex items-center justify-center p-2 rounded-xl absolute bottom-[-24px] right-3"
         >
           <QuestionIcon
-            width={24}
-            height={24}
+            width={32}
+            height={32}
             color={getContrastColor("#EE741D")}
           />
         </TouchableOpacity>

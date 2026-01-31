@@ -3,19 +3,35 @@ import QuetionIcon from "@/assets/ui/question-svgrepo-com.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-export default function CategoryIconHeader() {
+interface CategoryIconHeaderProps {
+  isColor: boolean;
+  setIsColor: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function CategoryIconHeader({
+  isColor = false,
+  setIsColor,
+}: CategoryIconHeaderProps) {
   const theme = useTheme();
   const router = useRouter();
 
-  const [isColor, setIsColor] = useState(false)
-
   return (
     <View
-      style={{ backgroundColor: theme.header }}
-      className="flex-col w-full p-3 pt-[52px]"
+      className="flex-col w-full p-3 pt-[52px] pb-0"
+      style={{
+        backgroundColor: theme.header,
+        // iOS
+        shadowColor: theme.text,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+
+        // Android
+        elevation: 4,
+      }}
     >
       <View className="flex-row items-center justify-between w-full">
         <View className="flex-row gap-3 items-center">
@@ -26,7 +42,10 @@ export default function CategoryIconHeader() {
             Иконка категории
           </Text>
         </View>
-        <TouchableOpacity className="px-2 py-1 rounded-xl bg-blue-500">
+        <TouchableOpacity
+          style={{ backgroundColor: theme.primary }}
+          className="px-2 py-1 rounded-xl bg-blue-500"
+        >
           <Text
             style={{ color: "#fff" }}
             className="px-2 py-1 rounded-xl text-sm font-medium"
@@ -38,22 +57,34 @@ export default function CategoryIconHeader() {
       <View className="flex-col gap-2 items-center justify-center w-full">
         <View className="p-3">
           <View
-            style={{ backgroundColor: "#EE741D" }}
+            style={{ backgroundColor: "#ff0000" }}
             className="p-2 rounded-xl flex items-center justify-center"
           >
             <QuetionIcon
               width={36}
               height={36}
-              color={getContrastColor("#EE741D")}
+              color={getContrastColor("#ff0000")}
             />
           </View>
         </View>
         <View className="flex-row items-center justify-center gap-2">
-          <TouchableOpacity>
-            <Text>Иконка</Text>
+          <TouchableOpacity
+            onPress={() => setIsColor(false)}
+            style={{ borderColor: !isColor ? theme.primary : "transparent" }}
+            className="border-b-[2px] px-2 py-1 border-solid"
+          >
+            <Text style={{ color: theme.text }} className="text-sm font-medium">
+              Иконка
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Цвет</Text>
+          <TouchableOpacity
+            onPress={() => setIsColor(true)}
+            style={{ borderColor: isColor ? theme.primary : "transparent" }}
+            className="border-b-[2px] px-2 py-1 border-solid"
+          >
+            <Text style={{ color: theme.text }} className="text-sm font-medium">
+              Цвет
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
