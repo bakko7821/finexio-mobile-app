@@ -1,19 +1,23 @@
 import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
-import QuetionIcon from "@/assets/ui/question-svgrepo-com.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { useRouter } from "expo-router";
 import React, { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { RenderIcon } from "../UI/RenderIcon";
 
 interface CategoryIconHeaderProps {
   isColor: boolean;
   setIsColor: Dispatch<SetStateAction<boolean>>;
+  selectedColor: string;
+  selectedIcon: string;
 }
 
 export default function CategoryIconHeader({
   isColor = false,
   setIsColor,
+  selectedColor,
+  selectedIcon,
 }: CategoryIconHeaderProps) {
   const theme = useTheme();
   const router = useRouter();
@@ -45,6 +49,7 @@ export default function CategoryIconHeader({
         <TouchableOpacity
           style={{ backgroundColor: theme.primary }}
           className="px-2 py-1 rounded-xl bg-blue-500"
+          onPress={() => router.back()}
         >
           <Text
             style={{ color: "#fff" }}
@@ -57,13 +62,14 @@ export default function CategoryIconHeader({
       <View className="flex-col gap-2 items-center justify-center w-full">
         <View className="p-3">
           <View
-            style={{ backgroundColor: "#ff0000" }}
+            style={{ backgroundColor: selectedColor }}
             className="p-2 rounded-xl flex items-center justify-center"
           >
-            <QuetionIcon
+            <RenderIcon
+              name={selectedIcon}
               width={36}
               height={36}
-              color={getContrastColor("#ff0000")}
+              color={getContrastColor(selectedColor)}
             />
           </View>
         </View>

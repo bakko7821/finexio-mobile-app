@@ -7,17 +7,26 @@ import { View } from "react-native";
 
 export default function CategoryIconScreen() {
   const theme = useTheme();
-  const [isColor, setIsColor] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string | null>("#ff0000");
+  const [isColorActive, setIsColorActive] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("#ff0000");
+  const [selectedIconName, setSelectedIconName] = useState("burger");
 
   return (
     <View
       style={{ backgroundColor: theme.background }}
       className="w-full h-full flex-1"
     >
-      <CategoryIconHeader isColor={isColor} setIsColor={setIsColor} />
-      {!isColor ? (
-        <PickIconComponent />
+      <CategoryIconHeader
+        isColor={isColorActive}
+        setIsColor={setIsColorActive}
+        selectedColor={selectedColor}
+        selectedIcon={selectedIconName}
+      />
+      {!isColorActive ? (
+        <PickIconComponent
+          selectedIcon={selectedIconName}
+          onSelect={setSelectedIconName}
+        />
       ) : (
         <PickColorComponent
           selectedColor={selectedColor}

@@ -1,3 +1,5 @@
+import MoreIcon from "@/assets/ui/more-horizontal-svgrepo-com.svg";
+import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
 import BasicHeader from "@/components/Headers/BasicHeader";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
@@ -9,8 +11,6 @@ import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import MoreIcon from "../assets/icons/more-horizontal-svgrepo-com.svg";
-import PlusIcon from "../assets/icons/plus-large-svgrepo-com.svg";
 
 export default function CategoryScreen() {
   const type = 1;
