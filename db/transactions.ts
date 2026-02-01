@@ -10,9 +10,9 @@ function mapTransaction(row: any): Transaction {
     date: row.date,
     category: {
       id: row.category_id,
-      name: row.name,
-      color: row.color,
-      icon: row.icon,
+      name: row.category_name,
+      color: row.category_color,
+      icon: row.category_icon,
       type: row.category_type,
     },
   };
@@ -34,21 +34,21 @@ export async function createTransaction(
 
   const row = await db.getFirstAsync<any>(
     `
-    SELECT 
-      t.id,
-      t.type,
-      t.count,
-      t.note,
-      t.date,
-      c.id as category_id,
-      c.name,
-      c.color,
-      c.icon,
-      c.type as category_type
-    FROM transactions t
-    JOIN categories c ON c.id = t.category_id
-    WHERE t.id = ?
-    `,
+  SELECT 
+    t.id,
+    t.type,
+    t.count,
+    t.note,
+    t.date,
+    c.id    AS category_id,
+    c.name  AS category_name,
+    c.color AS category_color,
+    c.icon  AS category_icon,
+    c.type  AS category_type
+  FROM transactions t
+  JOIN categories c ON c.id = t.category_id
+  WHERE t.id = ?
+  `,
     [result.lastInsertRowId],
   );
 
@@ -62,16 +62,16 @@ export async function getAllTransactions(): Promise<Transaction[]> {
   const rows = await db.getAllAsync<any>(
     `
     SELECT 
-      t.id,
-      t.type,
-      t.count,
-      t.note,
-      t.date,
-      c.id as category_id,
-      c.name,
-      c.color,
-      c.icon,
-      c.type as category_type
+    t.id,
+    t.type,
+    t.count,
+    t.note,
+    t.date,
+    c.id    AS category_id,
+    c.name  AS category_name,
+    c.color AS category_color,
+    c.icon  AS category_icon,
+    c.type  AS category_type
     FROM transactions t
     JOIN categories c ON c.id = t.category_id
     ORDER BY t.date DESC
@@ -102,14 +102,47 @@ export async function getTransactionsByMonth(
       c.name,
       c.color,
       c.icon,
-      c.type as category_type
+      c.type
     FROM transactions t
     JOIN categories c ON c.id = t.category_id
-    WHERE strftime('%m', t.date) = ?
-      AND strftime('%Y', t.date) = ?
+    WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+        AND strftime('%Y', datetime(t.date, 'localtime')) = ?
     ORDER BY t.date DESC
     `,
     [monthStr, year.toString()],
+  );
+
+  return rows.map(mapTransaction);
+}
+
+export async function getTransactionsByMonthAndType(
+  month: number,
+  year: number,
+  type: number,
+): Promise<Transaction[]> {
+  const db = await getDb();
+  const monthStr = month.toString().padStart(2, "0");
+
+  const rows = await db.getAllAsync<any>(
+    `
+    SELECT
+    t.id,
+    t.count,
+    t.type,
+    t.note,
+    t.date,
+    c.id    AS category_id,
+    c.name  AS category_name,
+    c.color AS category_color,
+    c.icon  AS category_icon,
+    c.type  AS category_type
+    FROM transactions t
+    JOIN categories c ON t.category_id = c.id
+    WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+    AND t.type = ?
+    ORDER BY t.date ASC
+    `,
+    [monthStr, type],
   );
 
   return rows.map(mapTransaction);

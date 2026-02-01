@@ -6,9 +6,16 @@ import CategoryModal from "@/components/Modals/CategoryModal";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/db/categories";
+import { getTransactionsByMonthAndType } from "@/db/transactions";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
+import {
+  calculateCategoryPercent,
+  CategoryPercent,
+  Transaction,
+} from "@/utils/types/transactions";
+import { SCREEN_WIDTH } from "@/utils/types/variables";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -21,6 +28,7 @@ export default function CategoryScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
+  const [categoryPercent, setCategoryPercent] = useState<CategoryPercent[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -48,6 +56,25 @@ export default function CategoryScreen() {
       getCategoriesByType(type).then(setCategories);
     }, [type]),
   );
+
+  useEffect(() => {
+    const fetchTransactionByMonthAndType = async () => {
+      try {
+        const now = new Date();
+        const janTransactions: Transaction[] =
+          await getTransactionsByMonthAndType(
+            now.getMonth() + 1,
+            now.getFullYear(),
+            type,
+          );
+        setCategoryPercent(calculateCategoryPercent(janTransactions));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTransactionByMonthAndType();
+  }, [type, categories]);
 
   return (
     <View
@@ -83,7 +110,18 @@ export default function CategoryScreen() {
             </Text>
             <Text className="color-red-800 text-sm font-medium">-85.127 ₽</Text>
           </View>
-          {/* мини-график */}
+          <View className="flex-col-reverse p-2 gap-2 items-start justify-start px-2">
+            {categoryPercent.map((data) => (
+              <View
+                style={{
+                  width: SCREEN_WIDTH * (data.percent / 100),
+                  backgroundColor: data.category.color,
+                }}
+                key={data.category.id}
+                className="rounded-r-lg p-4"
+              ></View>
+            ))}
+          </View>
         </View>
         <Plug />
         <View className="w-full flex-col gap-1">
