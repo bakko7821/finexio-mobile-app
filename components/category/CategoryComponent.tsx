@@ -10,6 +10,7 @@ interface CategoryComponentProps {
   setOpen?: Dispatch<SetStateAction<boolean>>;
   isOpen: boolean;
   category: Category;
+  transparent?: boolean;
 }
 
 export default function CategoryComponent({
@@ -17,6 +18,7 @@ export default function CategoryComponent({
   setSelectedCategory,
   isOpen,
   setOpen,
+  transparent = false,
 }: CategoryComponentProps) {
   const theme = useTheme();
 
@@ -25,7 +27,9 @@ export default function CategoryComponent({
       key={category.name}
       className="p-1 rounded-lg flex-row gap-1 items-center justify-start"
       style={{
-        backgroundColor: category.color || theme.secondary,
+        backgroundColor: transparent
+          ? "transparent"
+          : category.color || theme.secondary,
       }}
       onPress={() => {
         if (!isOpen) {
@@ -38,11 +42,13 @@ export default function CategoryComponent({
         name={category.icon}
         width={24}
         height={24}
-        color={getContrastColor(category.color)}
+        color={transparent ? theme.text : getContrastColor(category.color)}
       />
       <Text
         className="text-base font-medium"
-        style={{ color: getContrastColor(category.color) }}
+        style={{
+          color: transparent ? theme.text : getContrastColor(category.color),
+        }}
       >
         {category.name}
       </Text>

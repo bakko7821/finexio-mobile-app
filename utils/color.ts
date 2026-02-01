@@ -18,6 +18,34 @@ export function getContrastColor(hex: string): "#000000" | "#FFFFFF" {
   return luminance > 0.5 ? "#000000" : "#FFFFFF";
 }
 
+export function withOpacity(hex: string, opacity: number): string {
+  // защита
+  if (!hex || opacity < 0 || opacity > 1) {
+    return hex;
+  }
+
+  let cleanedHex = hex.replace("#", "");
+
+  // поддержка короткого HEX: #fff
+  if (cleanedHex.length === 3) {
+    cleanedHex = cleanedHex
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+
+  if (cleanedHex.length !== 6) {
+    return hex;
+  }
+
+  const r = parseInt(cleanedHex.slice(0, 2), 16);
+  const g = parseInt(cleanedHex.slice(2, 4), 16);
+  const b = parseInt(cleanedHex.slice(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
+
 export const colorsArray = [
   // RED
   { color: "#ff0000" },

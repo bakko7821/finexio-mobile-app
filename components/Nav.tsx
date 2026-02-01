@@ -44,7 +44,7 @@ export default function Nav() {
       <NavItem
         icon={<ReceiptIcon width={24} height={24} color={theme.text} />}
         name="Операции"
-        path="receipt"
+        path="transactions"
       />
       <NavItem
         icon={<ChartGraphIcon width={24} height={24} color={theme.text} />}
