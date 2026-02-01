@@ -11,9 +11,14 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, "₽", 0, ","];
 interface NumberInputProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
+  onRequest: () => void;
 }
 
-export default function NumberInput({ value, setValue }: NumberInputProps) {
+export default function NumberInput({
+  value,
+  setValue,
+  onRequest,
+}: NumberInputProps) {
   const theme = useTheme();
 
   const addCount = (num: string | number) => {
@@ -64,6 +69,7 @@ export default function NumberInput({ value, setValue }: NumberInputProps) {
         <TouchableOpacity
           style={{ backgroundColor: "#01B531" }}
           className="w-[48px] flex-1 rounded-xl items-center justify-center"
+          onPress={onRequest}
         >
           <TickIcon
             width={24}

@@ -54,7 +54,7 @@ export default function CategoryScreen() {
       style={{ backgroundColor: theme.background }}
       className="w-full h-full items-center justify-between"
     >
-      <BasicHeader />
+      <BasicHeader type={type} />
       <View className="flex-1 w-full flex-col p-3 gap-3">
         <View className="flex-col gap-1 w-full">
           <View>

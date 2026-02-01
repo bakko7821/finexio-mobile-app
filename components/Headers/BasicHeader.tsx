@@ -3,7 +3,12 @@ import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function BasicHeader() {
+interface BasicHeaderProps {
+  title?: string;
+  type?: number
+}
+
+export default function BasicHeader({type}: BasicHeaderProps) {
   const theme = useTheme();
 
   return (
@@ -12,7 +17,7 @@ export default function BasicHeader() {
       className="overflow-hidden w-full flex flex-row items-center justify-between bg-gray-400 p-4 pt-[52px] rounded-b-3xl"
     >
       <Text style={{ color: theme.seasonColor }} className="text-sm">
-        Январь 28
+        {type === 1 ? "Расходы" : "Доходы"}
       </Text>
       <Text style={{ color: theme.text }} className="text-sm font-medium">
         13.976 ₽

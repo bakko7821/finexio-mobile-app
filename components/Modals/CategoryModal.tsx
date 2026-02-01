@@ -1,4 +1,5 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
+import { createTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
 import React, { useState } from "react";
@@ -27,6 +28,29 @@ export default function CategoryModal({
 }: MenuComponentProps) {
   const theme = useTheme();
   const [transactionValue, setTransactionValue] = useState("0");
+  const [note, setNote] = useState("");
+  const [date, setDate] = useState("");
+
+  const postTransaction = async () => {
+    if (!category) return;
+
+    try {
+      await createTransaction({
+        categoryId: category.id,
+        type: type,
+        count: Number(transactionValue),
+        note,
+        date: date || new Date().toISOString(),
+      });
+
+      setTransactionValue("");
+      setNote("");
+      console.log("Транзакция создана ✅");
+      onClose();
+    } catch (e) {
+      console.error("Ошибка создания транзакции", e);
+    }
+  };
 
   return (
     <Modal
@@ -99,7 +123,11 @@ export default function CategoryModal({
                   </View>
                 </View>
                 <View className="w-full">
-                  <NumberInput value={transactionValue} setValue={setTransactionValue} />
+                  <NumberInput
+                    value={transactionValue}
+                    setValue={setTransactionValue}
+                    onRequest={postTransaction}
+                  />
                 </View>
               </View>
             </View>
