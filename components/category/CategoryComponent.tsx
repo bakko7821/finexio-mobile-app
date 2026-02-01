@@ -11,6 +11,7 @@ interface CategoryComponentProps {
   isOpen: boolean;
   category: Category;
   transparent?: boolean;
+  width?: number;
 }
 
 export default function CategoryComponent({
@@ -19,6 +20,7 @@ export default function CategoryComponent({
   isOpen,
   setOpen,
   transparent = false,
+  width,
 }: CategoryComponentProps) {
   const theme = useTheme();
 
@@ -30,6 +32,7 @@ export default function CategoryComponent({
         backgroundColor: transparent
           ? "transparent"
           : category.color || theme.secondary,
+        width: width,
       }}
       onPress={() => {
         if (!isOpen) {

@@ -29,7 +29,7 @@ export default function TransactionComponent({
         <CategoryComponent
           isOpen={true}
           category={transaction.category}
-          transparent
+          width={120}
         />
         <View className="flex-row items-center justify-center gap-1">
           <Text
@@ -63,7 +63,7 @@ export default function TransactionComponent({
         </View>
       </View>
       {isOpen && (
-        <View className="py-1 px-2 flex-row items-center justify-between">
+        <View className="p-1 flex-row items-center justify-between">
           <Text
             className="text-xs font-regular"
             style={{ color: theme.secondary }}
