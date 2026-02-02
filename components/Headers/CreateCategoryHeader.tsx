@@ -86,7 +86,12 @@ export default function CreateCategoryHeader({
       <View className="relative pl-[36px] pr-[64px] py-3">
         <View className="flex-col gap-1 items-start w-full">
           <View className="flex-row items-center justify-between px-1 w-full">
-            <Text style={{ color: theme.secondary }}>Название</Text>
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-sm font-medium"
+            >
+              Название
+            </Text>
             <TouchableOpacity
               className="flex-row items-center justify-center gap-1"
               onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}

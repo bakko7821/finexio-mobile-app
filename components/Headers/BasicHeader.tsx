@@ -14,7 +14,7 @@ export default function BasicHeader({type}: BasicHeaderProps) {
   return (
     <View
       style={{ backgroundColor: theme.header }}
-      className="overflow-hidden w-full flex flex-row items-center justify-between bg-gray-400 p-4 pt-[52px] rounded-b-3xl"
+      className="overflow-hidden w-full flex flex-row items-center justify-between p-4 pt-[52px] rounded-b-3xl"
     >
       <Text style={{ color: theme.seasonColor }} className="text-sm">
         {type === 1 ? "Расходы" : "Доходы"}

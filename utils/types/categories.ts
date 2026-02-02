@@ -12,3 +12,5 @@ export type CreateCategoryDto = {
   icon: string;
   type: number;
 };
+
+

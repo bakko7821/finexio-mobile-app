@@ -58,7 +58,7 @@ export default function CategoryIconHeader({
         </View>
         <TouchableOpacity
           style={{ backgroundColor: theme.primary }}
-          className="px-2 py-1 rounded-xl bg-blue-500"
+          className="px-2 py-1 rounded-xl"
           onPress={handleDone}
         >
           <Text

@@ -1,5 +1,4 @@
 import EditIcon from "@/assets/ui/Edit.svg";
-import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
@@ -55,19 +54,16 @@ export default function CategoryComponent({
           <TouchableOpacity
             style={{ backgroundColor: withOpacity(theme.secondary, 0.5) }}
             className="p-1 rounded-lg"
-            onPress={() => router.push("/all-categories")}
+            onPress={() =>
+              router.push({
+                pathname: "/edit-category",
+                params: {
+                  category: JSON.stringify(category),
+                },
+              })
+            }
           >
             <EditIcon
-              width={20}
-              height={20}
-              color={getContrastColor(withOpacity(category.color, 0.4))}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ backgroundColor: withOpacity(theme.secondary, 0.5) }}
-            className="p-1 rounded-lg"
-          >
-            <TrashIcon
               width={20}
               height={20}
               color={getContrastColor(withOpacity(category.color, 0.4))}
