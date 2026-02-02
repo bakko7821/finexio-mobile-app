@@ -1,24 +1,18 @@
 import MoreIcon from "@/assets/ui/more-horizontal-svgrepo-com.svg";
 import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
-import CategoryComponent from "@/components/category/CategoryComponent";
+import CategoryIcon from "@/components/category/CategoryIcon";
 import BasicHeader from "@/components/Headers/BasicHeader";
 import CategoryModal from "@/components/Modals/CategoryModal";
+import DropDownModal from "@/components/Modals/DropDownModal";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/db/categories";
-import { getTransactionsByMonthAndType } from "@/db/transactions";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
-import {
-  calculateCategoryPercent,
-  CategoryPercent,
-  Transaction,
-} from "@/utils/types/transactions";
-import { SCREEN_WIDTH } from "@/utils/types/variables";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function CategoryScreen() {
@@ -29,17 +23,8 @@ export default function CategoryScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [categoryPercent, setCategoryPercent] = useState<CategoryPercent[]>([]);
-
-  const COLUMNS = 5;
-  const GAP = 8;
-
-  const [containerWidth, setContainerWidth] = useState(0);
-
-  const itemWidth = useMemo(() => {
-    if (!containerWidth) return 0;
-    return (containerWidth - GAP * (COLUMNS - 1)) / COLUMNS;
-  }, [containerWidth]);
+  const [isOpenCategoryDropDownModal, setIsOpenCategoryDropDownModal] =
+    useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -68,25 +53,6 @@ export default function CategoryScreen() {
     }, [type]),
   );
 
-  useEffect(() => {
-    const fetchTransactionByMonthAndType = async () => {
-      try {
-        const now = new Date();
-        const janTransactions: Transaction[] =
-          await getTransactionsByMonthAndType(
-            now.getMonth() + 1,
-            now.getFullYear(),
-            type,
-          );
-        setCategoryPercent(calculateCategoryPercent(janTransactions));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchTransactionByMonthAndType();
-  }, [type, categories]);
-
   return (
     <View
       style={{ backgroundColor: theme.background }}
@@ -114,52 +80,33 @@ export default function CategoryScreen() {
           {/* график */}
         </View>
         <Plug />
-        <View className="flex-col gap-1 w-full">
-          <View className="px-2 flex-row items-center justify-between w-full">
-            <Text style={{ color: theme.text }} className="text-sm font-medium">
-              Расходы
-            </Text>
-            <Text className="color-red-800 text-sm font-medium">-85.127 ₽</Text>
-          </View>
-          <View className="flex-col-reverse p-2 gap-2 items-start justify-start px-2">
-            {categoryPercent.map((data) => (
-              <View
-                style={{
-                  width: SCREEN_WIDTH * (data.percent / 100),
-                  backgroundColor: data.category.color,
-                }}
-                key={data.category.id}
-                className="rounded-r-lg p-4"
-              ></View>
-            ))}
-          </View>
-        </View>
-        <Plug />
         <View className="w-full flex-col gap-1">
-          <View className="px-2 flex-row items-center justify-between w-full">
+          <View className="px-2 flex-row items-center justify-between w-full relative">
             <Text style={{ color: theme.text }} className="text-sm font-medium">
               Категории
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              // onPress={() => setIsOpenCategoryDropDownModal((prev) => !prev)}
+            >
               <MoreIcon width={24} height={24} color={theme.secondary} />
             </TouchableOpacity>
+            {/* {isOpenCategoryDropDownModal && (
+              <DropDownModal
+                position={{
+                  right: 0,
+                  top: 0,
+                }}
+              />
+            )} */}
           </View>
-          <View className="w-full flex-row items-start px-2 py-1 gap-3">
-            <View
-              className="flex-row flex-wrap"
-              style={{ gap: GAP }}
-              onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-            >
+          <View className="w-full flex-col items-start px-2 py-1 gap-3">
+            <View className="flex-row flex-wrap gap-2 items-center justify-start">
               {categories.map((category) => (
-                <CategoryComponent
+                <CategoryIcon
                   key={category.id}
-                  width={Math.floor(itemWidth)}
-                  iconSize={Math.floor(itemWidth - 16)}
                   category={category}
-                  isOpen={isOpenCategoryModal}
-                  setOpen={setIsOpenCategoryModal}
-                  setSelectedCategory={setSelectedCategory}
-                  isIcon
+                  onSelect={setSelectedCategory}
+                  onOpen={setIsOpenCategoryModal}
                 />
               ))}
             </View>

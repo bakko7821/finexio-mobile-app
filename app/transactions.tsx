@@ -23,7 +23,10 @@ export default function ReceiptScreen() {
   }, []);
 
   return (
-    <View className="w-full h-full items-center justify-between">
+    <View
+      style={{ backgroundColor: theme.background }}
+      className="w-full h-full items-center justify-between"
+    >
       <BasicHeader />
       <View className="flex-1 w-full p-3 gap-2">
         {transactions?.length >= 1 ? (

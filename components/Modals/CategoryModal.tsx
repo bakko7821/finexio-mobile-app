@@ -10,8 +10,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import CategoryComponent from "../category/CategoryComponent";
 import NumberInput from "../UI/NumberInput";
+import CategoryComponent from "../category/CategoryComponent";
 
 interface MenuComponentProps {
   visible: boolean;
@@ -77,7 +77,7 @@ export default function CategoryModal({
                   <CrossIcon width={24} height={24} color={theme.text} />
                 </TouchableOpacity>
               </View>
-              <View className="flex-row w-full justify-between items-center">
+              <View className="flex-col w-full justify-start items-start gap-2">
                 <Text
                   style={{ color: theme.secondary }}
                   className="text-sm font-medium"
@@ -85,22 +85,8 @@ export default function CategoryModal({
                   Выбранная категория:
                 </Text>
                 {category && (
-                  <CategoryComponent category={category} isOpen={true} />
+                  <CategoryComponent category={category} fullsize isEditing />
                 )}
-              </View>
-              <View className="flex-row w-full justify-between items-center">
-                <Text
-                  style={{ color: theme.secondary }}
-                  className="text-sm font-medium"
-                >
-                  Тип транзакции:
-                </Text>
-                <Text
-                  className="text-base font-regular"
-                  style={{ color: type === 1 ? "#780000" : "#00780E" }}
-                >
-                  {type === 1 ? "Расходы" : "Доходы"}
-                </Text>
               </View>
               <View className="w-full flex-col gap-2">
                 <View
