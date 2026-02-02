@@ -1,5 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor } from "@/utils/color";
+import { getContrastColor, withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import React, { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity } from "react-native";
@@ -12,6 +12,8 @@ interface CategoryComponentProps {
   category: Category;
   transparent?: boolean;
   width?: number;
+  isIcon?: boolean;
+  iconSize?: number;
 }
 
 export default function CategoryComponent({
@@ -20,6 +22,8 @@ export default function CategoryComponent({
   isOpen,
   setOpen,
   transparent = false,
+  isIcon = false,
+  iconSize = 24,
   width,
 }: CategoryComponentProps) {
   const theme = useTheme();
@@ -27,12 +31,16 @@ export default function CategoryComponent({
   return (
     <TouchableOpacity
       key={category.name}
-      className="p-1 rounded-lg flex-row gap-1 items-center justify-start"
+      className="flex-row gap-1 items-center justify-center border-[2px] border-solid"
       style={{
         backgroundColor: transparent
           ? "transparent"
-          : category.color || theme.secondary,
+          : withOpacity(category.color, 0.4) || theme.card,
         width: width,
+        height: width,
+        padding: isIcon ? 8 : 4,
+        borderRadius: isIcon ? 999 : 8,
+        borderColor: category.color,
       }}
       onPress={() => {
         if (!isOpen) {
@@ -43,18 +51,26 @@ export default function CategoryComponent({
     >
       <RenderIcon
         name={category.icon}
-        width={24}
-        height={24}
-        color={transparent ? theme.text : getContrastColor(category.color)}
+        width={iconSize}
+        height={iconSize}
+        color={
+          transparent
+            ? theme.text
+            : getContrastColor(withOpacity(category.color, 0.4))
+        }
       />
-      <Text
-        className="text-base font-medium"
-        style={{
-          color: transparent ? theme.text : getContrastColor(category.color),
-        }}
-      >
-        {category.name}
-      </Text>
+      {!isIcon && (
+        <Text
+          className="text-base font-medium"
+          style={{
+            color: transparent
+              ? theme.text
+              : getContrastColor(withOpacity(category.color, 0.4)),
+          }}
+        >
+          {category.name}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }
