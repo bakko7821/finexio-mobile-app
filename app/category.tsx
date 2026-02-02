@@ -9,6 +9,7 @@ import { getCategoriesByType } from "@/db/categories";
 import { getTransactionsByMonthAndType } from "@/db/transactions";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
+import { withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import {
   calculateCategoryPercent,
@@ -17,7 +18,7 @@ import {
 } from "@/utils/types/transactions";
 import { SCREEN_WIDTH } from "@/utils/types/variables";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function CategoryScreen() {
@@ -29,6 +30,16 @@ export default function CategoryScreen() {
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const [categoryPercent, setCategoryPercent] = useState<CategoryPercent[]>([]);
+
+  const COLUMNS = 5;
+  const GAP = 8;
+
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const itemWidth = useMemo(() => {
+    if (!containerWidth) return 0;
+    return (containerWidth - GAP * (COLUMNS - 1)) / COLUMNS;
+  }, [containerWidth]);
 
   useEffect(() => {
     let mounted = true;
@@ -82,7 +93,7 @@ export default function CategoryScreen() {
       className="w-full h-full items-center justify-between"
     >
       <BasicHeader type={type} />
-      <View className="flex-1 w-full flex-col p-3 gap-3">
+      <View className="flex-1 w-full flex-col p-3 gap-3 relative">
         <View className="flex-col gap-1 w-full">
           <View>
             <View className="px-2 flex-col items-start w-full">
@@ -134,29 +145,37 @@ export default function CategoryScreen() {
             </TouchableOpacity>
           </View>
           <View className="w-full flex-row items-start px-2 py-1 gap-3">
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#CCCCCC",
-                borderColor: theme.secondary,
-              }}
-              className="flex items-center justify-center border-dashed border p-1 rounded-full"
-              onPress={() => router.push("/create-category")}
+            <View
+              className="flex-row flex-wrap"
+              style={{ gap: GAP }}
+              onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
             >
-              <PlusIcon width={32} height={32} color={theme.secondary} />
-            </TouchableOpacity>
-            <View className="flex-1 flex-wrap flex-row gap-1">
               {categories.map((category) => (
                 <CategoryComponent
                   key={category.id}
+                  width={Math.floor(itemWidth)}
+                  iconSize={Math.floor(itemWidth - 16)}
                   category={category}
                   isOpen={isOpenCategoryModal}
                   setOpen={setIsOpenCategoryModal}
                   setSelectedCategory={setSelectedCategory}
+                  isIcon
                 />
               ))}
             </View>
           </View>
         </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: withOpacity(theme.secondary, 0.4),
+            borderColor: theme.secondary,
+            zIndex: 999,
+          }}
+          className="flex items-center justify-center border-dashed border-[2px] p-1 rounded-full absolute bottom-3 left-3"
+          onPress={() => router.push("/create-category")}
+        >
+          <PlusIcon width={36} height={36} color={theme.secondary} />
+        </TouchableOpacity>
       </View>
       <Nav />
       {isOpenCategoryModal && (
