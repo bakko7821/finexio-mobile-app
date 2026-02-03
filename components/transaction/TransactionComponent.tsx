@@ -1,11 +1,11 @@
 import EditIcon from "@/assets/ui/Edit.svg";
 import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor } from "@/utils/color";
+import { getContrastColor, withOpacity } from "@/utils/color";
 import { Transaction } from "@/utils/types/transactions";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import CategoryComponent from "../category/CategoryComponent";
+import { RenderIcon } from "../UI/RenderIcon";
 
 interface TransactionComponentProps {
   transaction: Transaction;
@@ -21,16 +21,35 @@ export default function TransactionComponent({
   const theme = useTheme();
   return (
     <TouchableOpacity
-      style={{ borderColor: transaction.category.color }}
+      style={{
+        borderColor: transaction.category.color,
+        backgroundColor: withOpacity(transaction.category.color, 0.4),
+      }}
       className="w-full flex-col gap-1 p-1 rounded-xl border-solid border-2"
       onPress={onToggle}
     >
       <View className="flex-row items-center justify-between">
-        <CategoryComponent
-          isOpen={true}
-          category={transaction.category}
-          width={120}
-        />
+        <View className="flex-row items-center justify-center gap-1">
+          <RenderIcon
+            name={transaction.category.icon}
+            width={24}
+            height={24}
+            color={getContrastColor(
+              withOpacity(transaction.category.color, 0.4),
+            )}
+          />
+          <Text
+            style={{
+              color:
+                getContrastColor(
+                  withOpacity(transaction.category.color, 0.4),
+                ) || theme.text,
+            }}
+            className="text-sm font-medium"
+          >
+            {transaction.category.name}
+          </Text>
+        </View>
         <View className="flex-row items-center justify-center gap-1">
           <Text
             style={{ color: transaction.type === 1 ? "#780000" : "#00780E" }}
