@@ -12,6 +12,8 @@ interface CategoryIcon {
   onSelect?: (category: Category) => void;
   isOpen?: boolean;
   onOpen?: Dispatch<SetStateAction<boolean>>;
+  isOpenSmallPanel?: boolean;
+  onOpenSmallPanel?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function CategoryIcon({
@@ -21,6 +23,8 @@ export default function CategoryIcon({
   onSelect,
   isOpen,
   onOpen,
+  isOpenSmallPanel,
+  onOpenSmallPanel,
 }: CategoryIcon) {
   const theme = useTheme();
 
@@ -39,6 +43,13 @@ export default function CategoryIcon({
           onOpen?.(true);
         }
       }}
+      onLongPress={() => {
+        if (!isOpenSmallPanel) {
+          onSelect?.(category);
+          onOpenSmallPanel?.(true);
+        }
+      }}
+      delayLongPress={400}
     >
       <RenderIcon
         name={category.icon}

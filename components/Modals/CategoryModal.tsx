@@ -84,9 +84,7 @@ export default function CategoryModal({
                 >
                   Выбранная категория:
                 </Text>
-                {category && (
-                  <CategoryComponent category={category} fullsize isEditing />
-                )}
+                {category && <CategoryComponent category={category} fullsize />}
               </View>
               <View className="w-full flex-col gap-2">
                 <View

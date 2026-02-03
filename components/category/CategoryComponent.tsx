@@ -16,9 +16,7 @@ interface CategoryComponentProps {
 export default function CategoryComponent({
   category,
   fullsize = false,
-  isEditing = false,
 }: CategoryComponentProps) {
-  const router = useRouter();
   const theme = useTheme();
 
   if (!category) return;
@@ -49,28 +47,6 @@ export default function CategoryComponent({
           {category.name}
         </Text>
       </View>
-      {isEditing && (
-        <View className="flex-row gap-1 items-center justify-center">
-          <TouchableOpacity
-            style={{ backgroundColor: withOpacity(theme.secondary, 0.5) }}
-            className="p-1 rounded-lg"
-            onPress={() =>
-              router.push({
-                pathname: "/edit-category",
-                params: {
-                  category: JSON.stringify(category),
-                },
-              })
-            }
-          >
-            <EditIcon
-              width={20}
-              height={20}
-              color={getContrastColor(withOpacity(category.color, 0.4))}
-            />
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 }

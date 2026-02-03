@@ -3,7 +3,7 @@ import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
 import CategoryIcon from "@/components/category/CategoryIcon";
 import BasicHeader from "@/components/Headers/BasicHeader";
 import CategoryModal from "@/components/Modals/CategoryModal";
-import DropDownModal from "@/components/Modals/DropDownModal";
+import CategoryModalSmall from "@/components/Modals/CategoryModalSmall";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/db/categories";
@@ -22,9 +22,9 @@ export default function CategoryScreen() {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [isOpenCategoryDropDownModal, setIsOpenCategoryDropDownModal] =
+  const [isOpenSmallCategoryModal, setIsOpenSmallCategoryModal] =
     useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   useEffect(() => {
     let mounted = true;
@@ -86,7 +86,7 @@ export default function CategoryScreen() {
               Категории
             </Text>
             <TouchableOpacity
-              // onPress={() => setIsOpenCategoryDropDownModal((prev) => !prev)}
+            // onPress={() => setIsOpenCategoryDropDownModal((prev) => !prev)}
             >
               <MoreIcon width={24} height={24} color={theme.secondary} />
             </TouchableOpacity>
@@ -107,6 +107,9 @@ export default function CategoryScreen() {
                   category={category}
                   onSelect={setSelectedCategory}
                   onOpen={setIsOpenCategoryModal}
+                  isOpen={isOpenCategoryModal}
+                  isOpenSmallPanel={isOpenSmallCategoryModal}
+                  onOpenSmallPanel={setIsOpenSmallCategoryModal}
                 />
               ))}
             </View>
@@ -130,6 +133,14 @@ export default function CategoryScreen() {
           category={selectedCategory}
           visible={isOpenCategoryModal}
           onClose={() => setIsOpenCategoryModal(false)}
+          type={type}
+        />
+      )}
+      {isOpenSmallCategoryModal && (
+        <CategoryModalSmall
+          category={selectedCategory}
+          visible={isOpenSmallCategoryModal}
+          onClose={() => setIsOpenSmallCategoryModal(false)}
           type={type}
         />
       )}
