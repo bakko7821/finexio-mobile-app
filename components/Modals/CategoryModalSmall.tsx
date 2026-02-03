@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 
-interface MenuComponentProps {
+interface CategoryModalSmallProps {
   visible: boolean;
   onClose: () => void;
   category: Category | undefined;
@@ -27,33 +27,9 @@ export default function CategoryModalSmall({
   onClose,
   category,
   type,
-}: MenuComponentProps) {
+}: CategoryModalSmallProps) {
   const theme = useTheme();
   const router = useRouter();
-  const [transactionValue, setTransactionValue] = useState("0");
-  const [note, setNote] = useState("");
-  const [date, setDate] = useState("");
-
-  const postTransaction = async () => {
-    if (!category) return;
-
-    try {
-      await createTransaction({
-        categoryId: category.id,
-        type: type,
-        count: Number(transactionValue),
-        note,
-        date: date || new Date().toISOString(),
-      });
-
-      setTransactionValue("");
-      setNote("");
-      console.log("Транзакция создана ✅");
-      onClose();
-    } catch (e) {
-      console.error("Ошибка создания транзакции", e);
-    }
-  };
 
   if (!category) return;
 
@@ -110,9 +86,9 @@ export default function CategoryModalSmall({
                 >
                   <View
                     style={{ backgroundColor: theme.secondary }}
-                    className="items-center justify-center p-2 rounded-full"
+                    className="items-center justify-center p-3 rounded-full"
                   >
-                    <EditIcon width={24} height={24} color={theme.text} />
+                    <EditIcon width={36} height={36} color={theme.text} />
                   </View>
                   <Text
                     style={{ color: theme.secondary }}
@@ -124,9 +100,9 @@ export default function CategoryModalSmall({
                 <TouchableOpacity className="flex-col items-center justify-center gap-1">
                   <View
                     style={{ backgroundColor: theme.secondary }}
-                    className="items-center justify-center p-2 rounded-full"
+                    className="items-center justify-center p-3 rounded-full"
                   >
-                    <EditIcon width={24} height={24} color={theme.text} />
+                    <EditIcon width={36} height={36} color={theme.text} />
                   </View>
                   <Text
                     style={{ color: theme.secondary }}
@@ -140,11 +116,11 @@ export default function CategoryModalSmall({
                     style={{
                       backgroundColor: withOpacity(category?.color, 0.4),
                     }}
-                    className="items-center justify-center p-2 rounded-full"
+                    className="items-center justify-center p-3 rounded-full"
                   >
                     <ReceiptIcon
-                      width={24}
-                      height={24}
+                      width={36}
+                      height={36}
                       color={getContrastColor(
                         withOpacity(category?.color, 0.4),
                       )}

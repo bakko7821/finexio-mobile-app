@@ -28,7 +28,7 @@ export default function ReceiptScreen() {
       className="w-full h-full items-center justify-between"
     >
       <BasicHeader />
-      <View className="flex-1 w-full p-3 gap-2">
+      <View className="flex-1 flex-col items-start justify-start w-full p-3 gap-2">
         {transactions?.length >= 1 ? (
           <TransactionsList transactions={transactions} />
         ) : (

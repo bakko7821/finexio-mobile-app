@@ -1,9 +1,7 @@
-import EditIcon from "@/assets/ui/Edit.svg";
-import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor, withOpacity } from "@/utils/color";
+import { getContrastColor } from "@/utils/color";
 import { Transaction } from "@/utils/types/transactions";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 
@@ -11,74 +9,64 @@ interface TransactionComponentProps {
   transaction: Transaction;
   isOpen: boolean;
   onToggle: () => void;
+  isOpenEditPanel: boolean;
+  onOpenEditPanel: Dispatch<SetStateAction<boolean>>;
+  setSelectedTransactions: (transaction: Transaction) => void;
 }
 
 export default function TransactionComponent({
   transaction,
   isOpen,
   onToggle,
+  isOpenEditPanel,
+  onOpenEditPanel,
+  setSelectedTransactions,
 }: TransactionComponentProps) {
   const theme = useTheme();
   return (
     <TouchableOpacity
-      style={{
-        borderColor: transaction.category.color,
-        backgroundColor: withOpacity(transaction.category.color, 0.4),
-      }}
-      className="w-full flex-col gap-1 p-1 rounded-xl border-solid border-2"
+      className="w-full flex-col gap-1 p-1 rounded-xl"
       onPress={onToggle}
+      onLongPress={() => {
+        if (!isOpenEditPanel) {
+          setSelectedTransactions(transaction);
+          onOpenEditPanel(true);
+        }
+      }}
+      delayLongPress={400}
     >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center justify-center gap-1">
+      <View className="flex-row items-start justify-start w-full gap-2">
+        <View
+          style={{ backgroundColor: transaction.category.color }}
+          className="p-2 items-center justify-center rounded-full"
+        >
           <RenderIcon
             name={transaction.category.icon}
             width={24}
             height={24}
-            color={getContrastColor(
-              withOpacity(transaction.category.color, 0.4),
-            )}
+            color={getContrastColor(transaction.category.color)}
           />
-          <Text
-            style={{
-              color:
-                getContrastColor(
-                  withOpacity(transaction.category.color, 0.4),
-                ) || theme.text,
-            }}
-            className="text-sm font-medium"
-          >
-            {transaction.category.name}
-          </Text>
         </View>
-        <View className="flex-row items-center justify-center gap-1">
-          <Text
-            style={{ color: transaction.type === 1 ? "#780000" : "#00780E" }}
-            className="px-2 text-sm font-medium"
-          >
-            {transaction.type === 1
-              ? `-${transaction.count} ₽`
-              : `+${transaction.count} ₽`}
-          </Text>
-          {isOpen && (
-            <View className="flex-row flex-row items-center justify-center gap-1">
-              <TouchableOpacity
-                className="rounded-lg p-1"
-                style={{ backgroundColor: theme.secondary }}
-              >
-                <EditIcon width={24} height={24} color={theme.background} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="rounded-lg p-1"
-                style={{ backgroundColor: "#780000" }}
-              >
-                <TrashIcon
-                  width={24}
-                  height={24}
-                  color={getContrastColor("#780000")}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
+        <View className="flex-1 flex-col items-start justify-start">
+          <View className="w-full flex-row items-center justify-between">
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              className="text-base font-medium flex-shrink"
+              style={{ color: theme.text }}
+            >
+              {transaction.category.name}
+            </Text>
+
+            <Text
+              style={{ color: transaction.type === 1 ? "#780000" : "#00780E" }}
+              className="px-2 text-sm font-medium"
+            >
+              {transaction.type === 1
+                ? `-${transaction.count} ₽`
+                : `+${transaction.count} ₽`}
+            </Text>
+          </View>
         </View>
       </View>
       {isOpen && (
