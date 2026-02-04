@@ -1,10 +1,15 @@
 import { useTheme } from "@/hooks/useTheme";
+import { getContrastColor } from "@/utils/color";
 import { usePathname, useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface NavItemProps {
-  icon: React.ReactNode;
+  icon: React.ComponentType<{
+    color?: string;
+    width?: number;
+    height?: number;
+  }>;
   name: string;
   path: string;
   isButton?: boolean;
@@ -12,7 +17,7 @@ interface NavItemProps {
 }
 
 export default function NavItem({
-  icon,
+  icon: Icon,
   name,
   path,
   isButton,
@@ -43,7 +48,11 @@ export default function NavItem({
         style={{ backgroundColor: isActive ? theme.primary : "bg-transparent" }}
         className={`w-full items-center justify-center rounded-xl py-1`}
       >
-        {icon}
+        <Icon
+          width={24}
+          height={24}
+          color={isActive ? getContrastColor(theme.primary) : theme.text}
+        />
       </View>
       <Text
         style={{ color: theme.text }}

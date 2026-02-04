@@ -25,32 +25,16 @@ export default function Nav() {
         />
       )}
       <NavItem
-        icon={<ProfileIcon width={24} height={24} color={theme.text} />}
+        icon={ProfileIcon}
         name="Меню"
         path=""
         isButton={true}
         buttonLogic={() => setIsOpenMenu(true)}
       />
-      <NavItem
-        icon={<WalletIcon width={24} height={24} color={theme.text} />}
-        name="Кошелек"
-        path="wallet"
-      />
-      <NavItem
-        icon={<ChartPieIcon width={24} height={24} color={theme.text} />}
-        name="Категории"
-        path="category"
-      />
-      <NavItem
-        icon={<ReceiptIcon width={24} height={24} color={theme.text} />}
-        name="Операции"
-        path="transactions"
-      />
-      <NavItem
-        icon={<ChartGraphIcon width={24} height={24} color={theme.text} />}
-        name="Обзор"
-        path="chart"
-      />
+      <NavItem icon={WalletIcon} name="Кошелек" path="wallet" />
+      <NavItem icon={ChartPieIcon} name="Категории" path="category" />
+      <NavItem icon={ReceiptIcon} name="Операции" path="transactions" />
+      <NavItem icon={ChartGraphIcon} name="Обзор" path="chart" />
     </View>
   );
 }
