@@ -14,9 +14,10 @@ import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoryScreen() {
-  const type = 1;
+  const [type, setType] = useState(1);
   const router = useRouter();
   const theme = useTheme();
 
@@ -47,6 +48,24 @@ export default function CategoryScreen() {
     }, [type]),
   );
 
+  const data = [
+    {
+      value: 40,
+      color: "#4F46E5",
+      text: "Работа",
+    },
+    {
+      value: 30,
+      color: "#22C55E",
+      text: "Спорт",
+    },
+    {
+      value: 30,
+      color: "#F59E0B",
+      text: "Отдых",
+    },
+  ];
+
   return (
     <View
       style={{ backgroundColor: theme.background }}
@@ -71,7 +90,28 @@ export default function CategoryScreen() {
               </Text>
             </View>
           </View>
-          {/* график */}
+          <View className="w-full justify-center items-center p-3">
+            <PieChart
+              data={data}
+              donut
+              radius={120} // общий размер
+              innerRadius={100} // толщина "пончика"
+              animationDuration={800}
+              focusOnPress
+              centerLabelComponent={() => (
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
+                  style={{
+                    width: 200, // innerRadius * 2
+                    height: 200,
+                    borderRadius: 999,
+                    backgroundColor: theme.background, // ← нужный цвет
+                  }}
+                />
+              )}
+            />
+          </View>
         </View>
         <Plug />
         <View className="w-full flex-col gap-1">
@@ -116,7 +156,14 @@ export default function CategoryScreen() {
             zIndex: 999,
           }}
           className="flex items-center justify-center border-dashed border-[2px] p-1 rounded-full absolute bottom-3 left-3"
-          onPress={() => router.push("/create-category")}
+          onPress={() =>
+            router.push({
+              pathname: "/create-category",
+              params: {
+                type: String(type),
+              },
+            })
+          }
         >
           <PlusIcon width={36} height={36} color={theme.secondary} />
         </TouchableOpacity>

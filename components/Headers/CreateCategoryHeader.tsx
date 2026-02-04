@@ -2,7 +2,7 @@ import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import { createCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
@@ -21,7 +21,13 @@ export default function CreateCategoryHeader({
   const router = useRouter();
 
   const [name, setName] = useState("");
-  const [type, setType] = useState(1);
+
+  const { type } = useLocalSearchParams<{ type?: string }>();
+
+  const [typeState, setTypeState] = useState<number>(() => {
+    const parsed = Number(type);
+    return parsed === 1 || parsed === 2 ? parsed : 1;
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +41,7 @@ export default function CreateCategoryHeader({
         name: name.charAt(0).toUpperCase() + name.slice(1),
         icon: selectedIcon ?? null,
         color: selectedColor,
-        type,
+        type: typeState,
       });
 
       router.push("/category");
@@ -94,11 +100,11 @@ export default function CreateCategoryHeader({
             </Text>
             <TouchableOpacity
               className="flex-row items-center justify-center gap-1"
-              onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
+              onPress={() => setTypeState((prev) => (prev === 1 ? 2 : 1))}
             >
               <Text style={{ color: theme.secondary }}>Тип:</Text>
-              <Text style={{ color: type === 1 ? "#780000" : "green" }}>
-                {type === 1 ? "Расходы" : "Доходы"}
+              <Text style={{ color: typeState === 1 ? "#780000" : "green" }}>
+                {typeState === 1 ? "Расходы" : "Доходы"}
               </Text>
             </TouchableOpacity>
           </View>
