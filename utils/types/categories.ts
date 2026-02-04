@@ -13,4 +13,9 @@ export type CreateCategoryDto = {
   type: number;
 };
 
+export type UpdateCategoryDto = {
+  name: string;
+  icon: string;
+  color: string;
+};
 

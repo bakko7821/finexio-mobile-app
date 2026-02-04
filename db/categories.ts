@@ -1,4 +1,8 @@
-import { Category, CreateCategoryDto } from "@/utils/types/categories";
+import {
+  Category,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from "@/utils/types/categories";
 import { getDb } from "./database";
 
 export async function createCategory(
@@ -33,6 +37,41 @@ export async function getCategoriesByType(type: number): Promise<Category[]> {
   );
 
   return rows;
+}
+
+export async function updateCategory(
+  id: number,
+  dto: UpdateCategoryDto,
+): Promise<Category> {
+  const db = await getDb();
+
+  const rows = await db.getAllAsync<Category>(
+    `
+    SELECT * FROM categories
+    WHERE id = ?
+    `,
+    [id],
+  );
+
+  const existing = rows[0];
+
+  if (!existing) {
+    throw new Error(`Category with id ${id} not found`);
+  }
+
+  await db.runAsync(
+    `
+    UPDATE categories
+    SET name = ?, icon = ?, color = ?
+    WHERE id = ?
+    `,
+    [dto.name, dto.icon, dto.color, id],
+  );
+
+  return {
+    ...existing,
+    ...dto,
+  };
 }
 
 export async function deleteCategory(id: number) {

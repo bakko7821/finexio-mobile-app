@@ -97,7 +97,9 @@ export default function CreateCategoryHeader({
               onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
             >
               <Text style={{ color: theme.secondary }}>Тип:</Text>
-              <Text>{type === 1 ? "Расходы" : "Доходы"}</Text>
+              <Text style={{ color: type === 1 ? "#780000" : "green" }}>
+                {type === 1 ? "Расходы" : "Доходы"}
+              </Text>
             </TouchableOpacity>
           </View>
           <TextInputComponent

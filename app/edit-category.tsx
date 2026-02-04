@@ -5,7 +5,7 @@ import ColorsModal from "@/components/Modals/ColorsModal";
 import DeleteModal from "@/components/Modals/DeleteModal";
 import IconsModal from "@/components/Modals/IconsModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
-import { deleteCategory } from "@/db/categories";
+import { deleteCategory, updateCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
@@ -38,8 +38,13 @@ export default function EditCategoriesScreen() {
 
   if (!parsedCategory) return null;
 
-  const handleDoneEditFunction = () => {
-    alert("123");
+  const handleDoneEditFunction = async () => {
+    await updateCategory(parsedCategory.id, {
+      name: categoryNameValue,
+      icon: selectedIconName,
+      color: selectedColor,
+    });
+    router.push("/category");
   };
 
   const handleDeleteCategory = async (id: number) => {
@@ -47,8 +52,8 @@ export default function EditCategoriesScreen() {
 
     try {
       await deleteCategory(id);
-      
-      router.back();
+
+      router.push("/category");
     } catch (error: unknown) {
       console.error(error);
     }
@@ -68,7 +73,15 @@ export default function EditCategoriesScreen() {
         style={{ backgroundColor: theme.header }}
         className="w-full p-3 pt-0 flex-col items-start justify-start"
       >
-        <CategoryComponent category={parsedCategory} fullsize />
+        <CategoryComponent
+          category={{
+            ...parsedCategory,
+            name: categoryNameValue,
+            icon: selectedIconName,
+            color: selectedColor,
+          }}
+          fullsize
+        />
       </View>
       <View className="p-3 flex-col gap-2 w-full flex-1">
         <View className="flex-col gap-1 w-full items-start justify-start">
