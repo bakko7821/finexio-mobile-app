@@ -12,7 +12,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function CategoryScreen() {
@@ -26,30 +26,24 @@ export default function CategoryScreen() {
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
-  useEffect(() => {
-    let mounted = true;
-
-    const loadCategories = async () => {
-      try {
-        const data = await getCategoriesByType(type);
-        if (mounted) {
-          setCategories(data);
-        }
-      } catch (e) {
-        console.error("Ошибка загрузки категорий", e);
-      }
-    };
-
-    loadCategories();
-
-    return () => {
-      mounted = false;
-    };
-  }, [type]);
-
   useFocusEffect(
     useCallback(() => {
-      getCategoriesByType(type).then(setCategories);
+      let active = true;
+
+      const load = async () => {
+        try {
+          const data = await getCategoriesByType(type);
+          if (active) setCategories(data);
+        } catch (e) {
+          console.error("Ошибка загрузки категорий", e);
+        }
+      };
+
+      load();
+
+      return () => {
+        active = false;
+      };
     }, [type]),
   );
 

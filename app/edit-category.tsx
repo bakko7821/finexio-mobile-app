@@ -2,12 +2,14 @@ import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import CategoryComponent from "@/components/category/CategoryComponent";
 import NavHeader from "@/components/Headers/NavHeader";
 import ColorsModal from "@/components/Modals/ColorsModal";
+import DeleteModal from "@/components/Modals/DeleteModal";
 import IconsModal from "@/components/Modals/IconsModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
+import { deleteCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -22,6 +24,7 @@ export default function EditCategoriesScreen() {
 
   const [isOpenIconsModal, setIsOpenIconsModal] = useState(false);
   const [isOpenColorsModal, setIsOpenColorsModal] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
   const [categoryNameValue, setCategoryNameValue] = useState(
     parsedCategory?.name ?? "",
@@ -37,6 +40,18 @@ export default function EditCategoriesScreen() {
 
   const handleDoneEditFunction = () => {
     alert("123");
+  };
+
+  const handleDeleteCategory = async (id: number) => {
+    if (!id) return;
+
+    try {
+      await deleteCategory(id);
+      
+      router.back();
+    } catch (error: unknown) {
+      console.error(error);
+    }
   };
 
   return (
@@ -115,6 +130,7 @@ export default function EditCategoriesScreen() {
         <TouchableOpacity
           style={{ backgroundColor: "#780000" }}
           className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
+          onPress={() => setIsOpenDeleteModal(true)}
         >
           <TrashIcon
             width={24}
@@ -143,6 +159,14 @@ export default function EditCategoriesScreen() {
           onClose={() => setIsOpenColorsModal(false)}
           selectedColor={selectedColor}
           onSelect={setSelectedColor}
+        />
+      )}
+      {isOpenDeleteModal && (
+        <DeleteModal
+          item="категорию"
+          visible={isOpenDeleteModal}
+          onClose={() => setIsOpenDeleteModal(false)}
+          handleDone={() => handleDeleteCategory(parsedCategory.id)}
         />
       )}
     </View>

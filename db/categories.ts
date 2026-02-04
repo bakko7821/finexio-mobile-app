@@ -34,3 +34,27 @@ export async function getCategoriesByType(type: number): Promise<Category[]> {
 
   return rows;
 }
+
+export async function deleteCategory(id: number) {
+  const db = await getDb();
+
+  const category = await db.getAllAsync<Category>(
+    `
+    SELECT * FROM categories
+    WHERE id = ?
+    `,
+    [id],
+  );
+
+  if (!category) {
+    throw new Error(`Category with id ${id} not found`);
+  }
+
+  await db.runAsync(
+    `
+    DELETE FROM categories
+    WHERE id = ?
+    `,
+    [id],
+  );
+}

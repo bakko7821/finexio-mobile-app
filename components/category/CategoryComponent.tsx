@@ -1,10 +1,8 @@
-import EditIcon from "@/assets/ui/Edit.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
-import { useRouter } from "expo-router";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 
 interface CategoryComponentProps {
@@ -24,10 +22,10 @@ export default function CategoryComponent({
   return (
     <View
       key={category.name}
-      className="flex-row items-center justify-between border-[2px] border-solid rounded-xl p-1"
+      className="flex-row items-center justify-between rounded-xl p-2"
       style={{
         backgroundColor: withOpacity(category.color || theme.card, 0.4),
-        borderColor: category.color,
+        // borderColor: category.color,
         width: fullsize ? "100%" : "auto",
       }}
     >
