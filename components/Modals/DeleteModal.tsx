@@ -46,22 +46,6 @@ export default function DeleteModal({
               <View className="flex-row w-full items-center gap-1">
                 <TouchableOpacity
                   style={{
-                    backgroundColor: withOpacity("#780000", 0.8),
-                  }}
-                  className="items-center justify-center p-2 rounded-xl w-[20%]"
-                  onPress={handleDone}
-                >
-                  <Text
-                    style={{
-                      color: getContrastColor(withOpacity("#780000", 0.8)),
-                    }}
-                    className="text-base font-medium"
-                  >
-                    Да
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
                     backgroundColor: withOpacity(theme.primary, 0.8),
                   }}
                   className="items-center justify-center p-2 rounded-xl flex-1"
@@ -74,6 +58,22 @@ export default function DeleteModal({
                     className="text-base font-medium"
                   >
                     Отменить
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: withOpacity("#780000", 0.8),
+                  }}
+                  className="items-center justify-center p-2 rounded-xl w-[20%]"
+                  onPress={handleDone}
+                >
+                  <Text
+                    style={{
+                      color: getContrastColor(withOpacity("#780000", 0.8)),
+                    }}
+                    className="text-base font-medium"
+                  >
+                    Да
                   </Text>
                 </TouchableOpacity>
               </View>

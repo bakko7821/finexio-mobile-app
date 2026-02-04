@@ -7,12 +7,14 @@ import CategoryModalSmall from "@/components/Modals/CategoryModalSmall";
 import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/db/categories";
+import { getTransactionSumsByCategory } from "@/db/chart";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/color";
+import { nowMonth, nowYear } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
@@ -48,23 +50,34 @@ export default function CategoryScreen() {
     }, [type]),
   );
 
-  const data = [
-    {
-      value: 40,
-      color: "#4F46E5",
-      text: "Работа",
-    },
-    {
-      value: 30,
-      color: "#22C55E",
-      text: "Спорт",
-    },
-    {
-      value: 30,
-      color: "#F59E0B",
-      text: "Отдых",
-    },
-  ];
+  const [data, setData] = useState<any[]>([]);
+  const [refreshFlag, setRefreshFlag] = useState(0);
+
+  const triggerRefresh = () => setRefreshFlag(prev => prev + 1);
+
+  useEffect(() => {
+    try {
+      const fetchChart = async () => {
+        const sumsByCategory = await getTransactionSumsByCategory(
+          nowMonth,
+          nowYear,
+          type,
+        );
+
+        const chartData = sumsByCategory.map((item) => ({
+          value: item.count,
+          color: item.category.color,
+          text: item.category.name,
+        }));
+
+        setData(chartData);
+      };
+
+      fetchChart();
+    } catch (error: unknown) {
+      console.error(error);
+    }
+  }, [type, refreshFlag]);
 
   return (
     <View
@@ -175,6 +188,7 @@ export default function CategoryScreen() {
           visible={isOpenCategoryModal}
           onClose={() => setIsOpenCategoryModal(false)}
           type={type}
+          onTransactionAdded={triggerRefresh}
         />
       )}
       {isOpenSmallCategoryModal && (

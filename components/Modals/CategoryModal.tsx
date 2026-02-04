@@ -18,6 +18,7 @@ interface MenuComponentProps {
   onClose: () => void;
   category: Category | undefined;
   type: number;
+  onTransactionAdded?: () => void;
 }
 
 export default function CategoryModal({
@@ -25,6 +26,7 @@ export default function CategoryModal({
   onClose,
   category,
   type,
+  onTransactionAdded,
 }: MenuComponentProps) {
   const theme = useTheme();
   const [transactionValue, setTransactionValue] = useState("0");
@@ -47,6 +49,8 @@ export default function CategoryModal({
       setNote("");
       console.log("Транзакция создана ✅");
       onClose();
+
+      onTransactionAdded?.();
     } catch (e) {
       console.error("Ошибка создания транзакции", e);
     }
