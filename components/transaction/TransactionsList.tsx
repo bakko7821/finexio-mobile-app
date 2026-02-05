@@ -39,7 +39,7 @@ export default function TransactionsList({
               </Text>
               <Text
                 style={{
-                  color: group.sum < 0 ? "#780000" : "#00780E",
+                  color: group.sum < 0 ? theme.red : theme.green,
                 }}
                 className="text-base font-bold"
               >

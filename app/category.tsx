@@ -1,4 +1,5 @@
-import MoreIcon from "@/assets/ui/more-horizontal-svgrepo-com.svg";
+import GridIcon from "@/assets/ui/Grid.svg";
+import ListIcon from "@/assets/ui/ListNested.svg";
 import PlusIcon from "@/assets/ui/plus-large-svgrepo-com.svg";
 import CategoryIcon from "@/components/category/CategoryIcon";
 import BasicHeader from "@/components/Headers/BasicHeader";
@@ -8,6 +9,7 @@ import Nav from "@/components/Nav";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/db/categories";
 import { getTransactionSumsByCategory } from "@/db/chart";
+import { getTransactionsSumByMonthAndType } from "@/db/transactions";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/color";
@@ -15,7 +17,7 @@ import { nowMonth, nowYear } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoryScreen() {
@@ -28,6 +30,8 @@ export default function CategoryScreen() {
   const [isOpenSmallCategoryModal, setIsOpenSmallCategoryModal] =
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
+
+  const [renderType, setRenderType] = useState("grid");
 
   useFocusEffect(
     useCallback(() => {
@@ -53,7 +57,7 @@ export default function CategoryScreen() {
   const [data, setData] = useState<any[]>([]);
   const [refreshFlag, setRefreshFlag] = useState(0);
 
-  const triggerRefresh = () => setRefreshFlag(prev => prev + 1);
+  const triggerRefresh = () => setRefreshFlag((prev) => prev + 1);
 
   useEffect(() => {
     try {
@@ -79,10 +83,37 @@ export default function CategoryScreen() {
     }
   }, [type, refreshFlag]);
 
+  const [currentSum, setCurrentSum] = useState(0);
+  const [oppositeSum, setOppositeSum] = useState(0);
+  const isExpense = type === 1;
+  const currentLabel = `${isExpense ? "-" : "+"}${currentSum} ₽`;
+  const oppositeLabel = `${isExpense ? "+" : "-"}${oppositeSum} ₽`;
+
+  useEffect(() => {
+    const loadSums = async () => {
+      const current = await getTransactionsSumByMonthAndType(
+        nowMonth,
+        nowYear,
+        type,
+      );
+
+      const opposite = await getTransactionsSumByMonthAndType(
+        nowMonth,
+        nowYear,
+        type === 1 ? 2 : 1,
+      );
+
+      setCurrentSum(current);
+      setOppositeSum(opposite);
+    };
+
+    loadSums();
+  }, [type, nowMonth, nowYear]);
+
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="w-full h-full items-center justify-between"
+      className="w-full flex-1 items-center"
     >
       <BasicHeader type={type} />
       <View className="flex-1 w-full flex-col p-3 gap-3 relative">
@@ -108,58 +139,94 @@ export default function CategoryScreen() {
               data={data}
               donut
               radius={120} // общий размер
-              innerRadius={100} // толщина "пончика"
-              animationDuration={800}
-              focusOnPress
+              innerRadius={100}
               centerLabelComponent={() => (
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
                   style={{
-                    width: 200, // innerRadius * 2
-                    height: 200,
-                    borderRadius: 999,
-                    backgroundColor: theme.background, // ← нужный цвет
+                    backgroundColor: theme.background,
                   }}
-                />
+                  className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
+                >
+                  <Text
+                    style={{ color: theme.text }}
+                    className="text-xl font-medium"
+                  >
+                    {type === 1 ? "Расходы" : "Доходы"}
+                  </Text>
+                  <Text
+                    style={{ color: type === 1 ? theme.red : theme.green }}
+                    className="text-xl font-medium"
+                  >
+                    {currentLabel}
+                  </Text>
+                  <Text
+                    style={{ color: type === 1 ? theme.green : theme.red }}
+                    className="text-sm font-medium"
+                  >
+                    {oppositeLabel}
+                  </Text>
+                </TouchableOpacity>
               )}
             />
           </View>
         </View>
         <Plug />
-        <View className="w-full flex-col gap-1">
+        <View className="w-full flex-col gap-1 flex-1">
           <View className="px-2 flex-row items-center justify-between w-full relative">
             <Text style={{ color: theme.text }} className="text-sm font-medium">
               Категории
             </Text>
             <TouchableOpacity
-            // onPress={() => setIsOpenCategoryDropDownModal((prev) => !prev)}
+              onPress={() =>
+                setRenderType((prev) => (prev === "grid" ? "list" : "grid"))
+              }
             >
-              <MoreIcon width={24} height={24} color={theme.secondary} />
+              {renderType === "grid" && (
+                <ListIcon width={24} height={24} color={theme.secondary} />
+              )}
+              {renderType === "list" && (
+                <GridIcon width={24} height={24} color={theme.secondary} />
+              )}
             </TouchableOpacity>
-            {/* {isOpenCategoryDropDownModal && (
-              <DropDownModal
-                position={{
-                  right: 0,
-                  top: 0,
-                }}
-              />
-            )} */}
           </View>
-          <View className="w-full flex-col items-start px-2 py-1 gap-3">
-            <View className="flex-row flex-wrap gap-2 items-center justify-start">
-              {categories.map((category) => (
-                <CategoryIcon
-                  key={category.id}
-                  category={category}
-                  onSelect={setSelectedCategory}
-                  onOpen={setIsOpenCategoryModal}
-                  isOpen={isOpenCategoryModal}
-                  isOpenSmallPanel={isOpenSmallCategoryModal}
-                  onOpenSmallPanel={setIsOpenSmallCategoryModal}
-                />
-              ))}
-            </View>
+          <View className="w-full flex-1 px-2 py-1">
+            {renderType === "grid" && (
+              <View className="flex-row flex-wrap gap-2 items-center justify-start">
+                {categories.map((category) => (
+                  <CategoryIcon
+                    key={category.id}
+                    category={category}
+                    onSelect={setSelectedCategory}
+                    onOpen={setIsOpenCategoryModal}
+                    isOpen={isOpenCategoryModal}
+                    isOpenSmallPanel={isOpenSmallCategoryModal}
+                    onOpenSmallPanel={setIsOpenSmallCategoryModal}
+                    renderType={renderType}
+                  />
+                ))}
+              </View>
+            )}
+            {renderType === "list" && (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 4, gap: 4 }}
+              >
+                {categories.map((category) => (
+                  <CategoryIcon
+                    key={category.id}
+                    category={category}
+                    onSelect={setSelectedCategory}
+                    onOpen={setIsOpenCategoryModal}
+                    isOpen={isOpenCategoryModal}
+                    isOpenSmallPanel={isOpenSmallCategoryModal}
+                    onOpenSmallPanel={setIsOpenSmallCategoryModal}
+                    renderType={renderType}
+                  />
+                ))}
+              </ScrollView>
+            )}
           </View>
         </View>
         <TouchableOpacity

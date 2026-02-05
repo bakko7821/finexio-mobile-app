@@ -1,8 +1,8 @@
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor, withOpacity } from "@/utils/color";
+import { getContrastColor } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import React, { Dispatch, SetStateAction } from "react";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 
 interface CategoryIcon {
@@ -14,6 +14,7 @@ interface CategoryIcon {
   onOpen?: Dispatch<SetStateAction<boolean>>;
   isOpenSmallPanel?: boolean;
   onOpenSmallPanel?: Dispatch<SetStateAction<boolean>>;
+  renderType: string;
 }
 
 export default function CategoryIcon({
@@ -25,38 +26,76 @@ export default function CategoryIcon({
   onOpen,
   isOpenSmallPanel,
   onOpenSmallPanel,
+  renderType,
 }: CategoryIcon) {
   const theme = useTheme();
 
   if (!category.icon) return;
 
-  return (
-    <TouchableOpacity
-      style={{
-        backgroundColor: withOpacity(category.color, 0.4),
-        borderColor: category.color,
-      }}
-      className="p-2 rounded-full border-[2px] border-solid"
-      onPress={() => {
-        if (!isOpen) {
-          onSelect?.(category);
-          onOpen?.(true);
-        }
-      }}
-      onLongPress={() => {
-        if (!isOpenSmallPanel) {
-          onSelect?.(category);
-          onOpenSmallPanel?.(true);
-        }
-      }}
-      delayLongPress={400}
-    >
-      <RenderIcon
-        name={category.icon}
-        width={iconSize}
-        height={iconSize}
-        color={getContrastColor(withOpacity(category.color, 0.4))}
-      />
-    </TouchableOpacity>
-  );
+  if (renderType === "grid")
+    return (
+      <TouchableOpacity
+        style={{
+          backgroundColor: category.color,
+        }}
+        className="p-2 rounded-full"
+        onPress={() => {
+          if (!isOpen) {
+            onSelect?.(category);
+            onOpen?.(true);
+          }
+        }}
+        onLongPress={() => {
+          if (!isOpenSmallPanel) {
+            onSelect?.(category);
+            onOpenSmallPanel?.(true);
+          }
+        }}
+        delayLongPress={400}
+      >
+        <RenderIcon
+          name={category.icon}
+          width={32}
+          height={32}
+          color={getContrastColor(category.color)}
+        />
+      </TouchableOpacity>
+    );
+
+  if (renderType === "list")
+    return (
+      <TouchableOpacity
+        style={{
+          backgroundColor: category.color,
+          borderColor: category.color,
+        }}
+        className="p-2 gap-1 flex-row items-center justify-start rounded-full border-[2px] border-solid"
+        onPress={() => {
+          if (!isOpen) {
+            onSelect?.(category);
+            onOpen?.(true);
+          }
+        }}
+        onLongPress={() => {
+          if (!isOpenSmallPanel) {
+            onSelect?.(category);
+            onOpenSmallPanel?.(true);
+          }
+        }}
+        delayLongPress={400}
+      >
+        <RenderIcon
+          name={category.icon}
+          width={24}
+          height={24}
+          color={getContrastColor(category.color)}
+        />
+        <Text
+          style={{ color: getContrastColor(category.color) }}
+          className="text-base font-medium"
+        >
+          {category.name}
+        </Text>
+      </TouchableOpacity>
+    );
 }

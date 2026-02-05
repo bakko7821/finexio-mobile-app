@@ -62,14 +62,14 @@ export default function DeleteModal({
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: withOpacity("#780000", 0.8),
+                    backgroundColor: withOpacity(theme.red, 0.8),
                   }}
                   className="items-center justify-center p-2 rounded-xl w-[20%]"
                   onPress={handleDone}
                 >
                   <Text
                     style={{
-                      color: getContrastColor(withOpacity("#780000", 0.8)),
+                      color: getContrastColor(withOpacity(theme.red, 0.8)),
                     }}
                     className="text-base font-medium"
                   >

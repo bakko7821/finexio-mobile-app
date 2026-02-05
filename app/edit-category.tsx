@@ -141,17 +141,17 @@ export default function EditCategoriesScreen() {
           ></TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={{ backgroundColor: "#780000" }}
+          style={{ backgroundColor: theme.red }}
           className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
           onPress={() => setIsOpenDeleteModal(true)}
         >
           <TrashIcon
             width={24}
             height={24}
-            color={getContrastColor("#780000")}
+            color={getContrastColor(theme.red)}
           />
           <Text
-            style={{ color: getContrastColor("#78000") }}
+            style={{ color: getContrastColor(theme.red) }}
             className="text-base font-medium"
           >
             Удалить категорию

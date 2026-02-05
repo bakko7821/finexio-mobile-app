@@ -147,3 +147,27 @@ export async function getTransactionsByMonthAndType(
 
   return rows.map(mapTransaction);
 }
+
+export async function getTransactionsSumByMonthAndType(
+  month: number,
+  year: number,
+  type: number,
+): Promise<number> {
+  const db = await getDb();
+
+  const monthStr = month.toString().padStart(2, "0");
+
+  const row = await db.getFirstAsync<{ total: number }>(
+    `
+    SELECT 
+      COALESCE(SUM(t.count), 0) AS total
+    FROM transactions t
+    WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+      AND strftime('%Y', datetime(t.date, 'localtime')) = ?
+      AND t.type = ?
+    `,
+    [monthStr, year.toString(), type],
+  );
+
+  return row?.total ?? 0;
+}

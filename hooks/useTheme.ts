@@ -8,6 +8,8 @@ export const lightTheme = {
   text: "#1A1A1A",
   primary: "#004299",
   secondary: "#999999",
+  red: "#b40000",
+  green: "#27b400",
   seasonColors: {
     winter: "#009DFF",
     spring: "#2A6900",
@@ -23,6 +25,8 @@ export const darkTheme = {
   text: "#ffffff",
   primary: "#3B82F6",
   secondary: "#999999",
+  red: "#b40000",
+  green: "#27b400",
   seasonColors: {
     winter: "#009DFF",
     spring: "#2A6900",

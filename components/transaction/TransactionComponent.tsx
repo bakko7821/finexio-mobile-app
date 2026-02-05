@@ -59,7 +59,7 @@ export default function TransactionComponent({
             </Text>
 
             <Text
-              style={{ color: transaction.type === 1 ? "#780000" : "#00780E" }}
+              style={{ color: transaction.type === 1 ? theme.red : theme.green }}
               className="px-2 text-sm font-medium"
             >
               {transaction.type === 1

@@ -58,7 +58,7 @@ export default function NumberInput({
             setValue((prev) => (prev.length > 1 ? prev.slice(0, -1) : "0"))
           }
         >
-          <ClearIcon width={24} height={24} color={theme.text} />
+          <ClearIcon width={24} height={24} color={theme.red} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{ backgroundColor: theme.secondary }}
@@ -67,14 +67,14 @@ export default function NumberInput({
           <CalendarIcon width={24} height={24} color={theme.text} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: "#01B531" }}
+          style={{ backgroundColor: "#27b400" }}
           className="w-[48px] flex-1 rounded-xl items-center justify-center"
           onPress={onRequest}
         >
           <TickIcon
             width={24}
             height={24}
-            color={getContrastColor("#01B531")}
+            color={getContrastColor("#27b400")}
           />
         </TouchableOpacity>
       </View>

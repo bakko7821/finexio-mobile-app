@@ -103,7 +103,7 @@ export default function CreateCategoryHeader({
               onPress={() => setTypeState((prev) => (prev === 1 ? 2 : 1))}
             >
               <Text style={{ color: theme.secondary }}>Тип:</Text>
-              <Text style={{ color: typeState === 1 ? "#780000" : "green" }}>
+              <Text style={{ color: typeState === 1 ? theme.red : theme.green }}>
                 {typeState === 1 ? "Расходы" : "Доходы"}
               </Text>
             </TouchableOpacity>

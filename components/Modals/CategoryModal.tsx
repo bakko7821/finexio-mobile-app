@@ -97,13 +97,13 @@ export default function CategoryModal({
                 >
                   <View className="flex-row gap-1 items-center justify-center">
                     <Text
-                      style={{ color: type === 1 ? "#780000" : "#00780E" }}
+                      style={{ color: type === 1 ? theme.red : theme.green }}
                       className="text-4xl font-medium"
                     >
                       {transactionValue}
                     </Text>
                     <Text
-                      style={{ color: type === 1 ? "#780000" : "#00780E" }}
+                      style={{ color: type === 1 ? theme.red : theme.green }}
                       className="text-sm font-regular"
                     >
                       ₽
