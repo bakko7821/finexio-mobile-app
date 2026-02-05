@@ -123,24 +123,22 @@ export default function CategoryScreen() {
       className="w-full flex-1 items-center"
     >
       <BasicHeader title="Категории" />
-      <View className="flex-1 w-full flex-col p-3 gap-3 relative">
+      <View className="flex-1 w-full flex-col p-3 gap-2 relative">
         <View className="flex-col gap-1 w-full">
-          <View>
-            <View className="px-2 flex-col items-start w-full">
-              <Text
-                style={{ color: theme.text }}
-                className="text-sm font-medium"
-              >
-                График
-              </Text>
-              <Text
-                style={{ color: theme.secondary }}
-                className="text-xs font-regular"
-              >
-                Чтобы указать {type === 1 ? "доходы" : "расходы"}, нажмите в
-                центр графика.
-              </Text>
-            </View>
+          <View className="flex-col items-start w-full">
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-semibold"
+            >
+              График
+            </Text>
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-xs font-medium"
+            >
+              Чтобы указать {type === 1 ? "доходы" : "расходы"}, нажмите в центр
+              графика.
+            </Text>
           </View>
           <View className="w-full justify-center items-center p-2">
             {loadingChart && (
@@ -156,14 +154,14 @@ export default function CategoryScreen() {
               <PieChart
                 data={data}
                 donut
-                radius={120} // общий размер
+                radius={120}
                 innerRadius={100}
                 centerLabelComponent={() => (
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
                     style={{
-                      backgroundColor: theme.background,
+                      backgroundColor: theme.card,
                     }}
                     className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
                   >
@@ -192,9 +190,12 @@ export default function CategoryScreen() {
           </View>
         </View>
         <Plug />
-        <View className="w-full flex-col gap-1 flex-1">
-          <View className="px-2 flex-row items-center justify-between w-full relative">
-            <Text style={{ color: theme.text }} className="text-sm font-medium">
+        <View className="w-full flex-col gap-2 flex-1">
+          <View className="flex-row items-center justify-between w-full relative">
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-semibold"
+            >
               Категории
             </Text>
             <TouchableOpacity
@@ -220,7 +221,7 @@ export default function CategoryScreen() {
           )}
 
           {!loadingCategories && categories?.length >= 1 && (
-            <View className="w-full flex-1 px-2 py-1">
+            <View className="w-full flex-1">
               {renderType === "grid" && (
                 <View className="flex-row flex-wrap gap-2 items-center justify-start">
                   {categories.map((category) => (
@@ -274,7 +275,7 @@ export default function CategoryScreen() {
             borderColor: theme.secondary,
             zIndex: 999,
           }}
-          className="flex items-center justify-center border-dashed border-[2px] p-1 rounded-full absolute bottom-3 left-3"
+          className="flex items-center justify-center border-dashed border-[2px] p-2 rounded-full absolute bottom-3 left-3"
           onPress={() =>
             router.push({
               pathname: "/create-category",

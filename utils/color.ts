@@ -1,4 +1,4 @@
-export function getContrastColor(hex: string): "#000000" | "#FFFFFF" {
+export function getContrastColor(hex: string): "#0A0F15" | "#FFFFFF" {
   const cleanHex = hex.replace("#", "");
 
   const fullHex =
@@ -15,7 +15,7 @@ export function getContrastColor(hex: string): "#000000" | "#FFFFFF" {
 
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  return luminance > 0.5 ? "#0A0F15" : "#FFFFFF";
 }
 
 export function withOpacity(hex: string, opacity: number): string {
@@ -44,7 +44,6 @@ export function withOpacity(hex: string, opacity: number): string {
 
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
-
 
 export const colorsArray = [
   // RED

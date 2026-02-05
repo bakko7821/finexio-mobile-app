@@ -55,8 +55,8 @@ export default function CategoryIcon({
       >
         <RenderIcon
           name={category.icon}
-          width={32}
-          height={32}
+          width={36}
+          height={36}
           color={getContrastColor(category.color)}
         />
       </TouchableOpacity>
@@ -69,7 +69,7 @@ export default function CategoryIcon({
           backgroundColor: category.color,
           borderColor: category.color,
         }}
-        className="p-2 gap-1 flex-row items-center justify-start rounded-full border-[2px] border-solid"
+        className="p-2 gap-2 flex-row items-center justify-start rounded-full"
         onPress={() => {
           if (!isOpen) {
             onSelect?.(category);

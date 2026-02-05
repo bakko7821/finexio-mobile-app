@@ -39,7 +39,7 @@ export default function NumberInput({
           <TouchableOpacity
             key={num}
             style={{
-              backgroundColor: theme.background,
+              backgroundColor: theme.card,
               borderColor: theme.secondary,
             }}
             className="w-[48px] h-[48px] border border-solid rounded-xl items-center justify-center"
@@ -53,17 +53,19 @@ export default function NumberInput({
       </View>
       <View className="flex-col gap-2">
         <TouchableOpacity
-          style={{ backgroundColor: theme.secondary }}
-          className="w-[48px] h-[48px] rounded-xl items-center justify-center"
+          style={{ backgroundColor: theme.card, borderColor: theme.secondary }}
+          className="w-[48px] h-[48px] rounded-xl border border-solid items-center justify-center"
           onPress={() =>
             setValue((prev) => (prev.length > 1 ? prev.slice(0, -1) : "0"))
           }
         >
-          <ClearIcon width={24} height={24} color={theme.red} />
+          <ClearIcon width={32} height={32} color={theme.red} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{
-            backgroundColor: !nullDate ? theme.secondary : "transparent",
+            backgroundColor: !nullDate ? theme.card : "transparent",
+            borderColor: !nullDate ? theme.secondary : "transparent",
+            borderWidth: !nullDate ? 1 : 0,
           }}
           className="w-[48px] h-[48px] rounded-xl items-center justify-center"
         >
@@ -72,14 +74,14 @@ export default function NumberInput({
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: "#27b400" }}
+          style={{ backgroundColor: theme.green }}
           className="w-[48px] flex-1 rounded-xl items-center justify-center"
           onPress={onRequest}
         >
           <TickIcon
             width={24}
             height={24}
-            color={getContrastColor("#27b400")}
+            color={getContrastColor(theme.green)}
           />
         </TouchableOpacity>
       </View>

@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 import NumberInput from "../UI/NumberInput";
 import CategoryComponent from "../category/CategoryComponent";
@@ -67,8 +67,8 @@ export default function CategoryModal({
         <View className="flex-1 bg-black/50 relative">
           <TouchableWithoutFeedback>
             <View
-              style={{ backgroundColor: theme.card }}
-              className="rounded-t-3xl flex-1 w-full bottom-0 absolute p-3 flex-col items-start justify-start gap-2"
+              style={{ backgroundColor: theme.header }}
+              className="rounded-t-3xl flex-1 w-full bottom-0 absolute p-3 flex-col items-start justify-start gap-4"
             >
               <View className="w-full flex-row items-center justify-between">
                 <Text
@@ -81,35 +81,37 @@ export default function CategoryModal({
                   <CrossIcon width={24} height={24} color={theme.text} />
                 </TouchableOpacity>
               </View>
-              <View className="flex-col w-full justify-start items-start gap-2">
-                <Text
-                  style={{ color: theme.secondary }}
-                  className="text-sm font-medium"
-                >
-                  Выбранная категория:
-                </Text>
+              <View className="flex-col gap-2 w-full items-start justify-start">
                 {category && <CategoryComponent category={category} fullsize />}
-              </View>
-              <View className="w-full flex-col gap-2">
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-sm font-medium"
+                  >
+                    Тип транзакции:
+                  </Text>
+                  <Text
+                    style={{ color: type === 1 ? theme.red : theme.green }}
+                    className="text-sm font-medium"
+                  >
+                    {type === 1 ? "Расходы" : "Доходы"}
+                  </Text>
+                </View>
                 <View
-                  style={{ backgroundColor: theme.secondary }}
-                  className="w-full p-3 rounded-xl"
+                  style={{ backgroundColor: theme.card }}
+                  className="w-full p-2 rounded-xl"
                 >
-                  <View className="flex-row gap-1 items-center justify-center">
+                  <View className="items-center justify-center">
                     <Text
                       style={{ color: type === 1 ? theme.red : theme.green }}
-                      className="text-4xl font-medium"
+                      className="text-3xl font-medium"
                     >
-                      {transactionValue}
-                    </Text>
-                    <Text
-                      style={{ color: type === 1 ? theme.red : theme.green }}
-                      className="text-sm font-regular"
-                    >
-                      ₽
+                      {`${transactionValue} ₽`}
                     </Text>
                   </View>
                 </View>
+              </View>
+              <View className="w-full flex-col gap-2">
                 <View className="w-full">
                   <NumberInput
                     value={transactionValue}
