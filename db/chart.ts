@@ -6,19 +6,24 @@ export async function getTransactionSumsByCategory(
   year: number,
   type: number,
 ): Promise<{ category: Category; count: number }[]> {
-  const transactions = await getTransactionsByMonthAndType(month, year, type);
+  try {
+    const transactions = await getTransactionsByMonthAndType(month, year, type);
 
-  const sumsMap = new Map<number, { category: Category; count: number }>();
+    const sumsMap = new Map<number, { category: Category; count: number }>();
 
-  for (const tx of transactions) {
-    const catId = tx.category.id;
+    for (const tx of transactions) {
+      const catId = tx.category.id;
 
-    if (!sumsMap.has(catId)) {
-      sumsMap.set(catId, { category: tx.category, count: tx.count });
-    } else {
-      sumsMap.get(catId)!.count += tx.count;
+      if (!sumsMap.has(catId)) {
+        sumsMap.set(catId, { category: tx.category, count: tx.count });
+      } else {
+        sumsMap.get(catId)!.count += tx.count;
+      }
     }
-  }
 
-  return Array.from(sumsMap.values());
+    return Array.from(sumsMap.values());
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }

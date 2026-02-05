@@ -8,92 +8,112 @@ import { getDb } from "./database";
 export async function createCategory(
   dto: CreateCategoryDto,
 ): Promise<Category> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const result = await db.runAsync(
-    `
+    const result = await db.runAsync(
+      `
     INSERT INTO categories (name, color, icon, type)
     VALUES (?, ?, ?, ?)
     `,
-    [dto.name, dto.color, dto.icon, dto.type],
-  );
+      [dto.name, dto.color, dto.icon, dto.type],
+    );
 
-  return {
-    id: result.lastInsertRowId,
-    ...dto,
-  };
+    return {
+      id: result.lastInsertRowId,
+      ...dto,
+    };
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getCategoriesByType(type: number): Promise<Category[]> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const rows = await db.getAllAsync<Category>(
-    `
+    const rows = await db.getAllAsync<Category>(
+      `
     SELECT * FROM categories
     WHERE type = ?
     ORDER BY id DESC
     `,
-    [type],
-  );
+      [type],
+    );
 
-  return rows;
+    return rows;
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function updateCategory(
   id: number,
   dto: UpdateCategoryDto,
 ): Promise<Category> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const rows = await db.getAllAsync<Category>(
-    `
+    const rows = await db.getAllAsync<Category>(
+      `
     SELECT * FROM categories
     WHERE id = ?
     `,
-    [id],
-  );
+      [id],
+    );
 
-  const existing = rows[0];
+    const existing = rows[0];
 
-  if (!existing) {
-    throw new Error(`Category with id ${id} not found`);
-  }
+    if (!existing) {
+      throw new Error(`Category with id ${id} not found`);
+    }
 
-  await db.runAsync(
-    `
+    await db.runAsync(
+      `
     UPDATE categories
     SET name = ?, icon = ?, color = ?
     WHERE id = ?
     `,
-    [dto.name, dto.icon, dto.color, id],
-  );
+      [dto.name, dto.icon, dto.color, id],
+    );
 
-  return {
-    ...existing,
-    ...dto,
-  };
+    return {
+      ...existing,
+      ...dto,
+    };
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function deleteCategory(id: number) {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const category = await db.getAllAsync<Category>(
-    `
+    const category = await db.getAllAsync<Category>(
+      `
     SELECT * FROM categories
     WHERE id = ?
     `,
-    [id],
-  );
+      [id],
+    );
 
-  if (!category) {
-    throw new Error(`Category with id ${id} not found`);
-  }
+    if (!category) {
+      throw new Error(`Category with id ${id} not found`);
+    }
 
-  await db.runAsync(
-    `
+    await db.runAsync(
+      `
     DELETE FROM categories
     WHERE id = ?
     `,
-    [id],
-  );
+      [id],
+    );
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }

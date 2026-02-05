@@ -22,18 +22,19 @@ function mapTransaction(row: any): Transaction {
 export async function createTransaction(
   dto: CreateTransactionDto,
 ): Promise<Transaction> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const result = await db.runAsync(
-    `
+    const result = await db.runAsync(
+      `
     INSERT INTO transactions (category_id, type, count, note, date)
     VALUES (?, ?, ?, ?, ?)
     `,
-    [dto.categoryId, dto.type, dto.count, dto.note ?? null, dto.date],
-  );
+      [dto.categoryId, dto.type, dto.count, dto.note ?? null, dto.date],
+    );
 
-  const row = await db.getFirstAsync<any>(
-    `
+    const row = await db.getFirstAsync<any>(
+      `
   SELECT 
     t.id,
     t.type,
@@ -49,18 +50,23 @@ export async function createTransaction(
   JOIN categories c ON c.id = t.category_id
   WHERE t.id = ?
   `,
-    [result.lastInsertRowId],
-  );
+      [result.lastInsertRowId],
+    );
 
-  return mapTransaction(row);
+    return mapTransaction(row);
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 // GET ALL
 export async function getAllTransactions(): Promise<Transaction[]> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const rows = await db.getAllAsync<any>(
-    `
+    const rows = await db.getAllAsync<any>(
+      `
     SELECT 
     t.id,
     t.type,
@@ -76,9 +82,13 @@ export async function getAllTransactions(): Promise<Transaction[]> {
     JOIN categories c ON c.id = t.category_id
     ORDER BY t.date DESC
     `,
-  );
+    );
 
-  return rows.map(mapTransaction);
+    return rows.map(mapTransaction);
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 // GET MONTH (1-12)
@@ -86,12 +96,13 @@ export async function getTransactionsByMonth(
   month: number,
   year: number,
 ): Promise<Transaction[]> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const monthStr = month.toString().padStart(2, "0");
+    const monthStr = month.toString().padStart(2, "0");
 
-  const rows = await db.getAllAsync<any>(
-    `
+    const rows = await db.getAllAsync<any>(
+      `
     SELECT 
       t.id,
       t.type,
@@ -109,10 +120,14 @@ export async function getTransactionsByMonth(
         AND strftime('%Y', datetime(t.date, 'localtime')) = ?
     ORDER BY t.date DESC
     `,
-    [monthStr, year.toString()],
-  );
+      [monthStr, year.toString()],
+    );
 
-  return rows.map(mapTransaction);
+    return rows.map(mapTransaction);
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getTransactionsByMonthAndType(
@@ -120,11 +135,12 @@ export async function getTransactionsByMonthAndType(
   year: number,
   type: number,
 ): Promise<Transaction[]> {
-  const db = await getDb();
-  const monthStr = month.toString().padStart(2, "0");
+  try {
+    const db = await getDb();
+    const monthStr = month.toString().padStart(2, "0");
 
-  const rows = await db.getAllAsync<any>(
-    `
+    const rows = await db.getAllAsync<any>(
+      `
     SELECT
     t.id,
     t.count,
@@ -142,10 +158,14 @@ export async function getTransactionsByMonthAndType(
     AND t.type = ?
     ORDER BY t.date ASC
     `,
-    [monthStr, type],
-  );
+      [monthStr, type],
+    );
 
-  return rows.map(mapTransaction);
+    return rows.map(mapTransaction);
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getTransactionsSumByMonthAndType(
@@ -153,12 +173,13 @@ export async function getTransactionsSumByMonthAndType(
   year: number,
   type: number,
 ): Promise<number> {
-  const db = await getDb();
+  try {
+    const db = await getDb();
 
-  const monthStr = month.toString().padStart(2, "0");
+    const monthStr = month.toString().padStart(2, "0");
 
-  const row = await db.getFirstAsync<{ total: number }>(
-    `
+    const row = await db.getFirstAsync<{ total: number }>(
+      `
     SELECT 
       COALESCE(SUM(t.count), 0) AS total
     FROM transactions t
@@ -166,8 +187,12 @@ export async function getTransactionsSumByMonthAndType(
       AND strftime('%Y', datetime(t.date, 'localtime')) = ?
       AND t.type = ?
     `,
-    [monthStr, year.toString(), type],
-  );
+      [monthStr, year.toString(), type],
+    );
 
-  return row?.total ?? 0;
+    return row?.total ?? 0;
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
