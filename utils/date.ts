@@ -1,7 +1,30 @@
 const now = new Date();
 
+export function isoToDateSafe(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+export function dateToIso(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export const nowDay = getTodayISO();
 export const nowMonth = now.getMonth() + 1;
 export const nowYear = now.getFullYear();
+
+export function getTodayISO(): string {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // месяцы 0–11
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 export function formatDateToDayMonth(isoDate: string): string {
   const date = new Date(isoDate);

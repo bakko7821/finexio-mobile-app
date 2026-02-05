@@ -12,12 +12,14 @@ interface NumberInputProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   onRequest: () => void;
+  nullDate?: boolean;
 }
 
 export default function NumberInput({
   value,
   setValue,
   onRequest,
+  nullDate = false,
 }: NumberInputProps) {
   const theme = useTheme();
 
@@ -32,7 +34,6 @@ export default function NumberInput({
 
   return (
     <View className="py-2 flex-row items-center justify-center gap-2">
-      <View className="flex-col"></View>
       <View className="flex-row flex-wrap gap-2 w-[160px] items-center justify-center">
         {numbers.map((num) => (
           <TouchableOpacity
@@ -61,10 +62,14 @@ export default function NumberInput({
           <ClearIcon width={24} height={24} color={theme.red} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: theme.secondary }}
+          style={{
+            backgroundColor: !nullDate ? theme.secondary : "transparent",
+          }}
           className="w-[48px] h-[48px] rounded-xl items-center justify-center"
         >
-          <CalendarIcon width={24} height={24} color={theme.text} />
+          {!nullDate && (
+            <CalendarIcon width={24} height={24} color={theme.text} />
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={{ backgroundColor: "#27b400" }}

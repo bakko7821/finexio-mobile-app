@@ -37,12 +37,21 @@ export const darkTheme = {
 
 export type Theme = typeof lightTheme;
 
-export const useTheme = (): Theme & { seasonColor: string; season: Season } => {
-  const colorScheme = useColorScheme(); // 'light' | 'dark' | null
+export const useTheme = (): Theme & {
+  seasonColor: string;
+  season: Season;
+  isDark: boolean;
+} => {
+  const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
-  const season = getSeason(); // текущий сезон
+  const season = getSeason();
   const seasonColor = theme.seasonColors[season];
 
-  return { ...theme, seasonColor, season };
+  return {
+    ...theme,
+    seasonColor,
+    season,
+    isDark: colorScheme === "dark",
+  };
 };

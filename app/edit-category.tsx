@@ -65,7 +65,7 @@ export default function EditCategoriesScreen() {
       className="w-full h-full items-center justify-start"
     >
       <NavHeader
-        title="Редактирование категории"
+        title="Изменение категории"
         isSave
         handleDone={handleDoneEditFunction}
       />

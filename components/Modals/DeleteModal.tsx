@@ -2,11 +2,11 @@ import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/color";
 import React from "react";
 import {
-    Modal,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 interface DeleteModalProps {
@@ -43,7 +43,23 @@ export default function DeleteModal({
               >
                 Вы действительно хотите удалить {item}?
               </Text>
-              <View className="flex-row w-full items-center gap-1">
+              <View className="flex-row w-full items-center gap-2">
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: withOpacity(theme.red, 0.8),
+                  }}
+                  className="items-center justify-center p-2 rounded-xl w-[30%]"
+                  onPress={handleDone}
+                >
+                  <Text
+                    style={{
+                      color: getContrastColor(withOpacity(theme.red, 0.8)),
+                    }}
+                    className="text-base font-medium"
+                  >
+                    Да
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     backgroundColor: withOpacity(theme.primary, 0.8),
@@ -58,22 +74,6 @@ export default function DeleteModal({
                     className="text-base font-medium"
                   >
                     Отменить
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: withOpacity(theme.red, 0.8),
-                  }}
-                  className="items-center justify-center p-2 rounded-xl w-[20%]"
-                  onPress={handleDone}
-                >
-                  <Text
-                    style={{
-                      color: getContrastColor(withOpacity(theme.red, 0.8)),
-                    }}
-                    className="text-base font-medium"
-                  >
-                    Да
                   </Text>
                 </TouchableOpacity>
               </View>
