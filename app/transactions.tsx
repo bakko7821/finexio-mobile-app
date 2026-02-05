@@ -2,7 +2,10 @@ import CategoryComponent from "@/components/category/CategoryComponent";
 import BasicHeader from "@/components/Headers/BasicHeader";
 import Nav from "@/components/Nav";
 import TransactionsList from "@/components/transaction/TransactionsList";
-import { getAllTransactions } from "@/db/transactions";
+import {
+  getAllTransactions,
+  getTransactionsByCategoryId,
+} from "@/db/transactions";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
@@ -15,18 +18,32 @@ export default function ReceiptScreen() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const { filter } = useLocalSearchParams<{ filter?: string }>();
-  const parsedFilter: Category | null = filter ? JSON.parse(filter) : null;
+  const [currentFilter, setCurrentFilter] = useState<Category | null>(
+    filter ? JSON.parse(filter) : null,
+  );
+
   const theme = useTheme();
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const data = await getAllTransactions();
-      setTransactions(data);
-      setLoading(false);
+      setLoading(true);
+
+      try {
+        const data = currentFilter
+          ? await getTransactionsByCategoryId(currentFilter.id)
+          : await getAllTransactions();
+
+        setTransactions(data);
+      } catch (e) {
+        console.error("Failed to load transactions:", e);
+        setTransactions([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchTransactions();
-  }, []);
+  }, [currentFilter]);
 
   return (
     <View
@@ -34,7 +51,7 @@ export default function ReceiptScreen() {
       className="w-full h-full items-center justify-between"
     >
       <BasicHeader title="Операции" />
-      <View className="flex-1 flex-col items-start justify-start w-full p-3 gap-2">
+      <View className="flex-1 flex-col items-start justify-start w-full p-3 gap-3">
         {loading && (
           <Text
             style={{ color: theme.secondary }}
@@ -46,15 +63,27 @@ export default function ReceiptScreen() {
 
         {!loading && transactions?.length >= 1 && (
           <View>
-            {parsedFilter && (
-              <View className="flex-row items-center justify-start gap-2 px-2">
+            {currentFilter && (
+              <View className="flex-col items-start justify-start px-2 gap-1">
+                <View className="flex-row items-center justify-start gap-2">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-sm font-medium"
+                  >
+                    Фильтры:
+                  </Text>
+                  <CategoryComponent
+                    category={currentFilter}
+                    isTouchale
+                    handleTouch={() => setCurrentFilter(null)}
+                  />
+                </View>
                 <Text
                   style={{ color: theme.secondary }}
-                  className="text-sm font-medium"
+                  className="w-full text-xs font-medium"
                 >
-                  Фильтры:
+                  Чтобы убрать категорию, нажмите на неё.
                 </Text>
-                <CategoryComponent category={parsedFilter} isTouchale />
               </View>
             )}
             <TransactionsList transactions={transactions} />

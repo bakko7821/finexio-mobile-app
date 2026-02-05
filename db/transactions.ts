@@ -196,3 +196,35 @@ export async function getTransactionsSumByMonthAndType(
     throw error;
   }
 }
+
+// GET TRANSACTIONS BY CATEGORY_ID
+
+export async function getTransactionsByCategoryId(
+  categoryId: number,
+): Promise<Transaction[]> {
+  const db = await getDb();
+
+  const rows = await db.getAllAsync<any>(
+    `
+    SELECT
+      t.id,
+      t.type,
+      t.count,
+      t.note,
+      t.date,
+      c.id    AS category_id,
+      c.name  AS category_name,
+      c.color AS category_color,
+      c.icon  AS category_icon,
+      c.type  AS category_type
+    FROM transactions t
+    JOIN categories c ON c.id = t.category_id
+    WHERE t.category_id = ?
+    ORDER BY t.date DESC
+    `,
+    [categoryId],
+  );
+
+  // Преобразуем строки SQLite в объекты Transaction
+  return rows.map(mapTransaction);
+}

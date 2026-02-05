@@ -10,12 +10,14 @@ interface CategoryComponentProps {
   fullsize?: boolean;
   isEditing?: boolean;
   isTouchale?: boolean;
+  handleTouch?: () => void;
 }
 
 export default function CategoryComponent({
   category,
   fullsize = false,
   isTouchale = false,
+  handleTouch,
 }: CategoryComponentProps) {
   const theme = useTheme();
 
@@ -32,7 +34,7 @@ export default function CategoryComponent({
           padding: fullsize ? 8 : 4,
           borderRadius: fullsize ? 12 : 8,
         }}
-        onPress={() => alert("123")}
+        onPress={handleTouch}
       >
         <View className="flex-row gap-1 items-center justify-center">
           <RenderIcon
