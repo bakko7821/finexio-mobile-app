@@ -30,7 +30,7 @@ export default function CategoryIcon({
 }: CategoryIcon) {
   const theme = useTheme();
 
-  if (!category.icon) return;
+  if (!category.icon) return <Text>Загрузка...</Text>;
 
   if (renderType === "grid")
     return (

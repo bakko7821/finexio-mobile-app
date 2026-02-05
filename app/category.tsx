@@ -33,6 +33,9 @@ export default function CategoryScreen() {
 
   const [renderType, setRenderType] = useState("grid");
 
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingChart, setLoadingChart] = useState(true);
+
   useFocusEffect(
     useCallback(() => {
       let active = true;
@@ -41,6 +44,8 @@ export default function CategoryScreen() {
         try {
           const data = await getCategoriesByType(type);
           if (active) setCategories(data);
+
+          setLoadingCategories(false);
         } catch (e) {
           console.error("Ошибка загрузки категорий", e);
         }
@@ -75,6 +80,7 @@ export default function CategoryScreen() {
         }));
 
         setData(chartData);
+        setLoadingChart(false);
       };
 
       fetchChart();
@@ -105,17 +111,18 @@ export default function CategoryScreen() {
 
       setCurrentSum(current);
       setOppositeSum(opposite);
+      setLoadingChart(false);
     };
 
     loadSums();
-  }, [type, nowMonth, nowYear]);
+  }, [type, refreshFlag]);
 
   return (
     <View
       style={{ backgroundColor: theme.background }}
       className="w-full flex-1 items-center"
     >
-      <BasicHeader type={type} />
+      <BasicHeader title="Категории" />
       <View className="flex-1 w-full flex-col p-3 gap-3 relative">
         <View className="flex-col gap-1 w-full">
           <View>
@@ -130,46 +137,58 @@ export default function CategoryScreen() {
                 style={{ color: theme.secondary }}
                 className="text-xs font-regular"
               >
-                Чтобы указать доходы, нажмите в центр графика.
+                Чтобы указать {type === 1 ? "доходы" : "расходы"}, нажмите в
+                центр графика.
               </Text>
             </View>
           </View>
-          <View className="w-full justify-center items-center p-3">
-            <PieChart
-              data={data}
-              donut
-              radius={120} // общий размер
-              innerRadius={100}
-              centerLabelComponent={() => (
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
-                  style={{
-                    backgroundColor: theme.background,
-                  }}
-                  className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
-                >
-                  <Text
-                    style={{ color: theme.text }}
-                    className="text-xl font-medium"
+          <View className="w-full justify-center items-center p-2">
+            {loadingChart && (
+              <Text
+                style={{ color: theme.secondary }}
+                className="w-full text-sm font-medium"
+              >
+                Загрузка графика...
+              </Text>
+            )}
+
+            {!loadingChart && (
+              <PieChart
+                data={data}
+                donut
+                radius={120} // общий размер
+                innerRadius={100}
+                centerLabelComponent={() => (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => setType((prev) => (prev === 1 ? 2 : 1))}
+                    style={{
+                      backgroundColor: theme.background,
+                    }}
+                    className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
                   >
-                    {type === 1 ? "Расходы" : "Доходы"}
-                  </Text>
-                  <Text
-                    style={{ color: type === 1 ? theme.red : theme.green }}
-                    className="text-xl font-medium"
-                  >
-                    {currentLabel}
-                  </Text>
-                  <Text
-                    style={{ color: type === 1 ? theme.green : theme.red }}
-                    className="text-sm font-medium"
-                  >
-                    {oppositeLabel}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
+                    <Text
+                      style={{ color: theme.text }}
+                      className="text-xl font-medium"
+                    >
+                      {type === 1 ? "Расходы" : "Доходы"}
+                    </Text>
+                    <Text
+                      style={{ color: type === 1 ? theme.red : theme.green }}
+                      className="text-xl font-medium"
+                    >
+                      {currentLabel}
+                    </Text>
+                    <Text
+                      style={{ color: type === 1 ? theme.green : theme.red }}
+                      className="text-sm font-medium"
+                    >
+                      {oppositeLabel}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
           </View>
         </View>
         <Plug />
@@ -191,43 +210,63 @@ export default function CategoryScreen() {
               )}
             </TouchableOpacity>
           </View>
-          <View className="w-full flex-1 px-2 py-1">
-            {renderType === "grid" && (
-              <View className="flex-row flex-wrap gap-2 items-center justify-start">
-                {categories.map((category) => (
-                  <CategoryIcon
-                    key={category.id}
-                    category={category}
-                    onSelect={setSelectedCategory}
-                    onOpen={setIsOpenCategoryModal}
-                    isOpen={isOpenCategoryModal}
-                    isOpenSmallPanel={isOpenSmallCategoryModal}
-                    onOpenSmallPanel={setIsOpenSmallCategoryModal}
-                    renderType={renderType}
-                  />
-                ))}
-              </View>
-            )}
-            {renderType === "list" && (
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 4, gap: 4 }}
-              >
-                {categories.map((category) => (
-                  <CategoryIcon
-                    key={category.id}
-                    category={category}
-                    onSelect={setSelectedCategory}
-                    onOpen={setIsOpenCategoryModal}
-                    isOpen={isOpenCategoryModal}
-                    isOpenSmallPanel={isOpenSmallCategoryModal}
-                    onOpenSmallPanel={setIsOpenSmallCategoryModal}
-                    renderType={renderType}
-                  />
-                ))}
-              </ScrollView>
-            )}
-          </View>
+          {loadingCategories && (
+            <Text
+              style={{ color: theme.secondary }}
+              className="w-full text-sm font-medium px-2"
+            >
+              Загрузка категорий...
+            </Text>
+          )}
+
+          {!loadingCategories && categories?.length >= 1 && (
+            <View className="w-full flex-1 px-2 py-1">
+              {renderType === "grid" && (
+                <View className="flex-row flex-wrap gap-2 items-center justify-start">
+                  {categories.map((category) => (
+                    <CategoryIcon
+                      key={category.id}
+                      category={category}
+                      onSelect={setSelectedCategory}
+                      onOpen={setIsOpenCategoryModal}
+                      isOpen={isOpenCategoryModal}
+                      isOpenSmallPanel={isOpenSmallCategoryModal}
+                      onOpenSmallPanel={setIsOpenSmallCategoryModal}
+                      renderType={renderType}
+                    />
+                  ))}
+                </View>
+              )}
+              {renderType === "list" && (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: 4, gap: 4 }}
+                >
+                  {categories.map((category) => (
+                    <CategoryIcon
+                      key={category.id}
+                      category={category}
+                      onSelect={setSelectedCategory}
+                      onOpen={setIsOpenCategoryModal}
+                      isOpen={isOpenCategoryModal}
+                      isOpenSmallPanel={isOpenSmallCategoryModal}
+                      onOpenSmallPanel={setIsOpenSmallCategoryModal}
+                      renderType={renderType}
+                    />
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+          )}
+
+          {!loadingCategories && categories?.length <= 0 && (
+            <Text
+              style={{ color: theme.secondary }}
+              className="w-full text-sm font-medium px-2"
+            >
+              У вас отсутствуют категории
+            </Text>
+          )}
         </View>
         <TouchableOpacity
           style={{

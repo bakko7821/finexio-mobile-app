@@ -7,7 +7,7 @@ import { View } from "react-native";
 export default function ChartScreen() {
   return (
     <View className="w-full h-full items-center justify-between">
-      <BasicHeader />
+      <BasicHeader title="Обзор"/>
       <View className="flex-1 w-full bg-yellow-700"></View>
       <Nav />
     </View>

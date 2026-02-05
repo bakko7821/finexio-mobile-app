@@ -7,7 +7,7 @@ import { View } from "react-native";
 export default function WalletScreen() {
   return (
     <View className="w-full h-full items-center justify-between">
-      <BasicHeader />
+      <BasicHeader title="Кошелек" />
       <View className="flex-1 w-full bg-green-700"></View>
       <Nav />
     </View>

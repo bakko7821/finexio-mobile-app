@@ -1,11 +1,10 @@
 import EditIcon from "@/assets/ui/Edit.svg";
 import ReceiptIcon from "@/assets/ui/receipt-item-svgrepo-com.svg";
-import { createTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/color";
 import { Category } from "@/utils/types/categories";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   Text,
@@ -97,21 +96,17 @@ export default function CategoryModalSmall({
                     Изменить
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="flex-col items-center justify-center gap-1">
-                  <View
-                    style={{ backgroundColor: theme.secondary }}
-                    className="items-center justify-center p-3 rounded-full"
-                  >
-                    <EditIcon width={36} height={36} color={theme.text} />
-                  </View>
-                  <Text
-                    style={{ color: theme.secondary }}
-                    className="text-sm font-regular"
-                  >
-                    Бюджет
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity className="flex-col items-center justify-center gap-1">
+                <TouchableOpacity
+                  className="flex-col items-center justify-center gap-1"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/transactions",
+                      params: {
+                        filter: JSON.stringify(category),
+                      },
+                    })
+                  }
+                >
                   <View
                     style={{
                       backgroundColor: withOpacity(category?.color, 0.4),
