@@ -4,11 +4,12 @@ import NavHeader from "@/components/Headers/NavHeader";
 import ColorsModal from "@/components/Modals/ColorsModal";
 import DeleteModal from "@/components/Modals/DeleteModal";
 import IconsModal from "@/components/Modals/IconsModal";
+import InputModal from "@/components/Modals/InputModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
 import { deleteCategory, updateCategory } from "@/db/categories";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
-import { Category } from "@/utils/types/categories";
+import { Category, UpdateCategoryDto } from "@/utils/types/categories";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -25,6 +26,7 @@ export default function EditCategoriesScreen() {
   const [isOpenIconsModal, setIsOpenIconsModal] = useState(false);
   const [isOpenColorsModal, setIsOpenColorsModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [isOpenInputModal, setIsOpenInputModal] = useState(false);
 
   const [categoryNameValue, setCategoryNameValue] = useState(
     parsedCategory?.name ?? "",
@@ -36,14 +38,27 @@ export default function EditCategoriesScreen() {
     parsedCategory?.color ?? "#ff0000",
   );
 
+  const [gasType, setGasType] = useState(
+    parsedCategory?.gasSettings?.gasType || "",
+  );
+
   if (!parsedCategory) return null;
 
   const handleDoneEditFunction = async () => {
-    await updateCategory(parsedCategory.id, {
+    const updateDto: UpdateCategoryDto = {
       name: categoryNameValue,
       icon: selectedIconName,
       color: selectedColor,
-    });
+    };
+
+    if (gasType.trim() !== "") {
+      updateDto.gasSettings = {
+        gasType: gasType,
+        gasValue: parsedCategory.gasSettings?.gasValue || 0,
+      };
+    }
+
+    await updateCategory(parsedCategory.id, updateDto);
     router.push("/category");
   };
 
@@ -140,6 +155,24 @@ export default function EditCategoriesScreen() {
             onPress={() => setIsOpenColorsModal(true)}
           ></TouchableOpacity>
         </View>
+        {parsedCategory.isGas && (
+          <View className="flex-row w-full items-center justify-between py-2">
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-sm font-medium"
+            >
+              Тип бензина:
+            </Text>
+            <TouchableOpacity onPress={() => setIsOpenInputModal(true)}>
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                {gasType.trim() === "" ? "Указать..." : gasType}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity
           style={{ backgroundColor: theme.red }}
           className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
@@ -175,6 +208,13 @@ export default function EditCategoriesScreen() {
         visible={isOpenDeleteModal}
         onClose={() => setIsOpenDeleteModal(false)}
         handleDone={() => handleDeleteCategory(parsedCategory.id)}
+      />
+      <InputModal
+        title="Укажите каким топливом вы заправляете машину."
+        visible={isOpenInputModal}
+        onClose={() => setIsOpenInputModal(false)}
+        value={gasType}
+        onChange={setGasType}
       />
     </View>
   );

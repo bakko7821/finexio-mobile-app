@@ -140,7 +140,7 @@ export default function CategoryScreen() {
               графика.
             </Text>
           </View>
-          <View className="w-full justify-center items-center p-2">
+          <View className="w-full justify-center items-center py-2">
             {loadingChart && (
               <Text
                 style={{ color: theme.secondary }}
@@ -214,7 +214,7 @@ export default function CategoryScreen() {
           {loadingCategories && (
             <Text
               style={{ color: theme.secondary }}
-              className="w-full text-sm font-medium px-2"
+              className="w-full text-sm font-medium"
             >
               Загрузка категорий...
             </Text>
@@ -263,7 +263,7 @@ export default function CategoryScreen() {
           {!loadingCategories && categories?.length <= 0 && (
             <Text
               style={{ color: theme.secondary }}
-              className="w-full text-sm font-medium px-2"
+              className="w-full text-sm font-medium"
             >
               У вас отсутствуют категории
             </Text>

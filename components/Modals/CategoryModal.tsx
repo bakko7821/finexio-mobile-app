@@ -49,6 +49,8 @@ export default function CategoryModal({
     }
   };
 
+  console.log(category);
+
   return (
     <Modal
       isVisible={visible}
@@ -103,6 +105,25 @@ export default function CategoryModal({
               {type === 1 ? "Расходы" : "Доходы"}
             </Text>
           </View>
+
+          {category?.isGas && (
+            <View className="flex-row justify-between">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Тип топлива:
+              </Text>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                {category.gasSettings?.gasType
+                  ? category.gasSettings?.gasType
+                  : "Не указан"}
+              </Text>
+            </View>
+          )}
 
           <View
             style={{ backgroundColor: theme.card }}
