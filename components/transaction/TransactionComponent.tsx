@@ -26,8 +26,7 @@ export default function TransactionComponent({
   return (
     <TouchableOpacity
       className="w-full flex-col gap-1 p-1 rounded-xl"
-      onPress={onToggle}
-      onLongPress={() => {
+      onPress={() => {
         if (!isOpenEditPanel) {
           setSelectedTransactions(transaction);
           onOpenEditPanel(true);
@@ -59,7 +58,9 @@ export default function TransactionComponent({
             </Text>
 
             <Text
-              style={{ color: transaction.type === 1 ? theme.red : theme.green }}
+              style={{
+                color: transaction.type === 1 ? theme.red : theme.green,
+              }}
               className="px-2 text-sm font-medium"
             >
               {transaction.type === 1
@@ -69,16 +70,6 @@ export default function TransactionComponent({
           </View>
         </View>
       </View>
-      {isOpen && (
-        <View className="p-1 flex-row items-center justify-between">
-          <Text
-            className="text-xs font-regular"
-            style={{ color: theme.secondary }}
-          >
-            {transaction.note || "Отсутствует комментарий"}
-          </Text>
-        </View>
-      )}
     </TouchableOpacity>
   );
 }

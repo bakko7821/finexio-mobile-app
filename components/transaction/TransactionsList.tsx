@@ -67,13 +67,11 @@ export default function TransactionsList({
           </View>
         )}
       />
-      {isOpenEditPanel && (
-        <TransactionModalSmall
-          visible={isOpenEditPanel}
-          onClose={() => setIsOpenEditPanel(false)}
-          transaction={selectedTransaction}
-        />
-      )}
+      <TransactionModalSmall
+        visible={isOpenEditPanel}
+        onClose={() => setIsOpenEditPanel(false)}
+        transaction={selectedTransaction}
+      />
     </View>
   );
 }

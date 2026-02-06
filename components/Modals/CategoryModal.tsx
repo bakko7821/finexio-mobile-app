@@ -3,13 +3,8 @@ import { createTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
 import React, { useState } from "react";
-import {
-  Modal,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import Modal from "react-native-modal";
 import NumberInput from "../UI/NumberInput";
 import CategoryComponent from "../category/CategoryComponent";
 
@@ -39,7 +34,7 @@ export default function CategoryModal({
     try {
       await createTransaction({
         categoryId: category.id,
-        type: type,
+        type,
         count: Number(transactionValue),
         note,
         date: date || new Date().toISOString(),
@@ -47,9 +42,7 @@ export default function CategoryModal({
 
       setTransactionValue("");
       setNote("");
-      console.log("Транзакция создана ✅");
       onClose();
-
       onTransactionAdded?.();
     } catch (e) {
       console.error("Ошибка создания транзакции", e);
@@ -58,72 +51,78 @@ export default function CategoryModal({
 
   return (
     <Modal
-      visible={visible}
-      animationType="fade"
-      transparent={true}
-      onRequestClose={onClose}
+      isVisible={visible}
+      /** АНИМАЦИИ */
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      /** TIMING */
+      animationInTiming={300}
+      animationOutTiming={250}
+      backdropTransitionInTiming={250}
+      backdropTransitionOutTiming={200}
+      /** ФОН */
+      backdropOpacity={0.5}
+      /** ЗАКРЫТИЕ */
+      onBackdropPress={onClose}
+      onBackButtonPress={onClose}
+      /** КРИТИЧНО */
+      useNativeDriver
+      hideModalContentWhileAnimating
+      style={{ margin: 0, justifyContent: "flex-end" }}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View className="flex-1 bg-black/50 relative">
-          <TouchableWithoutFeedback>
-            <View
-              style={{ backgroundColor: theme.header }}
-              className="rounded-t-3xl flex-1 w-full bottom-0 absolute p-3 flex-col items-start justify-start gap-4"
-            >
-              <View className="w-full flex-row items-center justify-between">
-                <Text
-                  style={{ color: theme.text }}
-                  className="text-base font-medium"
-                >
-                  Новая транзакция ({type === 1 ? "Расходы" : "Доходы"})
-                </Text>
-                <TouchableOpacity onPress={onClose}>
-                  <CrossIcon width={24} height={24} color={theme.text} />
-                </TouchableOpacity>
-              </View>
-              <View className="flex-col gap-2 w-full items-start justify-start">
-                {category && <CategoryComponent category={category} fullsize />}
-                <View className="w-full flex-row items-center justify-between">
-                  <Text
-                    style={{ color: theme.secondary }}
-                    className="text-sm font-medium"
-                  >
-                    Тип транзакции:
-                  </Text>
-                  <Text
-                    style={{ color: type === 1 ? theme.red : theme.green }}
-                    className="text-sm font-medium"
-                  >
-                    {type === 1 ? "Расходы" : "Доходы"}
-                  </Text>
-                </View>
-                <View
-                  style={{ backgroundColor: theme.card }}
-                  className="w-full p-2 rounded-xl"
-                >
-                  <View className="items-center justify-center">
-                    <Text
-                      style={{ color: type === 1 ? theme.red : theme.green }}
-                      className="text-3xl font-medium"
-                    >
-                      {`${transactionValue} ₽`}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View className="w-full flex-col gap-2">
-                <View className="w-full">
-                  <NumberInput
-                    value={transactionValue}
-                    setValue={setTransactionValue}
-                    onRequest={postTransaction}
-                  />
-                </View>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
+      <View
+        style={{ backgroundColor: theme.header }}
+        className="rounded-t-3xl p-3"
+      >
+        {/* HEADER */}
+        <View className="w-full flex-row items-center justify-between mb-2">
+          <Text style={{ color: theme.text }} className="text-base font-medium">
+            Новая транзакция ({type === 1 ? "Расходы" : "Доходы"})
+          </Text>
+
+          <TouchableOpacity onPress={onClose}>
+            <CrossIcon width={24} height={24} color={theme.text} />
+          </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
+
+        {/* CONTENT */}
+        <View className="flex-col gap-3">
+          {category && <CategoryComponent category={category} fullsize />}
+
+          <View className="flex-row justify-between">
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-sm font-medium"
+            >
+              Тип транзакции:
+            </Text>
+            <Text
+              style={{ color: type === 1 ? theme.red : theme.green }}
+              className="text-sm font-medium"
+            >
+              {type === 1 ? "Расходы" : "Доходы"}
+            </Text>
+          </View>
+
+          <View
+            style={{ backgroundColor: theme.card }}
+            className="w-full p-3 rounded-xl items-center"
+          >
+            <Text
+              style={{ color: type === 1 ? theme.red : theme.green }}
+              className="text-3xl font-medium"
+            >
+              {transactionValue} ₽
+            </Text>
+          </View>
+
+          <NumberInput
+            value={transactionValue}
+            setValue={setTransactionValue}
+            onRequest={postTransaction}
+          />
+        </View>
+      </View>
     </Modal>
   );
 }

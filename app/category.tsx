@@ -289,23 +289,19 @@ export default function CategoryScreen() {
         </TouchableOpacity>
       </View>
       <Nav />
-      {isOpenCategoryModal && (
-        <CategoryModal
-          category={selectedCategory}
-          visible={isOpenCategoryModal}
-          onClose={() => setIsOpenCategoryModal(false)}
-          type={type}
-          onTransactionAdded={triggerRefresh}
-        />
-      )}
-      {isOpenSmallCategoryModal && (
-        <CategoryModalSmall
-          category={selectedCategory}
-          visible={isOpenSmallCategoryModal}
-          onClose={() => setIsOpenSmallCategoryModal(false)}
-          type={type}
-        />
-      )}
+      <CategoryModal
+        category={selectedCategory}
+        visible={isOpenCategoryModal}
+        onClose={() => setIsOpenCategoryModal(false)}
+        type={type}
+        onTransactionAdded={triggerRefresh}
+      />
+      <CategoryModalSmall
+        category={selectedCategory}
+        visible={isOpenSmallCategoryModal}
+        onClose={() => setIsOpenSmallCategoryModal(false)}
+        type={type}
+      />
     </View>
   );
 }

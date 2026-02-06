@@ -158,30 +158,24 @@ export default function EditCategoriesScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-      {isOpenIconsModal && (
-        <IconsModal
-          visible={isOpenIconsModal}
-          onClose={() => setIsOpenIconsModal(false)}
-          selectedIcon={selectedIconName}
-          onSelect={setSelectedIconName}
-        />
-      )}
-      {isOpenColorsModal && (
-        <ColorsModal
-          visible={isOpenColorsModal}
-          onClose={() => setIsOpenColorsModal(false)}
-          selectedColor={selectedColor}
-          onSelect={setSelectedColor}
-        />
-      )}
-      {isOpenDeleteModal && (
-        <DeleteModal
-          item="категорию"
-          visible={isOpenDeleteModal}
-          onClose={() => setIsOpenDeleteModal(false)}
-          handleDone={() => handleDeleteCategory(parsedCategory.id)}
-        />
-      )}
+      <IconsModal
+        visible={isOpenIconsModal}
+        onClose={() => setIsOpenIconsModal(false)}
+        selectedIcon={selectedIconName}
+        onSelect={setSelectedIconName}
+      />
+      <ColorsModal
+        visible={isOpenColorsModal}
+        onClose={() => setIsOpenColorsModal(false)}
+        selectedColor={selectedColor}
+        onSelect={setSelectedColor}
+      />
+      <DeleteModal
+        item="категорию"
+        visible={isOpenDeleteModal}
+        onClose={() => setIsOpenDeleteModal(false)}
+        handleDone={() => handleDeleteCategory(parsedCategory.id)}
+      />
     </View>
   );
 }

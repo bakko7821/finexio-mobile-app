@@ -1,12 +1,7 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import React from "react";
-import {
-  Modal,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import Modal from "react-native-modal";
 
 interface MenuComponentProps {
   visible: boolean;
@@ -19,25 +14,34 @@ export default function MenuComponent({
 }: MenuComponentProps) {
   return (
     <Modal
-      visible={visible}
-      animationType="fade"
-      transparent={true}
-      onRequestClose={onClose}
+      isVisible={visible}
+      /** АНИМАЦИИ */
+      animationIn="slideInRight"
+      animationOut="slideOutRight"
+      /** ФОН (fade отдельно) */
+      backdropOpacity={0.5}
+      backdropTransitionInTiming={250}
+      backdropTransitionOutTiming={200}
+      /** КОНТЕНТ */
+      animationInTiming={300}
+      animationOutTiming={250}
+      /** ЗАКРЫТИЕ */
+      onBackdropPress={onClose}
+      onBackButtonPress={onClose}
+      /** КРИТИЧЕСКИ ВАЖНО */
+      useNativeDriver
+      hideModalContentWhileAnimating
+      style={{ margin: 0 }}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View className="flex-1 bg-black/50 relative">
-          <TouchableWithoutFeedback>
-            <View className="bg-red-300 w-[60%] h-full">
-              <View className="p-2 w-full flex-row justify-between items-center">
-                <Text>Меню</Text>
-                <TouchableOpacity onPress={onClose}>
-                  <CrossIcon width={24} height={24} color="#000" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
+      <View className="bg-red-300 w-[60%] h-full self-end">
+        <View className="p-3 flex-row justify-between items-center">
+          <Text className="text-lg font-medium">Меню</Text>
+
+          <TouchableOpacity onPress={onClose}>
+            <CrossIcon width={24} height={24} color="#000" />
+          </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 }
