@@ -22,6 +22,9 @@ export default function TransactionComponent({
   onOpenEditPanel,
   setSelectedTransactions,
 }: TransactionComponentProps) {
+  console.log(
+    "Transaction: " + transaction.category.isGas + transaction.gasValue,
+  );
   const theme = useTheme();
   return (
     <TouchableOpacity
@@ -67,6 +70,14 @@ export default function TransactionComponent({
                 ? `-${transaction.count} ₽`
                 : `+${transaction.count} ₽`}
             </Text>
+          </View>
+          <View className="flex-row w-full items-center justify-start gap-1">
+            {transaction.category.isGas && (
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-regular"
+              >{`${transaction.category.gasSettings?.gasType} (${transaction.gasValue || 0} литров)`}</Text>
+            )}
           </View>
         </View>
       </View>

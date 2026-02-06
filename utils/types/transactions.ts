@@ -7,16 +7,19 @@ export interface Transaction {
   count: number;
   note?: string;
   date: string; // ISO
+  gasValue?: number;
   category: Category;
 }
 
-export interface CreateTransactionDto {
+export type CreateTransactionDto = {
   categoryId: number;
-  type: number;
-  count: number;
+  type: number; // 1 | 2
+  count: number; // сумма или литры
   note?: string;
-  date: string; // ISO
-}
+  date: string;
+  gasType?: string; // только для топлива
+  gasValue?: number; // только для топлива
+};
 
 export interface TransactionGroup {
   label: string; // "Сегодня", "Вчера" или "7 Февраля"
@@ -60,7 +63,7 @@ export interface CategoryPercent {
 }
 
 export function calculateCategoryPercent(
-  transactions: Transaction[]
+  transactions: Transaction[],
 ): CategoryPercent[] {
   if (transactions.length === 0) return [];
 
@@ -72,9 +75,12 @@ export function calculateCategoryPercent(
   if (totalSum === 0) return [];
 
   // 2. Сумма по категориям
-  const categoryMap = new Map<number, { category: typeof transactions[0]["category"]; sum: number }>();
+  const categoryMap = new Map<
+    number,
+    { category: (typeof transactions)[0]["category"]; sum: number }
+  >();
 
-  transactions.forEach(tx => {
+  transactions.forEach((tx) => {
     const catId = tx.category.id;
     if (!categoryMap.has(catId)) {
       categoryMap.set(catId, { category: tx.category, sum: 0 });

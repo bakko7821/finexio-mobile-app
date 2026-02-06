@@ -33,6 +33,7 @@ export async function initDatabase(db: SQLiteDatabase) {
       count REAL NOT NULL,
       note TEXT,
       date TEXT NOT NULL,
+      gas_value REAL DEFAULT 0, -- новое поле
       FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
     );
 

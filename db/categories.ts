@@ -98,6 +98,7 @@ export async function updateCategory(
 ): Promise<Category> {
   const db = await getDb();
 
+  // Получаем текущую категорию
   const existingRows = await db.getAllAsync<any>(
     `SELECT * FROM categories WHERE id = ?`,
     [id],
@@ -107,30 +108,36 @@ export async function updateCategory(
     throw new Error(`Category with id ${id} not found`);
   }
 
-  const isGas = computeIsGas(dto.name, dto.icon);
+  const existing = existingRows[0];
 
+  // Определяем isGas: если категория уже топливная, оставляем true
+  // иначе считаем по computeIsGas
+  const isGas = !!existing.is_gas || computeIsGas(dto.name, dto.icon);
+
+  // Обновляем поля категории
+  await db.runAsync(
+    `
+    UPDATE categories
+    SET name = ?, icon = ?, color = ?, is_gas = ?
+    WHERE id = ?
+    `,
+    [dto.name, dto.icon, dto.color, isGas ? 1 : 0, id],
+  );
+
+  // Если категория топливная и пришли gasSettings — вставляем или апдейтим
   if (isGas && dto.gasSettings) {
     await db.runAsync(
       `
-    INSERT INTO category_gas_settings (category_id, gas_type, gas_value)
-    VALUES (?, ?, ?)
-    ON CONFLICT(category_id) DO UPDATE SET
-      gas_type = excluded.gas_type,
-      gas_value = excluded.gas_value
-    `,
+      INSERT INTO category_gas_settings (category_id, gas_type, gas_value)
+      VALUES (?, ?, ?)
+      ON CONFLICT(category_id) DO UPDATE SET
+        gas_type = excluded.gas_type
+      `,
       [id, dto.gasSettings.gasType, dto.gasSettings.gasValue],
-    );
-  } else {
-    // если категория перестала быть топливной, удаляем запись в category_gas_settings
-    await db.runAsync(
-      `
-    DELETE FROM category_gas_settings
-    WHERE category_id = ?
-    `,
-      [id],
     );
   }
 
+  // Подтягиваем обновлённую категорию с gasSettings
   const rows = await db.getAllAsync<any>(
     `
     SELECT

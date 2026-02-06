@@ -3,27 +3,27 @@ import CategoryComponent from "@/components/category/CategoryComponent";
 import NavHeader from "@/components/Headers/NavHeader";
 import DeleteModal from "@/components/Modals/DeleteModal";
 import NumberInput from "@/components/UI/NumberInput";
-import { deleteCategory } from "@/db/categories";
+import { deleteTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import {
-    dateToIso,
-    formatDateToDayMonth,
-    isoToDateSafe,
-    nowDay,
+  dateToIso,
+  formatDateToDayMonth,
+  isoToDateSafe,
+  nowDay,
 } from "@/utils/date";
 import { Transaction } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
-    Modal,
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 export default function EditCategoriesScreen() {
@@ -60,13 +60,13 @@ export default function EditCategoriesScreen() {
   //     router.push("/category");
   //   };
 
-  const handleDeleteCategory = async (id: number) => {
+  const handleDeleteTransaction = async (id: number) => {
     if (!id) return;
 
     try {
-      await deleteCategory(id);
+      await deleteTransaction(id);
 
-      router.push("/category");
+      router.push("/transactions");
     } catch (error: unknown) {
       console.error(error);
     }
@@ -167,7 +167,7 @@ export default function EditCategoriesScreen() {
           item="транзакцию"
           visible={isOpenDeleteModal}
           onClose={() => setIsOpenDeleteModal(false)}
-          handleDone={() => handleDeleteCategory(parsedTransaction.id)}
+          handleDone={() => handleDeleteTransaction(parsedTransaction.id)}
         />
       )}
       {isOpenValueModal && (

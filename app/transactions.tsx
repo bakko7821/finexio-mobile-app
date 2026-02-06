@@ -93,7 +93,7 @@ export default function ReceiptScreen() {
         {!loading && transactions?.length <= 0 && (
           <Text
             style={{ color: theme.secondary }}
-            className="text-sm font-medium px-2"
+            className="text-sm font-medium"
           >
             У вас отсутствуют транзакции.
           </Text>

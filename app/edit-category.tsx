@@ -156,22 +156,40 @@ export default function EditCategoriesScreen() {
           ></TouchableOpacity>
         </View>
         {parsedCategory.isGas && (
-          <View className="flex-row w-full items-center justify-between py-2">
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-sm font-medium"
-            >
-              Тип бензина:
-            </Text>
-            <TouchableOpacity onPress={() => setIsOpenInputModal(true)}>
+          <>
+            <View className="flex-row w-full items-center justify-between py-2">
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
-                {gasType.trim() === "" ? "Указать..." : gasType}
+                Тип бензина:
               </Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => setIsOpenInputModal(true)}>
+                <Text
+                  style={{
+                    color: gasType.trim() === "" ? theme.secondary : theme.text,
+                  }}
+                  className="text-sm font-medium"
+                >
+                  {gasType.trim() === "" ? "Указать..." : gasType}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="flex-row w-full items-center justify-between py-2">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Заправленно за все время:
+              </Text>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                {`${parsedCategory.gasSettings?.gasValue} литров`}
+              </Text>
+            </View>
+          </>
         )}
         <TouchableOpacity
           style={{ backgroundColor: theme.red }}

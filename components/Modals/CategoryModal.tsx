@@ -7,6 +7,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import NumberInput from "../UI/NumberInput";
 import CategoryComponent from "../category/CategoryComponent";
+import InputModal from "./InputModal";
 
 interface MenuComponentProps {
   visible: boolean;
@@ -27,6 +28,8 @@ export default function CategoryModal({
   const [transactionValue, setTransactionValue] = useState("0");
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
+  const [gasValue, setGasValue] = useState("0");
+  const [isOpenInput, setIsOpenInput] = useState(false);
 
   const postTransaction = async () => {
     if (!category) return;
@@ -38,9 +41,11 @@ export default function CategoryModal({
         count: Number(transactionValue),
         note,
         date: date || new Date().toISOString(),
+        gasValue: Number(gasValue), // литры этой конкретной заправки
+        gasType: category.isGas ? category.gasSettings?.gasType : undefined,
       });
 
-      setTransactionValue("");
+      setTransactionValue("0");
       setNote("");
       onClose();
       onTransactionAdded?.();
@@ -48,9 +53,7 @@ export default function CategoryModal({
       console.error("Ошибка создания транзакции", e);
     }
   };
-
-  console.log(category);
-
+  
   return (
     <Modal
       isVisible={visible}
@@ -107,22 +110,47 @@ export default function CategoryModal({
           </View>
 
           {category?.isGas && (
-            <View className="flex-row justify-between">
-              <Text
-                style={{ color: theme.secondary }}
-                className="text-sm font-medium"
-              >
-                Тип топлива:
-              </Text>
-              <Text
-                style={{ color: theme.text }}
-                className="text-sm font-medium"
-              >
-                {category.gasSettings?.gasType
-                  ? category.gasSettings?.gasType
-                  : "Не указан"}
-              </Text>
-            </View>
+            <>
+              <View className="flex-row justify-between">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Тип топлива:
+                </Text>
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-sm font-medium"
+                >
+                  {category.gasSettings?.gasType
+                    ? category.gasSettings?.gasType
+                    : "Не указан"}
+                </Text>
+              </View>
+              <View className="flex-row justify-between">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Количество:
+                </Text>
+                <TouchableOpacity onPress={() => setIsOpenInput(true)}>
+                  <Text
+                    style={{ color: theme.text }}
+                    className="text-sm font-medium"
+                  >
+                    {`${gasValue} литров`}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <InputModal
+                visible={isOpenInput}
+                title="Укажите количество топлива"
+                onClose={() => setIsOpenInput(false)}
+                value={gasValue}
+                onChange={setGasValue}
+              />
+            </>
           )}
 
           <View
