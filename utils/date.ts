@@ -1,8 +1,7 @@
 const now = new Date();
 
-export function isoToDateSafe(iso: string): Date {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d);
+export function isoToDateSafe(iso?: string): Date {
+  return iso ? new Date(iso) : new Date();
 }
 
 export function dateToIso(date: Date): string {

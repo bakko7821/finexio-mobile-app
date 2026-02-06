@@ -42,6 +42,7 @@ export default function EditCategoriesScreen() {
   const [transactionValue, setTransactionValue] = useState(
     parsedTransaction?.count.toString() ?? "0",
   );
+
   const [transactionDate, setTransactionDate] = useState(
     parsedTransaction?.date ?? nowDay,
   );

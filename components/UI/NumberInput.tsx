@@ -13,6 +13,7 @@ interface NumberInputProps {
   setValue: Dispatch<SetStateAction<string>>;
   onRequest: () => void;
   nullDate?: boolean;
+  openCalendar?: () => void;
 }
 
 export default function NumberInput({
@@ -20,6 +21,7 @@ export default function NumberInput({
   setValue,
   onRequest,
   nullDate = false,
+  openCalendar,
 }: NumberInputProps) {
   const theme = useTheme();
 
@@ -68,6 +70,7 @@ export default function NumberInput({
             borderWidth: !nullDate ? 1 : 0,
           }}
           className="w-[48px] h-[48px] rounded-xl items-center justify-center"
+          onPress={!nullDate ? openCalendar : undefined}
         >
           {!nullDate && (
             <CalendarIcon width={24} height={24} color={theme.text} />

@@ -1,4 +1,5 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
+import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
@@ -12,6 +13,7 @@ export default function MenuComponent({
   visible,
   onClose,
 }: MenuComponentProps) {
+  const theme = useTheme();
   return (
     <Modal
       isVisible={visible}
@@ -33,12 +35,17 @@ export default function MenuComponent({
       hideModalContentWhileAnimating
       style={{ margin: 0 }}
     >
-      <View className="bg-red-300 w-[60%] h-full self-end">
+      <View
+        style={{ backgroundColor: theme.header }}
+        className=" w-[60%] h-full self-end"
+      >
         <View className="p-3 flex-row justify-between items-center">
-          <Text className="text-lg font-medium">Меню</Text>
+          <Text style={{ color: theme.text }} className="text-lg font-medium">
+            Меню
+          </Text>
 
           <TouchableOpacity onPress={onClose}>
-            <CrossIcon width={24} height={24} color="#000" />
+            <CrossIcon width={24} height={24} color={theme.text} />
           </TouchableOpacity>
         </View>
       </View>

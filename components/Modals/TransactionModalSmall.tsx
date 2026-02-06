@@ -183,7 +183,7 @@ export default function TransactionModalSmall({
               style={{ backgroundColor: theme.secondary }}
               className="items-center justify-center p-3 rounded-full"
             >
-              <EditIcon width={36} height={36} color={theme.text} />
+              <EditIcon width={36} height={36} color={"#ffffff"} />
             </View>
             <Text
               style={{ color: theme.secondary }}

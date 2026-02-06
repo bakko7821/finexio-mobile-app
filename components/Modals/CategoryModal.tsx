@@ -1,12 +1,14 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import { createTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
+import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
-import NumberInput from "../UI/NumberInput";
 import CategoryComponent from "../category/CategoryComponent";
+import NumberInput from "../UI/NumberInput";
 import InputModal from "./InputModal";
 
 interface MenuComponentProps {
@@ -27,9 +29,10 @@ export default function CategoryModal({
   const theme = useTheme();
   const [transactionValue, setTransactionValue] = useState("0");
   const [note, setNote] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(nowDay);
   const [gasValue, setGasValue] = useState("0");
   const [isOpenInput, setIsOpenInput] = useState(false);
+  const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
   const postTransaction = async () => {
     if (!category) return;
@@ -53,7 +56,7 @@ export default function CategoryModal({
       console.error("Ошибка создания транзакции", e);
     }
   };
-  
+
   return (
     <Modal
       isVisible={visible}
@@ -168,10 +171,24 @@ export default function CategoryModal({
           <NumberInput
             value={transactionValue}
             setValue={setTransactionValue}
+            openCalendar={() => setIsOpenDateModal(true)}
             onRequest={postTransaction}
           />
         </View>
       </View>
+      {Platform.OS === "android" && isOpenDateModal && (
+        <DateTimePicker
+          value={isoToDateSafe(date)}
+          mode="date"
+          display="default"
+          themeVariant={theme.isDark ? "dark" : "light"}
+          onChange={(event, selectedDate) => {
+            setIsOpenDateModal(false);
+            if (!selectedDate) return;
+            setDate(dateToIso(selectedDate));
+          }}
+        />
+      )}
     </Modal>
   );
 }
