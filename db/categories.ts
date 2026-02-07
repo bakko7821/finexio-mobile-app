@@ -163,7 +163,7 @@ export async function getCategoriesByType(type: number): Promise<Category[]> {
 
   for (const row of smallRows) {
     const cat = categories.find((c) => c.id === row.category_id);
-    if (cat) {
+    if (cat && cat.smallCategories != undefined) {
       cat.smallCategories.push(mapSmallCategoryRow(row));
     }
   }

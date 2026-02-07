@@ -8,7 +8,8 @@ function mapTransaction(row: any): Transaction {
     count: row.count,
     note: row.note ?? undefined,
     date: row.date,
-    gasValue: row.gas_value ?? undefined, // это конкретная заправка
+    gasValue: row.gas_value ?? undefined,
+
     category: {
       id: row.category_id,
       name: row.category_name,
@@ -23,6 +24,14 @@ function mapTransaction(row: any): Transaction {
           }
         : undefined,
     },
+
+    smallCategory: row.small_category_id
+      ? {
+          id: row.small_category_id,
+          categoryId: row.category_id,
+          name: row.small_category_name,
+        }
+      : undefined,
   };
 }
 
@@ -50,10 +59,21 @@ export async function createTransaction(
 
   // 1️⃣ создаём транзакцию
   const result = await db.runAsync(
-    `INSERT INTO transactions (category_id, type, count, note, date, gas_value)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `
+  INSERT INTO transactions (
+    category_id,
+    small_category_id,
+    type,
+    count,
+    note,
+    date,
+    gas_value
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?)
+  `,
     [
       dto.categoryId,
+      dto.smallCategoryId ?? null,
       dto.type,
       dto.count,
       dto.note ?? null,
@@ -72,31 +92,38 @@ export async function createTransaction(
     );
   }
 
-  // 3️⃣ подтягиваем транзакцию с JOIN по категории и gasSettings
   const row = await db.getFirstAsync<any>(
-    `SELECT 
-      t.id,
-      t.type,
-      t.count,
-      t.note,
-      t.date,
-      t.gas_value,
-      c.id AS category_id,
-      c.name AS category_name,
-      c.color AS category_color,
-      c.icon AS category_icon,
-      c.type AS category_type,
-      c.is_gas,
-      gs.gas_type,
-      gs.gas_value AS category_gas_value
-     FROM transactions t
-     JOIN categories c ON c.id = t.category_id
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     WHERE t.id = ?`,
+    `
+  SELECT 
+    t.id,
+    t.type,
+    t.count,
+    t.note,
+    t.date,
+    t.gas_value,
+
+    c.id   AS category_id,
+    c.name AS category_name,
+    c.color AS category_color,
+    c.icon AS category_icon,
+    c.type AS category_type,
+    c.is_gas,
+
+    gs.gas_type,
+    gs.gas_value AS category_gas_value,
+
+    sc.id   AS small_category_id,
+    sc.name AS small_category_name
+
+  FROM transactions t
+  JOIN categories c ON c.id = t.category_id
+  LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+  LEFT JOIN small_categories sc ON sc.id = t.small_category_id
+  WHERE t.id = ?
+  `,
     [result.lastInsertRowId],
   );
 
-  console.log(mapTransaction(row));
   return mapTransaction(row);
 }
 
@@ -106,25 +133,34 @@ export async function getAllTransactions(): Promise<Transaction[]> {
     const db = await getDb();
 
     const rows = await db.getAllAsync<any>(
-      `SELECT 
+      `
+    SELECT 
       t.id,
       t.type,
       t.count,
       t.note,
       t.date,
       t.gas_value,
-      c.id AS category_id,
+
+      c.id   AS category_id,
       c.name AS category_name,
       c.color AS category_color,
       c.icon AS category_icon,
       c.type AS category_type,
       c.is_gas,
+
       gs.gas_type,
-      gs.gas_value AS category_gas_value
-     FROM transactions t
-     JOIN categories c ON c.id = t.category_id
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     ORDER BY t.date DESC`,
+      gs.gas_value AS category_gas_value,
+
+      sc.id   AS small_category_id,
+      sc.name AS small_category_name
+
+    FROM transactions t
+    JOIN categories c ON c.id = t.category_id
+    LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+    LEFT JOIN small_categories sc ON sc.id = t.small_category_id
+    ORDER BY t.date DESC
+  `,
     );
 
     return rows.map(mapTransaction);
@@ -151,20 +187,27 @@ export async function getTransactionsByMonth(
       t.note,
       t.date,
       t.gas_value,
+
       c.id AS category_id,
       c.name AS category_name,
       c.color AS category_color,
       c.icon AS category_icon,
       c.type AS category_type,
       c.is_gas,
+
       gs.gas_type,
-      gs.gas_value AS category_gas_value
-     FROM transactions t
-     JOIN categories c ON t.category_id = c.id
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
-       AND strftime('%Y', datetime(t.date, 'localtime')) = ?
-     ORDER BY t.date DESC`,
+      gs.gas_value AS category_gas_value,
+
+      sc.id   AS small_category_id,
+      sc.name AS small_category_name
+
+      FROM transactions t
+      JOIN categories c ON t.category_id = c.id
+      LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+      LEFT JOIN small_categories sc ON sc.id = t.small_category_id
+      WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+      AND strftime('%Y', datetime(t.date, 'localtime')) = ?
+      ORDER BY t.date DESC`,
       [monthStr, year.toString()],
     );
 
@@ -191,19 +234,26 @@ export async function getTransactionsByCategoryId(
       t.note,
       t.date,
       t.gas_value,
+
       c.id AS category_id,
       c.name AS category_name,
       c.color AS category_color,
       c.icon AS category_icon,
       c.type AS category_type,
       c.is_gas,
+
       gs.gas_type,
-      gs.gas_value AS category_gas_value
-     FROM transactions t
-     JOIN categories c ON c.id = t.category_id
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     WHERE t.category_id = ?
-     ORDER BY t.date DESC`,
+      gs.gas_value AS category_gas_value,
+
+      sc.id   AS small_category_id,
+      sc.name AS small_category_name
+
+      FROM transactions t
+      JOIN categories c ON c.id = t.category_id
+      LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+      LEFT JOIN small_categories sc ON sc.id = t.small_category_id
+      WHERE t.category_id = ?
+      ORDER BY t.date DESC`,
       [categoryId],
     );
 
@@ -231,20 +281,27 @@ export async function getTransactionsByMonthAndType(
       t.note,
       t.date,
       t.gas_value,
+
       c.id AS category_id,
       c.name AS category_name,
       c.color AS category_color,
       c.icon AS category_icon,
       c.type AS category_type,
       c.is_gas,
+
       gs.gas_type,
-      gs.gas_value AS category_gas_value
-     FROM transactions t
-     JOIN categories c ON t.category_id = c.id
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
-       AND t.type = ?
-     ORDER BY t.date ASC`,
+      gs.gas_value AS category_gas_value,
+
+      sc.id   AS small_category_id,
+      sc.name AS small_category_name
+
+      FROM transactions t
+      JOIN categories c ON t.category_id = c.id
+      LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+      LEFT JOIN small_categories sc ON sc.id = t.small_category_id
+      WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+      AND t.type = ?
+      ORDER BY t.date ASC`,
       [monthStr, type],
     );
 
@@ -269,8 +326,8 @@ export async function getTransactionsSumByMonthAndType(
       `
     SELECT 
       COALESCE(SUM(t.count), 0) AS total
-    FROM transactions t
-    WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
+      FROM transactions t
+      WHERE strftime('%m', datetime(t.date, 'localtime')) = ?
       AND strftime('%Y', datetime(t.date, 'localtime')) = ?
       AND t.type = ?
     `,
@@ -295,9 +352,9 @@ export async function deleteTransaction(transactionId: number): Promise<void> {
        t.gas_value,
        c.id AS category_id,
        c.is_gas
-     FROM transactions t
-     JOIN categories c ON c.id = t.category_id
-     WHERE t.id = ?`,
+      FROM transactions t
+      JOIN categories c ON c.id = t.category_id
+      WHERE t.id = ?`,
       [transactionId],
     );
 

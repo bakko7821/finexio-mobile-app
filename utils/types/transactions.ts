@@ -1,5 +1,5 @@
 import { formatDateRelative } from "../date";
-import { Category } from "./categories";
+import { Category, SmallCategory } from "./categories";
 
 export interface Transaction {
   id: number;
@@ -9,6 +9,7 @@ export interface Transaction {
   date: string; // ISO
   gasValue?: number;
   category: Category;
+  smallCategory?: SmallCategory;
 }
 
 export type CreateTransactionDto = {
@@ -17,8 +18,9 @@ export type CreateTransactionDto = {
   count: number; // сумма или литры
   note?: string;
   date: string;
-  gasType?: string; // только для топлива
-  gasValue?: number; // только для топлива
+  gasType?: string;
+  gasValue?: number;
+  smallCategoryId?: number;
 };
 
 export interface TransactionGroup {

@@ -22,9 +22,6 @@ export default function TransactionComponent({
   onOpenEditPanel,
   setSelectedTransactions,
 }: TransactionComponentProps) {
-  console.log(
-    "Transaction: " + transaction.category.isGas + transaction.gasValue,
-  );
   const theme = useTheme();
   return (
     <TouchableOpacity
@@ -58,6 +55,9 @@ export default function TransactionComponent({
               style={{ color: theme.text }}
             >
               {transaction.category.name}
+              {transaction.smallCategory
+                ? ` (${transaction.smallCategory.name})`
+                : ""}
             </Text>
 
             <Text

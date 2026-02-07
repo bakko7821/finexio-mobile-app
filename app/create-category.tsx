@@ -25,7 +25,10 @@ export default function CreateCategoryScreen() {
   const createSmallCategory = (name: string) => {
     if (!name.trim()) return;
 
-    setSmallCategories((prev) => [...prev, { name, color: selectedColor }]);
+    setSmallCategories((prev) => {
+      if (prev.some((c) => c.name === name)) return prev;
+      return [...prev, { name, color: selectedColor }];
+    });
   };
 
   const deleteSmallCategory = (name: string) => {
@@ -40,6 +43,7 @@ export default function CreateCategoryScreen() {
       <CreateCategoryHeader
         selectedColor={selectedColor}
         selectedIcon={selectedIcon}
+        smallCategories={smallCategories}
       />
       <View style={{ zIndex: 1 }} className="w-full flex-1 flex-col gap-2 pt-3">
         <View className="w-full flex-col gap-2 items-start justify-start">

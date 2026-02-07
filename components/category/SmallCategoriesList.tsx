@@ -1,3 +1,4 @@
+import { getContrastColor } from "@/utils/color";
 import React, { useRef } from "react";
 import {
     Animated,
@@ -67,7 +68,10 @@ export const SwipeableSmallCategory: React.FC<SwipeableSmallCategoryProps> = ({
           onPress={() => console.log("Нажали:", item.name)}
           className="p-3"
         >
-          <Text style={{ color: "white" }} className="text-sm font-medium">
+          <Text
+            style={{ color: getContrastColor(item.color) }}
+            className="text-sm font-medium"
+          >
             {item.name}
           </Text>
         </TouchableOpacity>

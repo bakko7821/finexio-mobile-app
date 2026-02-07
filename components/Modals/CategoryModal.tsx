@@ -1,8 +1,9 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import { createTransaction } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
+import { getContrastColor } from "@/utils/color";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
-import { Category } from "@/utils/types/categories";
+import { Category, SmallCategory } from "@/utils/types/categories";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
@@ -33,23 +34,28 @@ export default function CategoryModal({
   const [gasValue, setGasValue] = useState("0");
   const [isOpenInput, setIsOpenInput] = useState(false);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
+  const [selectedSmallCategory, setSelectedSmallCategory] =
+    useState<SmallCategory | null>(null);
 
   const postTransaction = async () => {
     if (!category) return;
 
+    console.log(selectedSmallCategory);
+
     try {
       await createTransaction({
         categoryId: category.id,
+        smallCategoryId: selectedSmallCategory?.id, // 💥 ВОТ ОНО
         type,
         count: Number(transactionValue),
         note,
         date: date || new Date().toISOString(),
-        gasValue: Number(gasValue), // литры этой конкретной заправки
-        gasType: category.isGas ? category.gasSettings?.gasType : undefined,
+        gasValue: category.isGas ? Number(gasValue) : undefined,
       });
 
       setTransactionValue("0");
       setNote("");
+      setSelectedSmallCategory(null);
       onClose();
       onTransactionAdded?.();
     } catch (e) {
@@ -96,6 +102,40 @@ export default function CategoryModal({
         {/* CONTENT */}
         <View className="flex-col gap-3">
           {category && <CategoryComponent category={category} fullsize />}
+          {category?.smallCategories?.length ? (
+            <View className="flex-col items-start justify-start w-full gap-2">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Подкатегории:
+              </Text>
+
+              <View className="flex-wrap w-full flex-row gap-2">
+                {category.smallCategories.map((smallCategory) => (
+                  <TouchableOpacity
+                    key={smallCategory.id}
+                    style={{
+                      borderColor: category.color,
+                      backgroundColor:
+                        selectedSmallCategory === smallCategory
+                          ? category.color
+                          : "transparent",
+                    }}
+                    className="px-3 py-1 rounded-lg border-[2px] border-solid"
+                    onPress={() => setSelectedSmallCategory(smallCategory)}
+                  >
+                    <Text
+                      style={{ color: getContrastColor(theme.header) }}
+                      className="text-sm font-medium"
+                    >
+                      {smallCategory.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          ) : null}
 
           <View className="flex-row justify-between">
             <Text

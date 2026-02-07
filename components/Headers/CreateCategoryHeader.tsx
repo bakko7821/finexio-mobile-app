@@ -11,11 +11,13 @@ import TextInputComponent from "../UI/TextInput";
 interface CreateCategoryHeaderProps {
   selectedColor: string;
   selectedIcon: string;
+  smallCategories: { name: string; color: string }[];
 }
 
 export default function CreateCategoryHeader({
   selectedColor,
   selectedIcon,
+  smallCategories,
 }: CreateCategoryHeaderProps) {
   const theme = useTheme();
   const router = useRouter();
@@ -42,6 +44,7 @@ export default function CreateCategoryHeader({
         icon: selectedIcon ?? null,
         color: selectedColor,
         type: typeState,
+        smallCategories: smallCategories.map((sc) => sc.name), // 💥 ВОТ ОНО
       });
 
       router.push("/category");
