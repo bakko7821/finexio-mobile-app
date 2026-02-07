@@ -1,11 +1,23 @@
+export type SmallCategory = {
+  id: number;
+  categoryId: number;
+  name: string;
+};
+
 export type Category = {
   id: number;
   name: string;
   color: string;
   icon: string;
   type: number;
+  smallCategories: SmallCategory[];
   isGas?: boolean;
   gasSettings?: CategoryGasSettings;
+};
+
+export type CreateSmallCategoryDto = {
+  categoryId: number;
+  name: string;
 };
 
 export type CreateCategoryDto = {
@@ -18,6 +30,7 @@ export type CreateCategoryDto = {
     gasType: string;
     gasValue: number;
   };
+  smallCategories?: string[];
 };
 
 export type UpdateCategoryDto = {

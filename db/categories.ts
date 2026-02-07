@@ -1,6 +1,7 @@
 import {
   Category,
   CreateCategoryDto,
+  CreateSmallCategoryDto,
   UpdateCategoryDto,
 } from "@/utils/types/categories";
 import { getDb } from "./database";
@@ -19,6 +20,15 @@ function mapCategoryRow(row: any): Category {
           gasValue: row.gas_value,
         }
       : undefined,
+    smallCategories: [],
+  };
+}
+
+function mapSmallCategoryRow(row: any) {
+  return {
+    id: row.id,
+    categoryId: row.category_id,
+    name: row.name,
   };
 }
 
@@ -54,6 +64,15 @@ export async function createCategory(
     );
   }
 
+  const smallCategories = [];
+
+  if (dto.smallCategories?.length) {
+    for (const name of dto.smallCategories) {
+      const sc = await createSmallCategoryRaw(categoryId, name);
+      smallCategories.push(sc);
+    }
+  }
+
   const rows = await db.getAllAsync<any>(
     `
     SELECT
@@ -68,13 +87,52 @@ export async function createCategory(
     [categoryId],
   );
 
-  return mapCategoryRow(rows[0]);
+  const category = mapCategoryRow(rows[0]);
+  category.smallCategories = smallCategories;
+
+  return category;
+}
+
+async function createSmallCategoryRaw(categoryId: number, name: string) {
+  const db = await getDb();
+
+  const result = await db.runAsync(
+    `
+    INSERT INTO small_categories (category_id, name)
+    VALUES (?, ?)
+    `,
+    [categoryId, name],
+  );
+
+  return {
+    id: result.lastInsertRowId,
+    categoryId,
+    name,
+  };
+}
+
+export async function createSmallCategory(dto: CreateSmallCategoryDto) {
+  const db = await getDb();
+
+  const result = await db.runAsync(
+    `
+    INSERT INTO small_categories (category_id, name)
+    VALUES (?, ?)
+    `,
+    [dto.categoryId, dto.name],
+  );
+
+  return {
+    id: result.lastInsertRowId,
+    categoryId: dto.categoryId,
+    name: dto.name,
+  };
 }
 
 export async function getCategoriesByType(type: number): Promise<Category[]> {
   const db = await getDb();
 
-  const rows = await db.getAllAsync<any>(
+  const categoryRows = await db.getAllAsync<any>(
     `
     SELECT
       c.*,
@@ -89,7 +147,28 @@ export async function getCategoriesByType(type: number): Promise<Category[]> {
     [type],
   );
 
-  return rows.map(mapCategoryRow);
+  const categories = categoryRows.map(mapCategoryRow);
+
+  const categoryIds = categories.map((c) => c.id);
+  if (categoryIds.length === 0) return categories;
+
+  const smallRows = await db.getAllAsync<any>(
+    `
+    SELECT *
+    FROM small_categories
+    WHERE category_id IN (${categoryIds.map(() => "?").join(",")})
+    `,
+    categoryIds,
+  );
+
+  for (const row of smallRows) {
+    const cat = categories.find((c) => c.id === row.category_id);
+    if (cat) {
+      cat.smallCategories.push(mapSmallCategoryRow(row));
+    }
+  }
+
+  return categories;
 }
 
 export async function updateCategory(
@@ -158,11 +237,5 @@ export async function updateCategory(
 export async function deleteCategory(id: number): Promise<void> {
   const db = await getDb();
 
-  await db.runAsync(
-    `
-    DELETE FROM categories
-    WHERE id = ?
-    `,
-    [id],
-  );
+  await db.runAsync(`DELETE FROM categories WHERE id = ?`, [id]);
 }

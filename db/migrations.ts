@@ -18,23 +18,36 @@ export async function initDatabase(db: SQLiteDatabase) {
       is_gas INTEGER NOT NULL DEFAULT 0
     );
 
+    CREATE TABLE IF NOT EXISTS small_categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE CASCADE
+    );
+
     CREATE TABLE IF NOT EXISTS category_gas_settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       category_id INTEGER NOT NULL UNIQUE,
       gas_type TEXT NOT NULL,
       gas_value REAL NOT NULL DEFAULT 0,
-      FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+      FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       category_id INTEGER NOT NULL,
+      small_category_id INTEGER,
       type INTEGER NOT NULL,
       count REAL NOT NULL,
       note TEXT,
       date TEXT NOT NULL,
-      gas_value REAL DEFAULT 0, -- новое поле
-      FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+      gas_value REAL DEFAULT 0,
+      FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+      FOREIGN KEY (small_category_id) REFERENCES small_categories(id) ON DELETE SET NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_transactions_date 
@@ -42,5 +55,8 @@ export async function initDatabase(db: SQLiteDatabase) {
 
     CREATE INDEX IF NOT EXISTS idx_transactions_category 
       ON transactions(category_id);
+
+    CREATE INDEX IF NOT EXISTS idx_small_categories_category
+      ON small_categories(category_id);
   `);
 }

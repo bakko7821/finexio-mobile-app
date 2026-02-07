@@ -64,6 +64,7 @@ export default function CreateCategoryHeader({
 
         // Android
         elevation: 4,
+        zIndex: 2,
       }}
       className="flex-col w-full p-3 pt-[52px]"
     >
@@ -103,7 +104,9 @@ export default function CreateCategoryHeader({
               onPress={() => setTypeState((prev) => (prev === 1 ? 2 : 1))}
             >
               <Text style={{ color: theme.secondary }}>Тип:</Text>
-              <Text style={{ color: typeState === 1 ? theme.red : theme.green }}>
+              <Text
+                style={{ color: typeState === 1 ? theme.red : theme.green }}
+              >
                 {typeState === 1 ? "Расходы" : "Доходы"}
               </Text>
             </TouchableOpacity>
