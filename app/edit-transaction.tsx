@@ -1,3 +1,4 @@
+import ArrowIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import CategoryComponent from "@/components/category/CategoryComponent";
 import NavHeader from "@/components/Headers/NavHeader";
@@ -15,8 +16,9 @@ import {
 import { Transaction } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Modal,
   Platform,
   Text,
@@ -49,6 +51,22 @@ export default function EditCategoriesScreen() {
   const [transactionNote, setTransactionNote] = useState(
     parsedTransaction?.note ?? "",
   );
+
+  const [isOpenGasInfo, setIsOpenGasInfo] = useState(true);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(rotateAnim, {
+      toValue: isOpenGasInfo ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isOpenGasInfo]);
+
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["-90deg", "90deg"],
+  });
 
   if (!parsedTransaction) return null;
 
@@ -89,8 +107,8 @@ export default function EditCategoriesScreen() {
       >
         <CategoryComponent category={parsedTransaction.category} fullsize />
       </View>
-      <View className="p-3 flex-col gap-2 w-full flex-1">
-        <View className="flex-col gap-1 w-full items-start justify-start">
+      <View className="flex-col gap-2 w-full flex-1">
+        <View className="px-3 py-2 flex-col gap-1 w-full items-start justify-start">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -109,7 +127,7 @@ export default function EditCategoriesScreen() {
             onChange={(e) => setTransactionNote(e.nativeEvent.text)}
           />
         </View>
-        <View className="flex-row gap-1 w-full items-start justify-between">
+        <View className="px-3 py-2 flex-row gap-1 w-full items-start justify-between">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -127,7 +145,7 @@ export default function EditCategoriesScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="flex-row gap-1 w-full items-start justify-between">
+        <View className="px-3 py-2 flex-row gap-1 w-full items-start justify-between">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -144,23 +162,89 @@ export default function EditCategoriesScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={{ backgroundColor: theme.red }}
-          className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
-          onPress={() => setIsOpenDeleteModal(true)}
-        >
-          <TrashIcon
-            width={24}
-            height={24}
-            color={getContrastColor(theme.red)}
-          />
-          <Text
-            style={{ color: getContrastColor(theme.red) }}
-            className="text-base font-medium"
+        {parsedTransaction.category.isGas && (
+          <View
+            style={{ backgroundColor: theme.card }}
+            className="px-3 py-2 flex-col gap-2 items-start w-full"
           >
-            Удалить транзакцию
-          </Text>
-        </TouchableOpacity>
+            <View className="w-full flex-row items-center justify-between">
+              <Text
+                style={{ color: theme.text }}
+                className="text-base font-semibold"
+              >
+                Топливо
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsOpenGasInfo((prev) => !prev)}
+              >
+                <Animated.View
+                  style={{
+                    transform: [{ rotate }],
+                  }}
+                >
+                  <ArrowIcon width={24} height={24} color={theme.text} />
+                </Animated.View>
+              </TouchableOpacity>
+            </View>
+            {isOpenGasInfo && (
+              <View className="flex-col gap-1 w-full">
+                <View className="flex-row gap-1 w-full items-start justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-sm font-medium"
+                  >
+                    Тип топлива:
+                  </Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{ color: theme.text }}
+                      className="text-base font-medium"
+                      onPress={() => setIsOpenDateModal(true)}
+                    >
+                      {parsedTransaction.category.gasSettings?.gasType}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View className="flex-row gap-1 w-full items-start justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-sm font-medium"
+                  >
+                    Количество:
+                  </Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{ color: theme.text }}
+                      className="text-base font-medium"
+                      onPress={() => setIsOpenDateModal(true)}
+                    >
+                      {`${parsedTransaction.gasValue} литров`}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+        )}
+        <View className="w-full px-3 py-2 items-center justify-center">
+          <TouchableOpacity
+            style={{ backgroundColor: theme.red }}
+            className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
+            onPress={() => setIsOpenDeleteModal(true)}
+          >
+            <TrashIcon
+              width={24}
+              height={24}
+              color={getContrastColor(theme.red)}
+            />
+            <Text
+              style={{ color: getContrastColor(theme.red) }}
+              className="text-base font-medium"
+            >
+              Удалить транзакцию
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {isOpenDeleteModal && (
