@@ -23,7 +23,7 @@ export default function PickIconComponent({
       }}
     >
       {iconsArray.map((iconList) => (
-        <View key={iconList.id} className="flex-1 flex-col gap-2">
+        <View key={iconList.id} className="flex-1 flex-col gap-2 pb-[16px]">
           <View className="flex flex-row items-center gap-2">
             <View
               style={{ backgroundColor: theme.secondary }}

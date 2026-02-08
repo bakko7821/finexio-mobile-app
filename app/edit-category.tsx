@@ -1,6 +1,7 @@
 import ArchiveIcon from "@/assets/ui/Archive.svg";
 import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import CategoryComponent from "@/components/category/CategoryComponent";
+import { SmallCategoriesList } from "@/components/category/SmallCategoriesList";
 import NavHeader from "@/components/Headers/NavHeader";
 import ColorsModal from "@/components/Modals/ColorsModal";
 import DeleteModal from "@/components/Modals/DeleteModal";
@@ -12,11 +13,22 @@ import { deleteCategory, updateCategory } from "@/db/categories";
 import { getTransactionsByCategoryId } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/color";
-import { Category, UpdateCategoryDto } from "@/utils/types/categories";
+import {
+  Category,
+  SmallCategory,
+  UpdateCategoryDto,
+} from "@/utils/types/categories";
 import { Transaction } from "@/utils/types/transactions";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function EditCategoriesScreen() {
   const theme = useTheme();
@@ -51,6 +63,8 @@ export default function EditCategoriesScreen() {
   const [isArchive, setIsArchive] = useState(false);
 
   if (!parsedCategory) return null;
+
+  const smallCategories: SmallCategory[] = parsedCategory.smallCategories ?? [];
 
   const handleDoneEditFunction = async () => {
     const updateDto: UpdateCategoryDto = {
@@ -117,133 +131,182 @@ export default function EditCategoriesScreen() {
           fullsize
         />
       </View>
-      <View className="flex-col gap-2 w-full flex-1">
-        <View className="p-3 flex-col gap-1 w-full items-start justify-start">
+      <ScrollView className="w-full flex-1 flex-col">
+        <View className="flex-col w-full gap-1 items-start justify-start">
           <Text
-            style={{ color: theme.secondary }}
-            className="text-sm font-medium"
+            style={{ color: theme.primary }}
+            className="text-lg font-medium p-3"
           >
-            Название категории:
+            Настройки
           </Text>
-          <TextInput
-            style={{
-              color: theme.text,
-              borderColor: theme.secondary,
-            }}
-            placeholderTextColor={theme.secondary}
-            className="w-full border border-solid rounded-lg px-2"
-            value={categoryNameValue}
-            placeholder='"Еда"'
-            onChange={(e) => setCategoryNameValue(e.nativeEvent.text)}
-          />
-        </View>
-        <View className="p-3 flex-row w-full items-center justify-between">
-          <Text
-            style={{ color: theme.secondary }}
-            className="text-sm font-medium"
-          >
-            Иконка:
-          </Text>
-          <TouchableOpacity
-            style={{
-              borderColor: theme.secondary,
-            }}
-            className="p-2 border border-solid rounded-lg"
-            onPress={() => setIsOpenIconsModal(true)}
-          >
-            <RenderIcon
-              name={selectedIconName}
-              width={24}
-              height={24}
-              color={getContrastColor(theme.background)}
-            />
-          </TouchableOpacity>
-        </View>
-        <View className="p-3 flex-row w-full items-center justify-between">
-          <Text
-            style={{ color: theme.secondary }}
-            className="text-sm font-medium"
-          >
-            Цвет:
-          </Text>
-          <TouchableOpacity
-            style={{
-              backgroundColor: selectedColor,
-            }}
-            className="p-2 w-[40px] h-[40px] rounded-lg"
-            onPress={() => setIsOpenColorsModal(true)}
-          ></TouchableOpacity>
-        </View>
-        {parsedCategory.isGas && (
-          <>
-            <View className="p-3 flex-row w-full items-center justify-between py-2">
+          <Plug />
+          <View className="flex-col w-full gap-2 p-3">
+            <View className="flex-col gap-1 w-full items-start justify-start">
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
-                Тип бензина:
+                Название категории:
               </Text>
-              <TouchableOpacity onPress={() => setIsOpenInputModal(true)}>
-                <Text
-                  style={{
-                    color: gasType.trim() === "" ? theme.secondary : theme.text,
-                  }}
-                  className="text-sm font-medium"
-                >
-                  {gasType.trim() === "" ? "Указать..." : gasType}
-                </Text>
+              <TextInput
+                style={{
+                  color: theme.text,
+                  borderColor: theme.secondary,
+                }}
+                placeholderTextColor={theme.secondary}
+                className="w-full border border-solid rounded-lg px-2"
+                value={categoryNameValue}
+                placeholder='"Еда"'
+                onChange={(e) => setCategoryNameValue(e.nativeEvent.text)}
+              />
+            </View>
+            <View className="flex-row w-full items-center justify-between">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Иконка:
+              </Text>
+              <TouchableOpacity
+                style={{
+                  borderColor: theme.secondary,
+                }}
+                className="p-2 border border-solid rounded-lg"
+                onPress={() => setIsOpenIconsModal(true)}
+              >
+                <RenderIcon
+                  name={selectedIconName}
+                  width={24}
+                  height={24}
+                  color={getContrastColor(theme.background)}
+                />
               </TouchableOpacity>
             </View>
-            <View className="p-3 flex-row w-full items-center justify-between py-2">
+            <View className="flex-row w-full items-center justify-between">
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
-                Заправленно за все время:
+                Цвет:
               </Text>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: selectedColor,
+                }}
+                className="p-2 w-[40px] h-[40px] rounded-lg"
+                onPress={() => setIsOpenColorsModal(true)}
+              ></TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        {parsedCategory.isGas && (
+          <View className="flex-col w-full gap-1 items-start justify-start">
+            <Text
+              style={{ color: theme.primary }}
+              className="text-lg font-medium p-3"
+            >
+              Топливо
+            </Text>
+            <Plug />
+            <View className="flex-col gap-2 p-3 w-full">
+              <View className="flex-row w-full items-center justify-between py-2">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Тип бензина:
+                </Text>
+                <TouchableOpacity onPress={() => setIsOpenInputModal(true)}>
+                  <Text
+                    style={{
+                      color:
+                        gasType.trim() === "" ? theme.secondary : theme.text,
+                    }}
+                    className="text-sm font-medium"
+                  >
+                    {gasType.trim() === "" ? "Указать..." : gasType}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row w-full items-center justify-between py-2">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Заправленно за все время:
+                </Text>
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-sm font-medium"
+                >
+                  {`${parsedCategory.gasSettings?.gasValue || 0} литров`}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+        <View className="flex-col w-full gap-1 items-start justify-start">
+          <Text
+            style={{ color: theme.primary }}
+            className="text-lg font-medium p-3"
+          >
+            Подкатегории
+          </Text>
+          <Plug />
+          <View className="flex-col gap-2 w-full">
+            {smallCategories.length > 0 ? (
+              <SmallCategoriesList
+                smallCategories={smallCategories}
+                onDelete={() => console.log("delete")}
+              />
+            ) : (
+              <Text
+                style={{ color: theme.secondary }}
+                className="p-3 text-sm font-medium"
+              >
+                У вас отстуствуют подкатегории.
+              </Text>
+            )}
+          </View>
+        </View>
+        <View className="flex-col w-full gap-0 items-start justify-start">
+          <Plug />
+          <View className="w-full flex-row p-3 items-center justify-between">
+            <View className="flex-row gap-2 items-center">
+              <ArchiveIcon width={24} height={24} color={theme.text} />
               <Text
                 style={{ color: theme.text }}
-                className="text-sm font-medium"
+                className="text-base font-medium"
               >
-                {`${parsedCategory.gasSettings?.gasValue || 0} литров`}
+                Архивная категория
               </Text>
             </View>
-          </>
-        )}
-        <Plug />
-        <View className="w-full flex-row p-3 items-center justify-between">
-          <View className="flex-row gap-2 items-center">
-            <ArchiveIcon width={24} height={24} color={theme.text} />
+            <Switch
+              value={isArchive}
+              onValueChange={setIsArchive}
+              trackColor={{
+                false: withOpacity(theme.secondary, 0.8),
+                true: withOpacity(theme.primary, 0.8),
+              }}
+              thumbColor={isArchive ? theme.primary : theme.secondary}
+              ios_backgroundColor={theme.secondary}
+              style={{ height: 24 }}
+            />
+          </View>
+          <TouchableOpacity
+            className="flex-row p-3 rounded-xl gap-2 w-full items-center justify-start"
+            onPress={() => setIsOpenDeleteModal(true)}
+          >
+            <TrashIcon width={24} height={24} color={theme.red} />
             <Text
-              style={{ color: theme.text }}
+              style={{ color: theme.red }}
               className="text-base font-medium"
             >
-              Архивная категория
+              Удалить категорию
             </Text>
-          </View>
-          <Switch
-            value={isArchive}
-            onValueChange={setIsArchive}
-            trackColor={{
-              false: withOpacity(theme.secondary, 0.8),
-              true: withOpacity(theme.primary, 0.8),
-            }}
-            thumbColor={isArchive ? theme.primary : theme.secondary}
-            ios_backgroundColor={theme.secondary}
-            style={{ height: 24 }}
-          />
+          </TouchableOpacity>
         </View>
-        <Plug />
-        <TouchableOpacity
-          className="flex-row p-3 rounded-xl gap-2 w-full items-center justify-start"
-          onPress={() => setIsOpenDeleteModal(true)}
-        >
-          <TrashIcon width={24} height={24} color={theme.red} />
-          <Text style={{ color: theme.red }} className="text-base font-medium">
-            Удалить категорию
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
       <IconsModal
         visible={isOpenIconsModal}
         onClose={() => setIsOpenIconsModal(false)}

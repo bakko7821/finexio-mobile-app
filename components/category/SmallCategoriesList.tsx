@@ -1,16 +1,18 @@
+import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import React, { useRef } from "react";
 import {
-    Animated,
-    PanResponder,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  PanResponder,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { RenderIcon } from "../UI/RenderIcon";
 
 export interface SmallCategory {
   name: string;
-  color: string;
+  color?: string;
 }
 
 interface SwipeableSmallCategoryProps {
@@ -23,6 +25,7 @@ export const SwipeableSmallCategory: React.FC<SwipeableSmallCategoryProps> = ({
   onDelete,
 }) => {
   const translateX = useRef(new Animated.Value(0)).current;
+  const theme = useTheme();
 
   const panResponder = useRef(
     PanResponder.create({
@@ -60,17 +63,23 @@ export const SwipeableSmallCategory: React.FC<SwipeableSmallCategoryProps> = ({
         {...panResponder.panHandlers}
         style={{
           transform: [{ translateX }],
-          backgroundColor: item.color,
         }}
       >
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => console.log("Нажали:", item.name)}
-          className="p-3"
+          className="gap-2 p-3 flex-row items-center w-full justify-start"
+          style={{ backgroundColor: item.color }}
         >
+          <RenderIcon
+            name={"burger"}
+            width={24}
+            height={24}
+            color={getContrastColor(item.color ?? theme.primary)}
+          />
           <Text
-            style={{ color: getContrastColor(item.color) }}
-            className="text-sm font-medium"
+            style={{ color: getContrastColor(item.color ?? theme.primary) }}
+            className="text-base font-medium"
           >
             {item.name}
           </Text>
@@ -91,7 +100,7 @@ export const SmallCategoriesList: React.FC<SmallCategoriesListProps> = ({
   onDelete,
 }) => {
   return (
-    <View className="flex-col gap-2 w-full">
+    <View className="flex-col gap-1 w-full">
       {smallCategories.map((item) => (
         <SwipeableSmallCategory
           key={item.name}

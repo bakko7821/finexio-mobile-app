@@ -19,6 +19,7 @@ export default function PickColorComponent({
         flexWrap: "wrap",
         justifyContent: "center",
         gap: 8,
+        paddingBottom: 16,
       }}
     >
       {colorsArray.map((color) => {

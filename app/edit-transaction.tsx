@@ -247,52 +247,48 @@ export default function EditCategoriesScreen() {
         </View>
       </View>
 
-      {isOpenDeleteModal && (
-        <DeleteModal
-          isTransaction
-          visible={isOpenDeleteModal}
-          onClose={() => setIsOpenDeleteModal(false)}
-          handleDone={() => handleDeleteTransaction(parsedTransaction.id)}
-        />
-      )}
-      {isOpenValueModal && (
-        <Modal
-          visible={isOpenValueModal}
-          animationType="fade"
-          transparent={true}
-          onRequestClose={() => setIsOpenValueModal(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setIsOpenValueModal(false)}>
-            <View className="flex-1 items-center justify-center bg-black/50 relative">
-              <TouchableWithoutFeedback>
-                <View
-                  style={{ backgroundColor: theme.card }}
-                  className="rounded-t-3xl flex-1 p-2 gap-2 w-full bottom-0 absolute flex-col items-start justify-start"
+      <DeleteModal
+        isTransaction
+        visible={isOpenDeleteModal}
+        onClose={() => setIsOpenDeleteModal(false)}
+        handleDone={() => handleDeleteTransaction(parsedTransaction.id)}
+      />
+      <Modal
+        visible={isOpenValueModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setIsOpenValueModal(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setIsOpenValueModal(false)}>
+          <View className="flex-1 items-center justify-center bg-black/50 relative">
+            <TouchableWithoutFeedback>
+              <View
+                style={{ backgroundColor: theme.card }}
+                className="rounded-t-3xl flex-1 p-2 gap-2 w-full bottom-0 absolute flex-col items-start justify-start"
+              >
+                <Text
+                  style={{
+                    color:
+                      parsedTransaction.type === 1 ? theme.red : theme.green,
+                    backgroundColor: theme.header,
+                  }}
+                  className="w-full text-center items-center justify-center text-3xl font-medium p-2 px-3 rounded-xl"
                 >
-                  <Text
-                    style={{
-                      color:
-                        parsedTransaction.type === 1 ? theme.red : theme.green,
-                      backgroundColor: theme.header,
-                    }}
-                    className="w-full text-center items-center justify-center text-3xl font-medium p-2 px-3 rounded-xl"
-                  >
-                    {`${parsedTransaction.type === 1 ? "-" : "+"}${transactionValue} ₽`}
-                  </Text>
-                  <View className="w-full items-center justify-center">
-                    <NumberInput
-                      value={`${transactionValue}`}
-                      setValue={setTransactionValue}
-                      onRequest={() => setIsOpenValueModal(false)}
-                      nullDate
-                    />
-                  </View>
+                  {`${parsedTransaction.type === 1 ? "-" : "+"}${transactionValue} ₽`}
+                </Text>
+                <View className="w-full items-center justify-center">
+                  <NumberInput
+                    value={`${transactionValue}`}
+                    setValue={setTransactionValue}
+                    onRequest={() => setIsOpenValueModal(false)}
+                    nullDate
+                  />
                 </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      )}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       {Platform.OS === "android" && isOpenDateModal && (
         <DateTimePicker
           value={isoToDateSafe(transactionDate)}
