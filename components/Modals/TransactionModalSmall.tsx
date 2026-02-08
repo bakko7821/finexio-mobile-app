@@ -74,7 +74,10 @@ export default function TransactionModalSmall({
             }}
             className="px-[72px] text-xl font-medium"
           >
-            {transaction.category?.name}
+            {transaction.category.name}
+            {transaction.smallCategory
+              ? ` (${transaction.smallCategory.name})`
+              : ""}
           </Text>
         </View>
         <View

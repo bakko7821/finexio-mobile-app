@@ -126,7 +126,12 @@ export default function CategoryModal({
                     onPress={() => setSelectedSmallCategory(smallCategory)}
                   >
                     <Text
-                      style={{ color: getContrastColor(theme.header) }}
+                      style={{
+                        color:
+                          selectedSmallCategory === smallCategory
+                            ? getContrastColor(category.color)
+                            : getContrastColor(theme.header),
+                      }}
                       className="text-sm font-medium"
                     >
                       {smallCategory.name}
