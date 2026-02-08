@@ -83,7 +83,7 @@ export default function InputModal({
             onClose();
           }}
         >
-          <Text style={{ color: theme.text }} className="text-base font-medium">
+          <Text style={{ color: "#ffffff" }} className="text-base font-medium">
             Сохранить
           </Text>
         </TouchableOpacity>

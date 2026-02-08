@@ -76,7 +76,7 @@ export default function TransactionComponent({
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-regular"
-              >{`${transaction.category.gasSettings?.gasType} (${transaction.gasValue || 0} литров)`}</Text>
+              >{`${transaction.category.gasSettings?.gasType || "Неизвестный тип"} (${transaction.gasValue || 0} литров)`}</Text>
             )}
           </View>
         </View>

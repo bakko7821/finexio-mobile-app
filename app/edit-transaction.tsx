@@ -249,7 +249,7 @@ export default function EditCategoriesScreen() {
 
       {isOpenDeleteModal && (
         <DeleteModal
-          item="транзакцию"
+          isTransaction
           visible={isOpenDeleteModal}
           onClose={() => setIsOpenDeleteModal(false)}
           handleDone={() => handleDeleteTransaction(parsedTransaction.id)}

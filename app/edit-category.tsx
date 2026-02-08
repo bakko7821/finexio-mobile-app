@@ -1,3 +1,4 @@
+import ArchiveIcon from "@/assets/ui/Archive.svg";
 import TrashIcon from "@/assets/ui/TrashAltSolid.svg";
 import CategoryComponent from "@/components/category/CategoryComponent";
 import NavHeader from "@/components/Headers/NavHeader";
@@ -5,14 +6,17 @@ import ColorsModal from "@/components/Modals/ColorsModal";
 import DeleteModal from "@/components/Modals/DeleteModal";
 import IconsModal from "@/components/Modals/IconsModal";
 import InputModal from "@/components/Modals/InputModal";
+import Plug from "@/components/UI/Plug";
 import { RenderIcon } from "@/components/UI/RenderIcon";
 import { deleteCategory, updateCategory } from "@/db/categories";
+import { getTransactionsByCategoryId } from "@/db/transactions";
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor } from "@/utils/color";
+import { getContrastColor, withOpacity } from "@/utils/color";
 import { Category, UpdateCategoryDto } from "@/utils/types/categories";
+import { Transaction } from "@/utils/types/transactions";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function EditCategoriesScreen() {
   const theme = useTheme();
@@ -42,6 +46,10 @@ export default function EditCategoriesScreen() {
     parsedCategory?.gasSettings?.gasType || "",
   );
 
+  const [transactionList, setTransactionList] = useState<Transaction[]>([]);
+
+  const [isArchive, setIsArchive] = useState(false);
+
   if (!parsedCategory) return null;
 
   const handleDoneEditFunction = async () => {
@@ -61,6 +69,17 @@ export default function EditCategoriesScreen() {
     await updateCategory(parsedCategory.id, updateDto);
     router.push("/category");
   };
+
+  const fetchTransaction = async () => {
+    try {
+      const data = getTransactionsByCategoryId(parsedCategory.id);
+      setTransactionList(await data);
+    } catch (error: unknown) {
+      console.error(error);
+    }
+  };
+
+  fetchTransaction();
 
   const handleDeleteCategory = async (id: number) => {
     if (!id) return;
@@ -98,8 +117,8 @@ export default function EditCategoriesScreen() {
           fullsize
         />
       </View>
-      <View className="p-3 flex-col gap-2 w-full flex-1">
-        <View className="flex-col gap-1 w-full items-start justify-start">
+      <View className="flex-col gap-2 w-full flex-1">
+        <View className="p-3 flex-col gap-1 w-full items-start justify-start">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -118,7 +137,7 @@ export default function EditCategoriesScreen() {
             onChange={(e) => setCategoryNameValue(e.nativeEvent.text)}
           />
         </View>
-        <View className="flex-row w-full items-center justify-between">
+        <View className="p-3 flex-row w-full items-center justify-between">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -140,7 +159,7 @@ export default function EditCategoriesScreen() {
             />
           </TouchableOpacity>
         </View>
-        <View className="flex-row w-full items-center justify-between">
+        <View className="p-3 flex-row w-full items-center justify-between">
           <Text
             style={{ color: theme.secondary }}
             className="text-sm font-medium"
@@ -157,7 +176,7 @@ export default function EditCategoriesScreen() {
         </View>
         {parsedCategory.isGas && (
           <>
-            <View className="flex-row w-full items-center justify-between py-2">
+            <View className="p-3 flex-row w-full items-center justify-between py-2">
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
@@ -175,7 +194,7 @@ export default function EditCategoriesScreen() {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View className="flex-row w-full items-center justify-between py-2">
+            <View className="p-3 flex-row w-full items-center justify-between py-2">
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
@@ -186,25 +205,41 @@ export default function EditCategoriesScreen() {
                 style={{ color: theme.text }}
                 className="text-sm font-medium"
               >
-                {`${parsedCategory.gasSettings?.gasValue} литров`}
+                {`${parsedCategory.gasSettings?.gasValue || 0} литров`}
               </Text>
             </View>
           </>
         )}
+        <Plug />
+        <View className="w-full flex-row p-3 items-center justify-between">
+          <View className="flex-row gap-2 items-center">
+            <ArchiveIcon width={24} height={24} color={theme.text} />
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-medium"
+            >
+              Архивная категория
+            </Text>
+          </View>
+          <Switch
+            value={isArchive}
+            onValueChange={setIsArchive}
+            trackColor={{
+              false: withOpacity(theme.secondary, 0.8),
+              true: withOpacity(theme.primary, 0.8),
+            }}
+            thumbColor={isArchive ? theme.primary : theme.secondary}
+            ios_backgroundColor={theme.secondary}
+            style={{ height: 24 }}
+          />
+        </View>
+        <Plug />
         <TouchableOpacity
-          style={{ backgroundColor: theme.red }}
-          className="flex-row p-2 mt-[8px] rounded-xl gap-1 w-full items-center justify-center"
+          className="flex-row p-3 rounded-xl gap-2 w-full items-center justify-start"
           onPress={() => setIsOpenDeleteModal(true)}
         >
-          <TrashIcon
-            width={24}
-            height={24}
-            color={getContrastColor(theme.red)}
-          />
-          <Text
-            style={{ color: getContrastColor(theme.red) }}
-            className="text-base font-medium"
-          >
+          <TrashIcon width={24} height={24} color={theme.red} />
+          <Text style={{ color: theme.red }} className="text-base font-medium">
             Удалить категорию
           </Text>
         </TouchableOpacity>
@@ -222,7 +257,8 @@ export default function EditCategoriesScreen() {
         onSelect={setSelectedColor}
       />
       <DeleteModal
-        item="категорию"
+        isCategory
+        transactionCount={transactionList.length}
         visible={isOpenDeleteModal}
         onClose={() => setIsOpenDeleteModal(false)}
         handleDone={() => handleDeleteCategory(parsedCategory.id)}
