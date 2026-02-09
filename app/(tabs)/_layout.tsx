@@ -19,7 +19,7 @@ export default function TabsLayout() {
         >
           <View
             style={{ backgroundColor: theme.card }}
-            className="overflow-hidden p-0 rounded-full flex-row items-center justify-center gap-2"
+            className="overflow-hidden p-1 rounded-full flex-row items-center justify-center gap-2"
           >
             {TABS.map((tab) => {
               const isActive = segments.includes(tab.name);
@@ -31,28 +31,31 @@ export default function TabsLayout() {
                   key={tab.name}
                   onPress={() => router.replace(routePath)}
                   style={{
+                    flex: isActive ? 1 : undefined,
                     backgroundColor: isActive ? theme.primary : "transparent",
                   }}
-                  className="overflow-hidden flex-row rounded-full items-center justify-center gap-1 p-3"
+                  className="overflow-hidden flex-row rounded-full items-center justify-start gap-2 p-3"
                 >
                   <Icon
-                    width={20}
-                    height={20}
+                    width={24}
+                    height={24}
                     color={
                       isActive ? getContrastColor(theme.primary) : theme.text
                     }
                   />
-                  <Text
-                    style={{
-                      color: isActive
-                        ? getContrastColor(theme.primary)
-                        : theme.text,
-                      fontWeight: isActive ? "600" : "400",
-                    }}
-                    className="text-sm"
-                  >
-                    {tab.label}
-                  </Text>
+                  {isActive && (
+                    <Text
+                      style={{
+                        color: isActive
+                          ? getContrastColor(theme.primary)
+                          : theme.text,
+                        fontWeight: isActive ? "600" : "400",
+                      }}
+                      className="text-base"
+                    >
+                      {tab.label}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               );
             })}
