@@ -1,13 +1,21 @@
 import { SQLiteDatabase } from "expo-sqlite";
 
-// -- DROP TABLE IF EXISTS category_gas_settings; -- убрали
-// -- DROP TABLE IF EXISTS transactions;
-// -- DROP TABLE IF EXISTS categories;
+// DROP TABLE IF EXISTS category_gas_settings;
+// DROP TABLE IF EXISTS transactions;
+// DROP TABLE IF EXISTS categories;
+// DROP TABLE IF EXISTS user_info;
 
 export async function initDatabase(db: SQLiteDatabase) {
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     PRAGMA foreign_keys = ON;
+
+    
+
+    CREATE TABLE IF NOT EXISTS user_info (
+      id TEXT PRIMARY KEY,
+      money REAL NOT NULL DEFAULT 0
+    );
 
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

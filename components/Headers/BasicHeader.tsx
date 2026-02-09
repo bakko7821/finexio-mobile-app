@@ -1,9 +1,12 @@
 import BurgerMenuIcon from "@/assets/ui/MenuHamburger.svg";
+import { fetchUserBalance, getOrCreateUserId } from "@/db/chart";
 import "@/global.css";
 import { useTheme } from "@/hooks/useTheme";
-import React, { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import MenuComponent from "../Modals/MenuComponent";
+import { useUser } from "@/hooks/userContext";
 
 interface BasicHeaderProps {
   title: string;
@@ -12,6 +15,8 @@ interface BasicHeaderProps {
 export default function BasicHeader({ title }: BasicHeaderProps) {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const theme = useTheme();
+
+  const { balance } = useUser();
 
   return (
     <View
@@ -26,7 +31,7 @@ export default function BasicHeader({ title }: BasicHeaderProps) {
           style={{ color: theme.secondary }}
           className="text-sm font-regular"
         >
-          13.976 ₽
+          {balance} ₽
         </Text>
         <TouchableOpacity
           className="items-center justify-center"

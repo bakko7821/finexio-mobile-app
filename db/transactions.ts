@@ -38,93 +38,89 @@ function mapTransaction(row: any): Transaction {
 // POST
 export async function createTransaction(
   dto: CreateTransactionDto,
+  userId: string,
 ): Promise<Transaction> {
   const db = await getDb();
 
-  // Берём категорию с её gasSettings
-  const categoryRow = await db.getFirstAsync<any>(
-    `SELECT c.*, gs.gas_type, gs.gas_value
-     FROM categories c
-     LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-     WHERE c.id = ?`,
-    [dto.categoryId],
-  );
+  await db.runAsync("BEGIN TRANSACTION");
 
-  if (!categoryRow) throw new Error("Категория не найдена");
-
-  const isGas = !!categoryRow.is_gas;
-
-  // gasValue для этой транзакции
-  const transactionGasValue = isGas ? (dto.gasValue ?? 0) : null;
-
-  // 1️⃣ создаём транзакцию
-  const result = await db.runAsync(
-    `
-  INSERT INTO transactions (
-    category_id,
-    small_category_id,
-    type,
-    count,
-    note,
-    date,
-    gas_value
-  )
-  VALUES (?, ?, ?, ?, ?, ?, ?)
-  `,
-    [
-      dto.categoryId,
-      dto.smallCategoryId ?? null,
-      dto.type,
-      dto.count,
-      dto.note ?? null,
-      dto.date,
-      transactionGasValue,
-    ],
-  );
-
-  // 2️⃣ обновляем общий gasValue в category_gas_settings
-  if (isGas && transactionGasValue) {
-    await db.runAsync(
-      `UPDATE category_gas_settings
-       SET gas_value = gas_value + ?
-       WHERE category_id = ?`,
-      [transactionGasValue, dto.categoryId],
+  try {
+    const categoryRow = await db.getFirstAsync<any>(
+      `SELECT c.*, gs.gas_type, gs.gas_value
+       FROM categories c
+       LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
+       WHERE c.id = ?`,
+      [dto.categoryId],
     );
+
+    if (!categoryRow) throw new Error("Категория не найдена");
+
+    const isGas = !!categoryRow.is_gas;
+    const transactionGasValue = isGas ? (dto.gasValue ?? 0) : null;
+
+    // 1️⃣ создаём транзакцию
+    const result = await db.runAsync(
+      `
+      INSERT INTO transactions (
+        category_id,
+        small_category_id,
+        type,
+        count,
+        note,
+        date,
+        gas_value
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        dto.categoryId,
+        dto.smallCategoryId ?? null,
+        dto.type,
+        dto.count,
+        dto.note ?? null,
+        dto.date,
+        transactionGasValue,
+      ],
+    );
+
+    // 2️⃣ обновляем gas
+    if (isGas && transactionGasValue) {
+      await db.runAsync(
+        `UPDATE category_gas_settings
+         SET gas_value = gas_value + ?
+         WHERE category_id = ?`,
+        [transactionGasValue, dto.categoryId],
+      );
+    }
+
+    // 3️⃣ обновляем баланс пользователя
+    const balanceDelta =
+      dto.type === 1 ? -dto.count : dto.type === 2 ? dto.count : 0;
+
+    await db.runAsync(
+      `UPDATE user_info
+       SET money = money + ?
+       WHERE id = ?`,
+      [balanceDelta, userId],
+    );
+
+    await db.runAsync("COMMIT");
+
+    const row = await db.getFirstAsync<any>(
+      `
+      SELECT ...
+      FROM transactions t
+      ...
+      WHERE t.id = ?
+      `,
+      [result.lastInsertRowId],
+    );
+
+    return mapTransaction(row);
+  } catch (error) {
+    await db.runAsync("ROLLBACK");
+    throw error;
   }
-
-  const row = await db.getFirstAsync<any>(
-    `
-  SELECT 
-    t.id,
-    t.type,
-    t.count,
-    t.note,
-    t.date,
-    t.gas_value,
-
-    c.id   AS category_id,
-    c.name AS category_name,
-    c.color AS category_color,
-    c.icon AS category_icon,
-    c.type AS category_type,
-    c.is_gas,
-
-    gs.gas_type,
-    gs.gas_value AS category_gas_value,
-
-    sc.id   AS small_category_id,
-    sc.name AS small_category_name
-
-  FROM transactions t
-  JOIN categories c ON c.id = t.category_id
-  LEFT JOIN category_gas_settings gs ON gs.category_id = c.id
-  LEFT JOIN small_categories sc ON sc.id = t.small_category_id
-  WHERE t.id = ?
-  `,
-    [result.lastInsertRowId],
-  );
-
-  return mapTransaction(row);
 }
 
 // GET ALL

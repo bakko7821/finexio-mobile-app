@@ -1,5 +1,6 @@
 import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
 import { createTransaction } from "@/db/transactions";
+import { useUser } from "@/hooks/userContext";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/color";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
@@ -37,21 +38,26 @@ export default function CategoryModal({
   const [selectedSmallCategory, setSelectedSmallCategory] =
     useState<SmallCategory | null>(null);
 
+  const { userId } = useUser();
+
   const postTransaction = async () => {
     if (!category) return;
 
     console.log(selectedSmallCategory);
 
     try {
-      await createTransaction({
-        categoryId: category.id,
-        smallCategoryId: selectedSmallCategory?.id, // 💥 ВОТ ОНО
-        type,
-        count: Number(transactionValue),
-        note,
-        date: date || new Date().toISOString(),
-        gasValue: category.isGas ? Number(gasValue) : undefined,
-      });
+      await createTransaction(
+        {
+          categoryId: category.id,
+          smallCategoryId: selectedSmallCategory?.id, // 💥 ВОТ ОНО
+          type,
+          count: Number(transactionValue),
+          note,
+          date: date || new Date().toISOString(),
+          gasValue: category.isGas ? Number(gasValue) : undefined,
+        },
+        userId,
+      );
 
       setTransactionValue("0");
       setNote("");
