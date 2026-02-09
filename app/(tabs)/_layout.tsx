@@ -1,27 +1,64 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { useTheme } from "@/hooks/useTheme";
+import { getContrastColor } from "@/utils/colors";
+import { TAB_ROUTES, TABS } from "@/utils/tabs";
+import { Tabs, useRouter, useSegments } from "expo-router";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
+  const theme = useTheme();
+  const router = useRouter();
+  const segments = useSegments() as string[];
+
   return (
-    <Tabs screenOptions={{ headerShown: true }}>
-      <Tabs.Screen
-        name="categories"
-        options={{
-          title: "Categories",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="th-large" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="transactions"
-        options={{
-          title: "Transactions",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="list" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tabs>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => (
+        <View
+          style={{ backgroundColor: theme.background }}
+          className="relative p-4"
+        >
+          <View
+            style={{ backgroundColor: theme.card }}
+            className="overflow-hidden p-0 rounded-full flex-row items-center justify-center gap-2"
+          >
+            {TABS.map((tab) => {
+              const isActive = segments.includes(tab.name);
+              const Icon = tab.icon;
+              const routePath = TAB_ROUTES[tab.name];
+
+              return (
+                <TouchableOpacity
+                  key={tab.name}
+                  onPress={() => router.replace(routePath)}
+                  style={{
+                    backgroundColor: isActive ? theme.primary : "transparent",
+                  }}
+                  className="overflow-hidden flex-row rounded-full items-center justify-center gap-1 p-3"
+                >
+                  <Icon
+                    width={20}
+                    height={20}
+                    color={
+                      isActive ? getContrastColor(theme.primary) : theme.text
+                    }
+                  />
+                  <Text
+                    style={{
+                      color: isActive
+                        ? getContrastColor(theme.primary)
+                        : theme.text,
+                      fontWeight: isActive ? "600" : "400",
+                    }}
+                    className="text-sm"
+                  >
+                    {tab.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      )}
+    />
   );
 }
