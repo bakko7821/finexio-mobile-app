@@ -1,3 +1,4 @@
+import PlusIcon from "@/assets/ui/Plus.svg";
 import Plug from "@/components/UI/Plug";
 import { useTheme } from "@/hooks/useTheme";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -5,18 +6,31 @@ import { Text, TouchableOpacity, View } from "react-native";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import GridIcon from "@/assets/ui/SquareGrid2x2.svg";
 import CategoriesList from "@/components/CategoriesList";
+import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
 import { useState } from "react";
 
 export default function CategoriesScreen() {
   const theme = useTheme();
   const [isList, setIsList] = useState(false);
   const [categoriesType, setCategoriesType] = useState(1);
+  const [isVisibleCreateCategoryModal, setIsVisibleCreateCategoryModal] =
+    useState(false);
 
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="pt-[50px] flex-1 flex-col gap-2 items-start justify-start"
+      className="pt-[50px] flex-1 flex-col gap-2 items-start justify-start relative"
     >
+      <TouchableOpacity
+        style={{
+          borderColor: theme.secondary,
+          backgroundColor: theme.header,
+        }}
+        onPress={() => setIsVisibleCreateCategoryModal(true)}
+        className="items-center justify-center absolute bottom-[0px] left-[16px] p-2 rounded-full border-[2px] border-dashed"
+      >
+        <PlusIcon width={32} height={32} color={theme.text} />
+      </TouchableOpacity>
       <View className="flex-col w-full gap-2">
         <View>
           <Text
@@ -57,6 +71,11 @@ export default function CategoriesScreen() {
           <CategoriesList list={isList} />
         </View>
       </View>
+      <CreateCategoryModal
+        title="Новая категория"
+        visible={isVisibleCreateCategoryModal}
+        onClose={() => setIsVisibleCreateCategoryModal(false)}
+      />
     </View>
   );
 }
