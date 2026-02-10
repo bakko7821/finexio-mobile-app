@@ -8,6 +8,7 @@ import GridIcon from "@/assets/ui/SquareGrid2x2.svg";
 import CategoriesList from "@/components/CategoriesList";
 import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
 import { useState } from "react";
+import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
   const theme = useTheme();
@@ -37,7 +38,12 @@ export default function CategoriesScreen() {
             style={{ color: theme.text }}
             className="px-4 text-lg font-medium"
           >
-            Статистика {categoriesType === 1 ? "(Расходы)" : "(Доходы)"}
+            Статистика{" "}
+            <Text
+              style={{ color: categoriesType === 1 ? theme.red : theme.green }}
+            >
+              {categoriesType === 1 ? "расходов" : "доходов"}
+            </Text>
           </Text>
           <Text
             style={{ color: theme.secondary }}
@@ -49,9 +55,46 @@ export default function CategoriesScreen() {
         </View>
         <TouchableOpacity
           onPress={() => setCategoriesType((prev) => (prev === 1 ? 2 : 1))}
-          style={{ backgroundColor: theme.card }}
-          className="w-full p-4"
-        ></TouchableOpacity>
+          className="w-full p-4 justify-center items-center"
+        >
+          <PieChart
+            data={[]}
+            donut
+            radius={120}
+            innerRadius={100}
+            centerLabelComponent={() => (
+              <View
+                style={{
+                  backgroundColor: theme.card,
+                }}
+                className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
+              >
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-xl font-medium"
+                >
+                  {categoriesType === 1 ? "Расходы" : "Доходы"}
+                </Text>
+                <Text
+                  style={{
+                    color: categoriesType === 1 ? theme.red : theme.green,
+                  }}
+                  className="text-xl font-medium"
+                >
+                  123
+                </Text>
+                <Text
+                  style={{
+                    color: categoriesType === 1 ? theme.green : theme.red,
+                  }}
+                  className="text-sm font-medium"
+                >
+                  456
+                </Text>
+              </View>
+            )}
+          />
+        </TouchableOpacity>
       </View>
       <Plug />
       <View className="flex-col w-full gap-2">

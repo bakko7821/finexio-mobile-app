@@ -8,7 +8,7 @@ export default function WalletScreen() {
       style={{ backgroundColor: theme.background }}
       className="flex-1 items-center justify-center"
     >
-      <Text className="text-xl font-bold text-orange-500">
+      <Text className="text-xl font-bold text-yellow-500">
         Welcome to Wallet!
       </Text>
     </View>

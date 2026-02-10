@@ -208,9 +208,14 @@ export default function CreateCategoryModal({
                     <View className="w-[24px] h-[24px]"></View>
                   </TouchableOpacity>
                 </View>
-                {(["Топливо", "Бензин", "Заправка"].includes(
-                  categoryNameValue,
-                ) ||
+                {([
+                  "Топливо",
+                  "топливо",
+                  "Бензин",
+                  "бензин",
+                  "Заправка",
+                  "заправка",
+                ].includes(categoryNameValue) ||
                   selectedIcon === "gas") && (
                   <>
                     <View className="w-full flex-row items-center justify-between">
