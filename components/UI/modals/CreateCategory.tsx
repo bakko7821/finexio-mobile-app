@@ -7,8 +7,13 @@ import {
     View,
 } from "react-native";
 
+import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
+import TypeArrowDownIcon from "@/assets/ui/ArrowDown.svg";
+import TypeArrowUpIcon from "@/assets/ui/ArrowUp.svg";
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
+import PickColorComponent from "@/components/PickColorComponent";
+import PickIconComponent from "@/components/PickIconComponent";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import Modal from "react-native-modal";
@@ -28,7 +33,10 @@ export default function CreateCategoryModal({
   onClose,
 }: CreateCategoryModalProps) {
   const theme = useTheme();
+
+  const [categoryType, setCategoryType] = useState(1);
   const [headerTitle, setHeaderTitle] = useState(title);
+  const [isBack, setIsBack] = useState(false);
 
   const [isCreateComponent, setIsCreateComponent] = useState(true);
   const [isIconComponent, setIsIconComponent] = useState(false);
@@ -42,6 +50,9 @@ export default function CreateCategoryModal({
   const [gasValuePerLitre, setGasValuePerLitre] = useState(0);
 
   const [categoryNameValue, setCategoryNameValue] = useState("");
+
+  const [selectedIcon, setSelectedIcon] = useState("gas");
+  const [selectedColor, setSelectedColor] = useState("#ff0000");
 
   return (
     <Modal
@@ -61,6 +72,19 @@ export default function CreateCategoryModal({
         className="rounded-t-3xl p-4 gap-3 flex-col min-h-[80%]"
       >
         <View className="flex-row items-center justify-between">
+          {isBack && (
+            <TouchableOpacity
+              onPress={() => {
+                setIsColorComponent(false);
+                setIsIconComponent(false);
+                setIsBack(false);
+                setIsCreateComponent(true);
+                setHeaderTitle("Новая категория");
+              }}
+            >
+              <BackIcon width={24} height={24} color={theme.text} />
+            </TouchableOpacity>
+          )}
           <Text style={{ color: theme.text }} className="text-base font-medium">
             {headerTitle}
           </Text>
@@ -79,6 +103,42 @@ export default function CreateCategoryModal({
               </Text>
               <Plug />
               <View className="flex-col gap-2">
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-base font-medium"
+                  >
+                    Тип транзакции:
+                  </Text>
+                  <TouchableOpacity
+                    className="flex-row items-center gap-1"
+                    onPress={() =>
+                      setCategoryType((prev) => (prev === 1 ? 2 : 1))
+                    }
+                  >
+                    {categoryType === 1 ? (
+                      <TypeArrowDownIcon
+                        width={20}
+                        height={20}
+                        color={theme.red}
+                      />
+                    ) : (
+                      <TypeArrowUpIcon
+                        width={20}
+                        height={20}
+                        color={theme.green}
+                      />
+                    )}
+                    <Text
+                      style={{
+                        color: categoryType === 1 ? theme.red : theme.green,
+                      }}
+                      className="text-base font-medium"
+                    >
+                      {categoryType === 1 ? "Расходы" : "Доходы"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <View className="w-full flex-row items-center justify-between">
                   <Text
                     style={{ color: theme.secondary }}
@@ -109,11 +169,17 @@ export default function CreateCategoryModal({
                     Иконка:
                   </Text>
                   <TouchableOpacity
-                    style={{ borderColor: theme.text }}
-                    className="p-2 rounded-xl border-[2px] border-solid"
+                    style={{ backgroundColor: theme.card }}
+                    className="p-2 rounded-xl"
+                    onPress={() => {
+                      setIsIconComponent(true);
+                      setIsCreateComponent(false);
+                      setIsBack(true);
+                      setHeaderTitle("Выбор иконки");
+                    }}
                   >
                     <RenderIcon
-                      name="burger"
+                      name={selectedIcon}
                       width={24}
                       height={24}
                       color={theme.text}
@@ -129,13 +195,23 @@ export default function CreateCategoryModal({
                   </Text>
                   <TouchableOpacity
                     style={{
-                      borderColor: theme.text,
-                      backgroundColor: "white",
+                      backgroundColor: selectedColor,
                     }}
-                    className="p-2 rounded-xl border-[2px] border-solid w-[40px] h-[40px]"
-                  ></TouchableOpacity>
+                    className="p-2 rounded-xl"
+                    onPress={() => {
+                      setIsColorComponent(true);
+                      setIsCreateComponent(false);
+                      setIsBack(true);
+                      setHeaderTitle("Выбор цвета");
+                    }}
+                  >
+                    <View className="w-[24px] h-[24px]"></View>
+                  </TouchableOpacity>
                 </View>
-                {categoryNameValue === "Топливо" && (
+                {(["Топливо", "Бензин", "Заправка"].includes(
+                  categoryNameValue,
+                ) ||
+                  selectedIcon === "gas") && (
                   <>
                     <View className="w-full flex-row items-center justify-between">
                       <Text
@@ -202,19 +278,35 @@ export default function CreateCategoryModal({
             </View>
           </View>
         )}
-        {isIconComponent && <View className="w-full flex-1"></View>}
-        {isColorComponent && <View className="w-full flex-1"></View>}
-        <TouchableOpacity
-          style={{ backgroundColor: theme.primary }}
-          className="flex-row w-full item-center justify-center p-3 rounded-full"
-        >
-          <Text
-            style={{ color: getContrastColor(theme.primary) }}
-            className="text-base font-medium"
+        {isIconComponent && (
+          <View className="w-full flex-1">
+            <PickIconComponent
+              selectedIcon={selectedIcon}
+              onSelect={setSelectedIcon}
+            />
+          </View>
+        )}
+        {isColorComponent && (
+          <View className="w-full flex-1">
+            <PickColorComponent
+              selectedColor={selectedColor}
+              onSelect={setSelectedColor}
+            />
+          </View>
+        )}
+        {isCreateComponent && (
+          <TouchableOpacity
+            style={{ backgroundColor: theme.primary }}
+            className="flex-row w-full item-center justify-center p-3 rounded-full"
           >
-            Создать
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{ color: getContrastColor(theme.primary) }}
+              className="text-base font-medium"
+            >
+              Создать
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       <InputModal
         title="Укажите тип топлива."
