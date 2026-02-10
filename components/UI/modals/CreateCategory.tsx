@@ -1,11 +1,20 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+    Platform,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
+import PlusIcon from "@/assets/ui/Plus.svg";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import Modal from "react-native-modal";
-import FloatingInput from "../FloatingInput";
+import Plug from "../Plug";
+import { RenderIcon } from "../RenderIcon";
+import InputModal from "./InputModal";
 
 interface CreateCategoryModalProps {
   title: string;
@@ -24,6 +33,13 @@ export default function CreateCategoryModal({
   const [isCreateComponent, setIsCreateComponent] = useState(true);
   const [isIconComponent, setIsIconComponent] = useState(false);
   const [isColorComponent, setIsColorComponent] = useState(false);
+
+  const [isOpenInputGasTypeModal, setIsInputGasTypeModal] = useState(false);
+  const [isOpenInputGasValuePerLitreModal, setIsInputGasValuePerLitreModal] =
+    useState(false);
+
+  const [gasTypeValue, setGasTypeValue] = useState("");
+  const [gasValuePerLitre, setGasValuePerLitre] = useState(0);
 
   const [categoryNameValue, setCategoryNameValue] = useState("");
 
@@ -53,19 +69,136 @@ export default function CreateCategoryModal({
           </TouchableOpacity>
         </View>
         {isCreateComponent && (
-          <View className="flex-col gap-2 w-full flex-1">
-            <FloatingInput
-              name={categoryNameValue}
-              setName={(text: string) => setCategoryNameValue(text)}
-            />
-            <View className="w-full items-center justify-between">
+          <View className="flex-col gap-3 w-full flex-1">
+            <View className="flex-col gap-2">
               <Text
-                style={{ color: theme.secondary }}
-                className="text-base font-medium"
+                style={{ color: theme.primary }}
+                className="text-xl font-semibold"
               >
-                Иконка:
+                Настройки
               </Text>
-              
+              <Plug />
+              <View className="flex-col gap-2">
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-base font-medium"
+                  >
+                    Название:
+                  </Text>
+                  <TextInput
+                    style={{
+                      color: theme.text,
+                      borderColor: theme.text,
+                    }}
+                    placeholder='Например: "Еда"'
+                    placeholderTextColor={theme.secondary}
+                    {...Platform.select({
+                      android: { includeFontPadding: false },
+                    })}
+                    value={categoryNameValue}
+                    className="p-2 border-b-[2px] border-solid"
+                    onChangeText={setCategoryNameValue}
+                  />
+                </View>
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-base font-medium"
+                  >
+                    Иконка:
+                  </Text>
+                  <TouchableOpacity
+                    style={{ borderColor: theme.text }}
+                    className="p-2 rounded-xl border-[2px] border-solid"
+                  >
+                    <RenderIcon
+                      name="burger"
+                      width={24}
+                      height={24}
+                      color={theme.text}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-base font-medium"
+                  >
+                    Цвет:
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      borderColor: theme.text,
+                      backgroundColor: "white",
+                    }}
+                    className="p-2 rounded-xl border-[2px] border-solid w-[40px] h-[40px]"
+                  ></TouchableOpacity>
+                </View>
+                {categoryNameValue === "Топливо" && (
+                  <>
+                    <View className="w-full flex-row items-center justify-between">
+                      <Text
+                        style={{ color: theme.secondary }}
+                        className="text-base font-medium"
+                      >
+                        Тип топлива:
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => setIsInputGasTypeModal(true)}
+                      >
+                        <Text
+                          style={{
+                            color: gasTypeValue
+                              ? theme.primary
+                              : theme.secondary,
+                          }}
+                          className="text-base font-medium"
+                        >
+                          {gasTypeValue ? gasTypeValue : "Указать..."}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View className="w-full flex-row items-center justify-between">
+                      <Text
+                        style={{ color: theme.secondary }}
+                        className="text-base font-medium"
+                      >
+                        Цена за литр:
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => setIsInputGasValuePerLitreModal(true)}
+                      >
+                        <Text
+                          style={{
+                            color: gasValuePerLitre
+                              ? theme.text
+                              : theme.secondary,
+                          }}
+                          className="text-base font-medium"
+                        >
+                          {gasValuePerLitre ? gasValuePerLitre : "0"} ₽
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
+              </View>
+            </View>
+            <View className="flex-col gap-2">
+              <View className="w-full flex-row items-center justify-between">
+                <Text
+                  style={{ color: theme.primary }}
+                  className="text-xl font-semibold"
+                >
+                  Подкатегории
+                </Text>
+                <TouchableOpacity>
+                  <PlusIcon width={20} height={20} color={theme.primary} />
+                </TouchableOpacity>
+              </View>
+              <Plug />
+              <View className="flex-col gap-2"></View>
             </View>
           </View>
         )}
@@ -83,6 +216,24 @@ export default function CreateCategoryModal({
           </Text>
         </TouchableOpacity>
       </View>
+      <InputModal
+        title="Укажите тип топлива."
+        visible={isOpenInputGasTypeModal}
+        onClose={() => setIsInputGasTypeModal(false)}
+        value={gasTypeValue}
+        onChange={setGasTypeValue}
+      />
+      <InputModal
+        title="Укажите цену за литр топлива."
+        visible={isOpenInputGasValuePerLitreModal}
+        onClose={() => setIsInputGasValuePerLitreModal(false)}
+        value={gasValuePerLitre.toString()}
+        onChange={(text) => {
+          const num = parseFloat(text); // string → number
+          if (!isNaN(num)) setGasValuePerLitre(num);
+          else setGasValuePerLitre(0); // или оставляем прежнее значение
+        }}
+      />
     </Modal>
   );
 }
