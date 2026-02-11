@@ -21,6 +21,7 @@ export default function CategoriesScreen() {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [refreshFlag, setRefreshFlag] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,7 +43,7 @@ export default function CategoriesScreen() {
     return () => {
       isMounted = false;
     };
-  }, [categoriesType]);
+  }, [categoriesType, refreshFlag]);
 
   return (
     <View
@@ -137,14 +138,15 @@ export default function CategoriesScreen() {
             )}
           </TouchableOpacity>
         </View>
-        <View style={{ backgroundColor: theme.card }} className="w-full p-4">
-          <CategoriesList list={isList} />
+        <View className="w-full px-4">
+          <CategoriesList categories={categories} list={isList} />
         </View>
       </View>
       <CreateCategoryModal
         title="Новая категория"
         visible={isVisibleCreateCategoryModal}
         onClose={() => setIsVisibleCreateCategoryModal(false)}
+        onRefresh={() => setRefreshFlag(prev => prev + 1)}
       />
     </View>
   );

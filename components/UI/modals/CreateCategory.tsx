@@ -26,12 +26,14 @@ interface CreateCategoryModalProps {
   title: string;
   visible: boolean;
   onClose: () => void;
+  onRefresh?: () => void;
 }
 
 export default function CreateCategoryModal({
   title = "Новая категория",
   visible,
   onClose,
+  onRefresh,
 }: CreateCategoryModalProps) {
   const theme = useTheme();
 
@@ -85,6 +87,7 @@ export default function CreateCategoryModal({
           isGasCategory && gasValuePerLitre > 0 ? gasValuePerLitre : undefined,
       });
 
+      onRefresh?.();
       onClose();
     } catch (error) {
       console.error("Ошибка создания категории:", error);
