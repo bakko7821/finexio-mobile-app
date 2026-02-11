@@ -1,3 +1,4 @@
+import { initDatabase } from "@/database/init";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Text, View } from "react-native";

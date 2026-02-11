@@ -1,0 +1,36 @@
+import { getDb } from "./index";
+
+export const initDatabase = async (): Promise<void> => {
+  const db = await getDb();
+  
+  await db.execAsync(`
+    PRAGMA foreign_keys = ON;
+
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      color TEXT NOT NULL,
+      icon TEXT NOT NULL,
+      type INTEGER NOT NULL,
+
+      isArchive INTEGER DEFAULT 0,
+      isGas INTEGER DEFAULT 0,
+
+      gasType TEXT,
+      gasPrice REAL
+    );
+
+    CREATE TABLE IF NOT EXISTS transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      date TEXT NOT NULL,
+      count REAL NOT NULL,
+      categoryId INTEGER NOT NULL,
+
+      note TEXT,
+      gasValue REAL,
+
+      FOREIGN KEY (categoryId) REFERENCES categories(id)
+        ON DELETE CASCADE
+    );
+  `);
+};

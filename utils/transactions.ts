@@ -1,5 +1,5 @@
 export type CreateTransactionDto = {
-  date: string;      // ISO
+  date: string;
   count: number;
   categoryId: number;
 

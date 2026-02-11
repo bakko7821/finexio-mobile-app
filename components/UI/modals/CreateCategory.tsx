@@ -1,10 +1,10 @@
 import { useTheme } from "@/hooks/useTheme";
 import {
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import BackIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
@@ -14,6 +14,7 @@ import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import PickColorComponent from "@/components/PickColorComponent";
 import PickIconComponent from "@/components/PickIconComponent";
+import { createCategory } from "@/database/queries/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import Modal from "react-native-modal";
@@ -51,8 +52,44 @@ export default function CreateCategoryModal({
 
   const [categoryNameValue, setCategoryNameValue] = useState("");
 
-  const [selectedIcon, setSelectedIcon] = useState("gas");
+  const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
+
+  const createCategoryHandle = async () => {
+    if (!categoryNameValue.trim()) {
+      return;
+    }
+
+    const isGasCategory =
+      selectedIcon === "gas" ||
+      ["топливо", "бензин", "заправка"].includes(
+        categoryNameValue.trim().toLowerCase(),
+      );
+
+    try {
+      await createCategory({
+        name: categoryNameValue.trim(),
+        color: selectedColor,
+        icon: selectedIcon,
+        type: categoryType,
+
+        isArchive: false,
+        isGas: isGasCategory,
+
+        gasType:
+          isGasCategory && gasTypeValue.trim()
+            ? gasTypeValue.trim()
+            : undefined,
+
+        gasPrice:
+          isGasCategory && gasValuePerLitre > 0 ? gasValuePerLitre : undefined,
+      });
+
+      onClose();
+    } catch (error) {
+      console.error("Ошибка создания категории:", error);
+    }
+  };
 
   return (
     <Modal
@@ -208,14 +245,9 @@ export default function CreateCategoryModal({
                     <View className="w-[24px] h-[24px]"></View>
                   </TouchableOpacity>
                 </View>
-                {([
-                  "Топливо",
-                  "топливо",
-                  "Бензин",
-                  "бензин",
-                  "Заправка",
-                  "заправка",
-                ].includes(categoryNameValue) ||
+                {(["топливо", "бензин", "заправка"].includes(
+                  categoryNameValue.toLowerCase(),
+                ) ||
                   selectedIcon === "gas") && (
                   <>
                     <View className="w-full flex-row items-center justify-between">
@@ -301,6 +333,7 @@ export default function CreateCategoryModal({
         )}
         {isCreateComponent && (
           <TouchableOpacity
+            onPress={createCategoryHandle}
             style={{ backgroundColor: theme.primary }}
             className="flex-row w-full item-center justify-center p-3 rounded-full"
           >

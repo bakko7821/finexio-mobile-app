@@ -7,7 +7,9 @@ import ListIcon from "@/assets/ui/ListOrdered.svg";
 import GridIcon from "@/assets/ui/SquareGrid2x2.svg";
 import CategoriesList from "@/components/CategoriesList";
 import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
-import { useState } from "react";
+import { getCategoriesByType } from "@/database/queries/categories";
+import { Category } from "@/utils/categories";
+import { useEffect, useState } from "react";
 import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
@@ -16,6 +18,31 @@ export default function CategoriesScreen() {
   const [categoriesType, setCategoriesType] = useState(1);
   const [isVisibleCreateCategoryModal, setIsVisibleCreateCategoryModal] =
     useState(false);
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const data = await getCategoriesByType(categoriesType);
+        if (isMounted) {
+          setCategories(data);
+          setLoadingCategories(false);
+        }
+
+        console.log(categories);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [categoriesType]);
 
   return (
     <View

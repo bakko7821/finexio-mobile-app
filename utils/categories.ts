@@ -7,5 +7,23 @@ export type CreateCategoryDto = {
   isArchive?: boolean;
   isGas?: boolean;
 
+  gasType?: string;
+  gasPrice?: number;
+
+  subcategoryIds?: number[];
+};
+
+export type Category = {
+  name: string;
+  color: string;
+  icon: string;
+  type: number;
+
+  isArchive?: boolean;
+  isGas?: boolean;
+
+  gasType?: string;
+  gasPrice?: number;
+
   subcategoryIds?: number[];
 };
