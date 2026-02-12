@@ -1,4 +1,4 @@
-import CrossIcon from "@/assets/ui/cross-svgrepo-com.svg";
+import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
