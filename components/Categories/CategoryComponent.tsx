@@ -2,7 +2,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { Text, View } from "react-native";
-import { RenderIcon } from "./UI/RenderIcon";
+import { RenderIcon } from "../UI/RenderIcon";
 
 interface CategoryComponentProps {
   category: Category;

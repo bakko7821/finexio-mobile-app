@@ -2,7 +2,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
-import CategoryComponent from "@/components/CategoryComponent";
+import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { createTransaction } from "@/database/queries/transactions";
 import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";

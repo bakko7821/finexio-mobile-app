@@ -3,8 +3,8 @@ import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import CreateTransactionsModal from "./UI/modals/CreateTransactions";
-import { RenderIcon } from "./UI/RenderIcon";
+import CreateTransactionsModal from "../UI/modals/CreateTransactions";
+import { RenderIcon } from "../UI/RenderIcon";
 
 interface CategoriesListProps {
   categories: Category[];
@@ -16,7 +16,9 @@ export default function CategoriesList({
   list,
 }: CategoriesListProps) {
   const theme = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
   const [isOpenCreateTransactionModal, setIsOpenCreateTransactionModal] =
     useState(false);
 

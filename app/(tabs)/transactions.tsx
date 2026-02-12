@@ -1,9 +1,10 @@
+import TransactionList from "@/components/Transactions/TransactionList";
 import { getTransactions } from "@/database/queries/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
 import { useEffect, useMemo, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 export default function TransactionsScreen() {
   const theme = useTheme();
@@ -25,16 +26,14 @@ export default function TransactionsScreen() {
     };
 
     fetchTransactions();
-  }, []);
+  }, [transactions]);
 
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="flex-1 items-center justify-center"
+      className="pt-[50px] flex-1 flex-col gap-2 items-start justify-start relative"
     >
-      <Text className="text-xl font-bold text-green-500">
-        Welcome to Transactions!
-      </Text>
+      <TransactionList data={transactionsList} />
     </View>
   );
 }

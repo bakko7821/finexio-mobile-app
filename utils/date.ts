@@ -53,6 +53,11 @@ export const getDateLabel = (date: Date): string => {
   return WEEK_DAYS[date.getDay()];
 };
 
+const calculateGroupedCount = (transactions: Transaction[]) =>
+  transactions.reduce((acc, tx) => {
+    return tx.category.type === 1 ? acc - tx.count : acc + tx.count;
+  }, 0);
+
 export const groupTransactionsByDate = (
   transactions: Transaction[],
 ): GroupedTransactions[] => {
@@ -62,7 +67,7 @@ export const groupTransactionsByDate = (
     if (!map.has(tx.date)) {
       map.set(tx.date, []);
     }
-    map.get(tx.date)!.push(tx);
+    map.get(tx.date)!.unshift(tx); // ← добавляем в начало
   }
 
   return Array.from(map.entries()).map(([date, txs]) => {
@@ -74,6 +79,7 @@ export const groupTransactionsByDate = (
       day,
       month,
       year,
+      groupedCount: calculateGroupedCount(txs),
       transactions: txs,
     };
   });

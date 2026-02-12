@@ -26,5 +26,6 @@ export type GroupedTransactions = {
   day: string;
   month: string;
   year: string;
+  groupedCount: number;
   transactions: Transaction[];
 };

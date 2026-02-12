@@ -5,7 +5,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import GridIcon from "@/assets/ui/SquareGrid2x2.svg";
-import CategoriesList from "@/components/CategoriesList";
+import CategoriesList from "@/components/Categories/CategoriesList";
 import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { Category } from "@/utils/categories";
