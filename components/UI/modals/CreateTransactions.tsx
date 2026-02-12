@@ -50,14 +50,13 @@ export default function CreateTransactionsModal({
   if (category === null) return;
 
   const handleClose = () => {
-    setDate(nowDay);
+    setDate(nowDay)
     setCoutValue("0");
     setGasValue(0);
     onClose();
   };
 
   const handleCreateTransaction = async () => {
-    console.log(date);
     await createTransaction({
       date: date,
       count: Number(countValue),

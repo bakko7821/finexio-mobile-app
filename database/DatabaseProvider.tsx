@@ -1,23 +1,34 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { initDatabase } from "./init";
+import { initOnce } from ".";
 
 const DatabaseContext = createContext<boolean>(false);
 
-export const DatabaseProvider = ({ children }: { children: React.ReactNode }) => {
-  const [ready, setReady] = useState(false);
+export const DatabaseProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
-    initDatabase()
-      .then(() => setReady(true))
-      .catch(console.error);
+    const init = async () => {
+      try {
+        await initOnce();
+        setDbReady(true);
+      } catch (e) {
+        console.error("DB INIT FAILED", e);
+      }
+    };
+
+    init();
   }, []);
 
-  if (!ready) return null; // Splash / Loader
+  if (!dbReady) {
+    return null;
+  } // Splash / Loader
 
   return (
-    <DatabaseContext.Provider value={true}>
-      {children}
-    </DatabaseContext.Provider>
+    <DatabaseContext.Provider value={true}>{children}</DatabaseContext.Provider>
   );
 };
 

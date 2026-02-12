@@ -1,10 +1,19 @@
-import * as SQLite from "expo-sqlite";
+import { getDb } from "./db";
+import { initDatabase } from "./init";
 
-export let db: SQLite.SQLiteDatabase;
+let initialized = false;
 
-export const getDb = async () => {
-  if (!db) {
-    db = await SQLite.openDatabaseAsync("finexio.db");
-  }
-  return db;
+export const initOnce = async () => {
+  if (initialized) return;
+
+  const db = await getDb();
+  console.log("DB instance", db);
+  await initDatabase(db);
+  initialized = true;
 };
+
+export { getDb };
+
+  export * from "./queries/categories";
+  export * from "./queries/transactions";
+

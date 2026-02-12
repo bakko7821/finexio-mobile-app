@@ -1,5 +1,5 @@
 import { Category, CreateCategoryDto } from "@/utils/categories";
-import { getDb } from "./../index";
+import { getDb } from "../db";
 
 export const createCategory = async (
   dto: CreateCategoryDto,
@@ -24,8 +24,6 @@ export const createCategory = async (
       dto.gasPrice ?? null,
     ],
   );
-
-  console.log("Категория создалась");
 
   return result.lastInsertRowId;
 };

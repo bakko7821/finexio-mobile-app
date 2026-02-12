@@ -1,11 +1,9 @@
-import { getDb } from "./index";
+import { SQLiteDatabase } from "expo-sqlite";
 
-export const initDatabase = async (): Promise<void> => {
-  const db = await getDb();
-  
+export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
   await db.execAsync(`
     PRAGMA foreign_keys = ON;
-
+    
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,

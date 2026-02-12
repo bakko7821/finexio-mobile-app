@@ -1,6 +1,6 @@
-import { initDatabase } from "@/database/init";
+import { initOnce } from "@/database";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import "../global.css";
 

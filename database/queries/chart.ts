@@ -1,5 +1,5 @@
 import { PieItem } from "@/utils/chart";
-import { getDb } from ".";
+import { getDb } from "..";
 
 export const getChartData = async ({
   type,
@@ -59,7 +59,7 @@ export const getSumByType = async (type: number): Promise<number> => {
     WHERE c.isArchive = 0
       AND c.type = ?
     `,
-    [type]
+    [type],
   );
 
   return rows[0]?.total ?? 0;

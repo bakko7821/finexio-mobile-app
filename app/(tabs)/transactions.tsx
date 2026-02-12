@@ -6,7 +6,6 @@ import { Transaction } from "@/utils/transactions";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
-
 export default function TransactionsScreen() {
   const theme = useTheme();
 
@@ -27,7 +26,7 @@ export default function TransactionsScreen() {
     };
 
     fetchTransactions();
-  }, [transactions]);
+  }, []);
 
   return (
     <View

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import CreateTransactionsModal from "../UI/modals/CreateTransactions";
 import { RenderIcon } from "../UI/RenderIcon";
+import InfoCategoryModal from "../UI/modals/InfoCategoryModal";
 
 interface CategoriesListProps {
   categories: Category[];
@@ -15,7 +16,7 @@ interface CategoriesListProps {
 export default function CategoriesList({
   categories,
   list,
-  onRefresh
+  onRefresh,
 }: CategoriesListProps) {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -23,6 +24,7 @@ export default function CategoriesList({
   );
   const [isOpenCreateTransactionModal, setIsOpenCreateTransactionModal] =
     useState(false);
+  const [isOpenInfoCategoryModal, setIsOpenInfoCategoryModal] = useState(false);
 
   if (categories.length === 0) {
     return (
@@ -37,6 +39,11 @@ export default function CategoriesList({
     setIsOpenCreateTransactionModal(true);
   };
 
+  const handleLongPress = (category: Category) => {
+    setSelectedCategory(category);
+    setIsOpenInfoCategoryModal(true);
+  };
+
   return (
     <>
       {list ? (
@@ -47,6 +54,7 @@ export default function CategoriesList({
               style={{ backgroundColor: category.color }}
               className="p-3 w-full flex-row items-center gap-2 justify-start rounded-full"
               onPress={() => handlePress(category)}
+              onLongPress={() => handleLongPress(category)}
             >
               <RenderIcon
                 name={category.icon}
@@ -71,6 +79,7 @@ export default function CategoriesList({
               style={{ backgroundColor: category.color }}
               className="p-3 rounded-full"
               onPress={() => handlePress(category)}
+              onLongPress={() => handleLongPress(category)}
             >
               <RenderIcon
                 name={category.icon}
@@ -82,13 +91,17 @@ export default function CategoriesList({
           ))}
         </View>
       )}
-
-      {/* Модалка рендерится всегда */}
+      
       <CreateTransactionsModal
         onRefresh={onRefresh}
         visible={isOpenCreateTransactionModal}
         onClose={() => setIsOpenCreateTransactionModal(false)}
-        category={selectedCategory} // если нужен выбранный category
+        category={selectedCategory}
+      />
+      <InfoCategoryModal
+        category={selectedCategory}
+        visible={isOpenInfoCategoryModal}
+        onClose={() => setIsOpenInfoCategoryModal(false)}
       />
     </>
   );
