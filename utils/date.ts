@@ -25,6 +25,15 @@ const WEEK_DAYS = [
   "суббота",
 ];
 
+export const getCurrentMonthAndYear = (): { month: number; year: number } => {
+  const today = new Date();
+
+  return {
+    month: today.getMonth() + 1, // getMonth() возвращает 0–11, поэтому +1
+    year: today.getFullYear(),
+  };
+};
+
 export const parseDate = (dateString: string) => {
   const date = new Date(dateString);
 

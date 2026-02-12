@@ -9,11 +9,13 @@ import { RenderIcon } from "../UI/RenderIcon";
 interface CategoriesListProps {
   categories: Category[];
   list: boolean;
+  onRefresh?: () => void;
 }
 
 export default function CategoriesList({
   categories,
   list,
+  onRefresh
 }: CategoriesListProps) {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -83,6 +85,7 @@ export default function CategoriesList({
 
       {/* Модалка рендерится всегда */}
       <CreateTransactionsModal
+        onRefresh={onRefresh}
         visible={isOpenCreateTransactionModal}
         onClose={() => setIsOpenCreateTransactionModal(false)}
         category={selectedCategory} // если нужен выбранный category

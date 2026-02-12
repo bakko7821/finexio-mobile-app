@@ -88,6 +88,12 @@ export default function CreateCategoryModal({
       });
 
       onRefresh?.();
+      setCategoryNameValue("");
+      setCategoryType(1);
+      setGasTypeValue("");
+      setGasValuePerLitre(0);
+      setSelectedColor("#ff0000");
+      setSelectedIcon("burger");
       onClose();
     } catch (error) {
       console.error("Ошибка создания категории:", error);

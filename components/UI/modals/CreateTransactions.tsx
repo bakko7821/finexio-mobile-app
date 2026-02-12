@@ -14,12 +14,14 @@ interface CreateTransactionModalProps {
   category: Category | null;
   visible: boolean;
   onClose: () => void;
+  onRefresh?: () => void;
 }
 
 export default function CreateTransactionsModal({
   category,
   visible,
   onClose,
+  onRefresh,
 }: CreateTransactionModalProps) {
   const theme = useTheme();
 
@@ -58,6 +60,9 @@ export default function CreateTransactionsModal({
       note: undefined,
       gasValue: gasValue ? Number(gasValue) : undefined,
     });
+
+    onRefresh?.();
+    handleClose();
   };
 
   return (

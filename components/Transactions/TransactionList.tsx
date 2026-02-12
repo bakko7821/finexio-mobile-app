@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/colors";
 import { GroupedTransactions } from "@/utils/transactions";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import TransactionComponent from "./TransactionComponent";
 
 type TransactionListProps = {
@@ -11,10 +11,11 @@ type TransactionListProps = {
 export default function TransactionList({ data }: TransactionListProps) {
   const theme = useTheme();
   return (
-    <View className=" w-full flex-col gap-2">
-      <Text style={{ color: theme.text }} className="px-4 text-lg font-medium">
-        Транзакции
-      </Text>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className=" w-full flex-col gap-2"
+    >
       {data.map((group, i) => (
         <View
           key={`${group.date}-${i}`}
@@ -55,7 +56,7 @@ export default function TransactionList({ data }: TransactionListProps) {
               {group.groupedCount} ₽
             </Text>
           </View>
-          <View className="flex-col gap-2 w-full px-4">
+          <View className="flex-col gap-1 w-full px-2">
             {group.transactions.map((transaction, idx) => (
               <TransactionComponent
                 key={`${transaction.categoryId}-${transaction.count}-${idx}`}
@@ -65,6 +66,6 @@ export default function TransactionList({ data }: TransactionListProps) {
           </View>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }

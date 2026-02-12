@@ -4,7 +4,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
 import { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
+
 
 export default function TransactionsScreen() {
   const theme = useTheme();
@@ -33,6 +34,9 @@ export default function TransactionsScreen() {
       style={{ backgroundColor: theme.background }}
       className="pt-[50px] flex-1 flex-col gap-2 items-start justify-start relative"
     >
+      <Text style={{ color: theme.text }} className="px-4 text-lg font-medium">
+        Транзакции
+      </Text>
       <TransactionList data={transactionsList} />
     </View>
   );

@@ -12,7 +12,7 @@ export default function TransactionComponent({
 }: TransactionComponentProps) {
   const theme = useTheme();
   return (
-    <TouchableOpacity className="w-full p-0 flex-row items-center justify-between">
+    <TouchableOpacity className="w-full p-2 flex-row items-center justify-between">
       <View className="flex-row items-start justify-center gap-2">
         <View
           style={{ backgroundColor: transaction.category.color }}
@@ -29,7 +29,7 @@ export default function TransactionComponent({
           <Text style={{ color: theme.text }} className="text-base font-medium">
             {transaction.category.name}
           </Text>
-          {transaction.category.isGas && (
+          {transaction.category.isGas ? (
             <Text
               style={{ color: transaction.category.color }}
               className="text-sm font-medium"
@@ -39,13 +39,12 @@ export default function TransactionComponent({
                 ({transaction.gasValue} x {transaction.category.gasPrice} ₽)
               </Text>
             </Text>
-          )}
-          {transaction.note && !transaction.category.isGas && (
+          ) : (
             <Text
               style={{ color: theme.secondary }}
               className="text-sm font-regular"
             >
-              {transaction.note}
+              {transaction.note ? transaction.note : "Заметка отсутсвует..."}
             </Text>
           )}
         </View>
