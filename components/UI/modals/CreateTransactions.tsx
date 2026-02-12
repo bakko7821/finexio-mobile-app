@@ -2,6 +2,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
+import CategoryComponent from "@/components/CategoryComponent";
+import { createTransaction } from "@/database/queries/transactions";
 import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useEffect, useState } from "react";
@@ -41,6 +43,23 @@ export default function CreateTransactionsModal({
 
   if (category === null) return;
 
+  const handleClose = () => {
+    setCoutValue("0");
+    setGasValue(0);
+    onClose();
+  };
+
+  const handleCreateTransaction = async () => {
+    await createTransaction({
+      date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+      count: Number(countValue),
+      categoryId: category.id,
+
+      note: undefined,
+      gasValue: gasValue ? Number(gasValue) : undefined,
+    });
+  };
+
   return (
     <Modal
       isVisible={visible}
@@ -49,8 +68,8 @@ export default function CreateTransactionsModal({
       animationInTiming={300}
       animationOutTiming={300}
       backdropTransitionOutTiming={300}
-      onBackdropPress={onClose}
-      onBackButtonPress={onClose}
+      onBackdropPress={handleClose}
+      onBackButtonPress={handleClose}
       useNativeDriver
       style={{ margin: 0, justifyContent: "flex-end" }}
     >
@@ -62,11 +81,12 @@ export default function CreateTransactionsModal({
           <Text style={{ color: theme.text }} className="text-base font-medium">
             Новая транзакция ({category.type === 1 ? "Расходы" : "Доходы"})
           </Text>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity onPress={handleClose}>
             <CrossIcon width={24} height={24} color={theme.text} />
           </TouchableOpacity>
         </View>
         <View className="w-full flex-col gap-3">
+          <CategoryComponent category={category} />
           <View className="flex-col gap-1 items-start justify-start">
             <Text
               style={{ color: theme.secondary }}
@@ -141,6 +161,7 @@ export default function CreateTransactionsModal({
         <TouchableOpacity
           style={{ backgroundColor: theme.primary }}
           className="mt-4 flex-row w-full item-center justify-center p-3 rounded-full"
+          onPress={handleCreateTransaction}
         >
           <Text
             style={{ color: getContrastColor(theme.primary) }}

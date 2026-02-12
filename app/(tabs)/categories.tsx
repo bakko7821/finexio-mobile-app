@@ -33,8 +33,6 @@ export default function CategoriesScreen() {
           setCategories(data);
           setLoadingCategories(false);
         }
-
-        console.log(categories);
       } catch (error) {
         console.error(error);
       }
@@ -139,14 +137,23 @@ export default function CategoriesScreen() {
           </TouchableOpacity>
         </View>
         <View className="w-full px-4">
-          <CategoriesList categories={categories} list={isList} />
+          {loadingCategories === true ? (
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-sm font-medium"
+            >
+              Загрузка категорий...
+            </Text>
+          ) : (
+            <CategoriesList categories={categories} list={isList} />
+          )}
         </View>
       </View>
       <CreateCategoryModal
         title="Новая категория"
         visible={isVisibleCreateCategoryModal}
         onClose={() => setIsVisibleCreateCategoryModal(false)}
-        onRefresh={() => setRefreshFlag(prev => prev + 1)}
+        onRefresh={() => setRefreshFlag((prev) => prev + 1)}
       />
     </View>
   );
