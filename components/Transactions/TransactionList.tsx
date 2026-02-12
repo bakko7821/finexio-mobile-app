@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/colors";
 import { GroupedTransactions } from "@/utils/transactions";
-import { ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import TransactionComponent from "./TransactionComponent";
 
 type TransactionListProps = {
@@ -11,11 +11,7 @@ type TransactionListProps = {
 export default function TransactionList({ data }: TransactionListProps) {
   const theme = useTheme();
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className=" w-full flex-col gap-2"
-    >
+    <View className=" w-full flex-col gap-2">
       {data.map((group, i) => (
         <View
           key={`${group.date}-${i}`}
@@ -66,6 +62,6 @@ export default function TransactionList({ data }: TransactionListProps) {
           </View>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 }

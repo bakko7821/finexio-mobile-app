@@ -47,3 +47,20 @@ export const getChartData = async ({
     icon: row.icon,
   }));
 };
+
+export const getSumByType = async (type: number): Promise<number> => {
+  const db = await getDb();
+
+  const rows = await db.getAllAsync<{ total: number }>(
+    `
+    SELECT SUM(t.count) AS total
+    FROM transactions t
+    INNER JOIN categories c ON c.id = t.categoryId
+    WHERE c.isArchive = 0
+      AND c.type = ?
+    `,
+    [type]
+  );
+
+  return rows[0]?.total ?? 0;
+};

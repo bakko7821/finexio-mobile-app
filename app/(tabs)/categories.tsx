@@ -7,7 +7,7 @@ import ListIcon from "@/assets/ui/ListOrdered.svg";
 import GridIcon from "@/assets/ui/SquareGrid2x2.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
 import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
-import { getChartData } from "@/database/chart";
+import { getChartData, getSumByType } from "@/database/chart";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { Category } from "@/utils/categories";
 import { PieItem } from "@/utils/chart";
@@ -28,6 +28,8 @@ export default function CategoriesScreen() {
 
   const [chartInfo, setChartInfo] = useState<PieItem[]>([]);
   const [loadingChartInfo, setLoadingChartInfo] = useState(true);
+  const [income, setIncome] = useState(0);
+  const [expensive, setExpensive] = useState(0);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -56,6 +58,9 @@ export default function CategoriesScreen() {
         });
         setChartInfo(data);
         setLoadingChartInfo(false);
+
+        setExpensive(await getSumByType(1));
+        setIncome(await getSumByType(2));
       } catch (error: unknown) {
         console.error(error);
       }
@@ -110,7 +115,7 @@ export default function CategoriesScreen() {
                   style={{
                     backgroundColor: theme.card,
                   }}
-                  className="flex-col gap-1 items-center justify-center rounded-full w-[200px] h-[200px]"
+                  className="flex-col items-center justify-center rounded-full w-[200px] h-[200px]"
                 >
                   <Text
                     style={{ color: theme.text }}
@@ -122,17 +127,18 @@ export default function CategoriesScreen() {
                     style={{
                       color: categoriesType === 1 ? theme.red : theme.green,
                     }}
-                    className="text-xl font-medium"
+                    className="text-2xl font-medium"
                   >
-                    123
+                    {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
                   </Text>
                   <Text
                     style={{
                       color: categoriesType === 1 ? theme.green : theme.red,
+                      opacity: 0.4,
                     }}
-                    className="text-sm font-medium"
+                    className="text-base font-medium"
                   >
-                    456
+                    {categoriesType === 1 ? `+${income}` : `-${expensive}`} ₽
                   </Text>
                 </TouchableOpacity>
               )}
@@ -163,7 +169,11 @@ export default function CategoriesScreen() {
         </View>
         <View className="w-full px-4">
           {!loadingCategories ? (
-            <CategoriesList onRefresh={() => setRefreshFlag((prev) => prev + 1)} categories={categories} list={isList} />
+            <CategoriesList
+              onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+              categories={categories}
+              list={isList}
+            />
           ) : (
             <Text
               style={{ color: theme.secondary }}

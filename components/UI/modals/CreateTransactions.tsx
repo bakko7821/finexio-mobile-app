@@ -1,11 +1,13 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { createTransaction } from "@/database/queries/transactions";
 import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
+import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import NumberInput from "../NumberInput";
@@ -27,6 +29,8 @@ export default function CreateTransactionsModal({
 
   const [countValue, setCoutValue] = useState("0");
   const [gasValue, setGasValue] = useState(0);
+  const [isOpenDateModal, setIsOpenDateModal] = useState(false);
+  const [date, setDate] = useState(nowDay);
 
   useEffect(() => {
     if (!category?.gasPrice) {
@@ -46,14 +50,16 @@ export default function CreateTransactionsModal({
   if (category === null) return;
 
   const handleClose = () => {
+    setDate(nowDay);
     setCoutValue("0");
     setGasValue(0);
     onClose();
   };
 
   const handleCreateTransaction = async () => {
+    console.log(date);
     await createTransaction({
-      date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+      date: date,
       count: Number(countValue),
       categoryId: category.id,
 
@@ -119,7 +125,11 @@ export default function CreateTransactionsModal({
               Калькулятор:
             </Text>
 
-            <NumberInput value={countValue} setValue={setCoutValue} />
+            <NumberInput
+              openCalendar={() => setIsOpenDateModal(true)}
+              value={countValue}
+              setValue={setCoutValue}
+            />
           </View>
           {category?.isGas ? (
             <View className="flex-col gap-1 items-start justify-start">
@@ -176,6 +186,19 @@ export default function CreateTransactionsModal({
           </Text>
         </TouchableOpacity>
       </View>
+      {Platform.OS === "android" && isOpenDateModal && (
+        <DateTimePicker
+          value={isoToDateSafe(date)}
+          mode="date"
+          display="default"
+          themeVariant={theme.isDark ? "dark" : "light"}
+          onChange={(event, selectedDate) => {
+            setIsOpenDateModal(false);
+            if (!selectedDate) return;
+            setDate(dateToIso(selectedDate));
+          }}
+        />
+      )}
     </Modal>
   );
 }

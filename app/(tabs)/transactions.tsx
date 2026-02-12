@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
 import { useEffect, useMemo, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 
 export default function TransactionsScreen() {
@@ -37,7 +37,13 @@ export default function TransactionsScreen() {
       <Text style={{ color: theme.text }} className="px-4 text-lg font-medium">
         Транзакции
       </Text>
-      <TransactionList data={transactionsList} />
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className=" w-full flex-col gap-2"
+      >
+        <TransactionList data={transactionsList} />
+      </ScrollView>
     </View>
   );
 }

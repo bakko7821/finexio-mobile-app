@@ -25,6 +25,33 @@ const WEEK_DAYS = [
   "суббота",
 ];
 
+const now = new Date();
+
+export function isoToDateSafe(iso?: string): Date {
+  return iso ? new Date(iso) : new Date();
+}
+
+export function dateToIso(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export function getTodayISO(): string {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // месяцы 0–11
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+export const nowDay = getTodayISO();
+export const nowMonth = now.getMonth() + 1;
+export const nowYear = now.getFullYear();
+
 export const getCurrentMonthAndYear = (): { month: number; year: number } => {
   const today = new Date();
 
@@ -85,7 +112,7 @@ export const groupTransactionsByDate = (
     return {
       date,
       label: getDateLabel(parsedDate),
-      day,
+      day: String(day).padStart(2, "0"),
       month,
       year,
       groupedCount: calculateGroupedCount(txs),

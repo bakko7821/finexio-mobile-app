@@ -114,6 +114,9 @@ export default function NumberInput({
         const backgroundColor = isMainButton
           ? theme.card
           : withOpacity(theme.card, 0.5);
+        const borderColor = isMainButton
+          ? "transparent"
+          : withOpacity(theme.text, 0.5);
         const contentColor = theme.text; // цвет текста или иконки
 
         return (
@@ -124,6 +127,9 @@ export default function NumberInput({
               margin: gap / 2,
               borderRadius: 16,
               backgroundColor,
+              borderColor,
+              borderWidth: 1.5,
+              borderStyle: "solid",
               alignItems: "center",
               justifyContent: "center",
             }}
