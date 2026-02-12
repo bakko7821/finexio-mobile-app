@@ -1,6 +1,7 @@
-import { getTransactions } from "@/database/queries/transactions";
+import { getTransactionsByCategoryAndDateAsync } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
+import { getSum } from "@/utils/chart";
 import { getContrastColor } from "@/utils/colors";
 import { getCurrentMonthAndYear } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
@@ -27,14 +28,20 @@ export default function InfoCategoryModal({
   useEffect(() => {
     try {
       if (!category) return;
+      console.log(category.id, typeof category.id);
+      console.log("Category id:", category.id);
+
       const { month, year } = getCurrentMonthAndYear();
+      console.log(month, year);
 
       const fetchTransactionsByCategoryId = async () => {
-        const data = await getTransactions({
+        const { month, year } = getCurrentMonthAndYear();
+        const data = await getTransactionsByCategoryAndDateAsync({
           categoryId: category.id,
-          month: month,
-          year: year,
+          month,
+          year,
         });
+        console.log("Transactions:", data);
         setTransactions(data);
       };
 
@@ -78,14 +85,21 @@ export default function InfoCategoryModal({
               color={theme.text}
             />
           </View>
-          <View className="flex-col items-start justify-start">
+          <View className="flex-col flex-1 items-start justify-start">
             <Text
               style={{ color: getContrastColor(category.color) }}
               className="text-2xl font-medium"
             >
               {category.name}
             </Text>
-            <Text>{transactions.length}</Text>
+            <View className="flex-row w-full items-center justify-between">
+              <Text style={{ color: getContrastColor(category.color) }}>
+                {transactions.length} операции
+              </Text>
+              <Text style={{ color: getContrastColor(category.color) }}>
+                {getSum(transactions)} ₽
+              </Text>
+            </View>
           </View>
         </View>
       </View>

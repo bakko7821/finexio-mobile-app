@@ -3,7 +3,8 @@ import { getTransactions } from "@/database/queries/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
-import { useEffect, useMemo, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function TransactionsScreen() {
@@ -15,18 +16,28 @@ export default function TransactionsScreen() {
     [transactions],
   );
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const data = await getTransactions();
-        setTransactions(data);
-      } catch (error: unknown) {
-        console.error(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-    fetchTransactions();
-  }, []);
+      const fetchTransactions = async () => {
+        try {
+          const data = await getTransactions();
+          if (isActive) {
+            setTransactions(data);
+          }
+        } catch (error: unknown) {
+          console.error(error);
+        }
+      };
+
+      fetchTransactions();
+
+      return () => {
+        isActive = false;
+      };
+    }, []),
+  );
 
   return (
     <View
