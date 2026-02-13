@@ -1,7 +1,11 @@
 import ArchiveIcon from "@/assets/ui/Archivebox.svg";
 import EditIcon from "@/assets/ui/Edit.svg";
 import TrashIcon from "@/assets/ui/Trash.svg";
-import { getTransactionsByCategoryAndDateAsync } from "@/database";
+import {
+  deleteCategory,
+  getAllTransactionsByCategory,
+  getTransactionsByCategoryAndDateAsync,
+} from "@/database";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
 import { getSum } from "@/utils/chart";
@@ -15,12 +19,14 @@ import { RenderIcon } from "../RenderIcon";
 import DeleteModal from "./DeleteModal";
 
 interface InfoCategoryModalProps {
+  onRefresh?: () => void;
   category: Category | null;
   visible: boolean;
   onClose: () => void;
 }
 
 export default function InfoCategoryModal({
+  onRefresh,
   category,
   visible,
   onClose,
@@ -29,15 +35,24 @@ export default function InfoCategoryModal({
   const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactionsByCategory, setAllTransactionsByCategory] = useState<
+    Transaction[]
+  >([]);
 
-  const handleDeleteModal = () => {
-    alert(123);
+  const handleDeleteModal = async () => {
+    if (!category) return;
+
+    await deleteCategory(category?.id);
+    console.log("категория удаления");
+    setIsVisibleDeleteModal(false);
+    onClose();
+    onRefresh?.();
   };
 
   useEffect(() => {
     try {
       if (!category) return;
-      const fetchTransactionsByCategoryId = async () => {
+      const fetchTransactionsByCategoryIdAndDate = async () => {
         const { month, year } = getCurrentMonthAndYear();
         const data = await getTransactionsByCategoryAndDateAsync({
           categoryId: category.id,
@@ -47,7 +62,15 @@ export default function InfoCategoryModal({
         setTransactions(data);
       };
 
-      fetchTransactionsByCategoryId();
+      const fetchAllTransactionsByCategory = async () => {
+        const data = await getAllTransactionsByCategory({
+          categoryId: category.id,
+        });
+        setAllTransactionsByCategory(data);
+      };
+
+      fetchTransactionsByCategoryIdAndDate();
+      fetchAllTransactionsByCategory();
     } catch (error: unknown) {
       console.error(error);
     }
@@ -163,7 +186,7 @@ export default function InfoCategoryModal({
         onClose={() => setIsVisibleDeleteModal(false)}
         onSubmit={handleDeleteModal}
         category={category}
-        transactionsFromCategory={transactions}
+        transactionsFromCategory={allTransactionsByCategory}
       />
     </Modal>
   );

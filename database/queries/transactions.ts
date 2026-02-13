@@ -1,8 +1,8 @@
 import { CreateTransactionDto, Transaction } from "@/utils/transactions";
 import { getDb } from "../db";
 import {
-    mapTransactionFromRow,
-    TransactionRow,
+  mapTransactionFromRow,
+  TransactionRow,
 } from "../mappers/transaction.mapper";
 
 export const createTransaction = async (
@@ -62,6 +62,44 @@ export const getTransactions = async (): Promise<Transaction[]> => {
   `;
 
   const rows: TransactionRow[] = await db.getAllAsync<TransactionRow>(sql);
+
+  return rows.map(mapTransactionFromRow);
+};
+
+export const getAllTransactionsByCategory = async ({
+  categoryId,
+}: {
+  categoryId: number;
+}): Promise<Transaction[]> => {
+  const db = await getDb();
+  if (!db) return [];
+
+  const rows = await db.getAllAsync<TransactionRow>(
+    `
+    SELECT
+      t.id AS id,
+      t.date AS date,
+      t.count AS count,
+      t.note AS note,
+      t.gasValue AS gasValue,
+      t.categoryId AS categoryId,
+
+      c.id AS category_id,
+      c.name AS category_name,
+      c.color AS category_color,
+      c.icon AS category_icon,
+      c.type AS category_type,
+      c.isArchive AS category_isArchive,
+      c.isGas AS category_isGas,
+      c.gasType AS category_gasType,
+      c.gasPrice AS category_gasPrice
+    FROM transactions t
+    INNER JOIN categories c ON c.id = t.categoryId
+    WHERE t.categoryId = ?
+    ORDER BY t.date DESC
+    `,
+    [categoryId]
+  );
 
   return rows.map(mapTransactionFromRow);
 };

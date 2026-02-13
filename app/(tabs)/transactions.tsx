@@ -52,7 +52,16 @@ export default function TransactionsScreen() {
         showsHorizontalScrollIndicator={false}
         className=" w-full flex-col gap-2"
       >
-        <TransactionList data={transactionsList} />
+        {transactionsList.length > 0 ? (
+          <TransactionList data={transactionsList} />
+        ) : (
+          <Text
+            style={{ color: theme.secondary }}
+            className="text-sm font-medium px-4"
+          >
+            У вас отсутствуют транзакции.
+          </Text>
+        )}
       </ScrollView>
     </View>
   );

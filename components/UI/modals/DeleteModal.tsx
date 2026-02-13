@@ -1,9 +1,11 @@
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
+import { getContrastColor, withOpacity } from "@/utils/colors";
 import { Transaction } from "@/utils/transactions";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
+import { RenderIcon } from "../RenderIcon";
 
 interface DeleteModalProps {
   category?: Category;
@@ -50,27 +52,75 @@ export default function DeleteModal({
         className="rounded-3xl p-4 gap-3 flex-col w-[85%]"
       >
         <View className="w-full flex-row items-center justify-between">
-          <Text>Удаление {category ? "категории" : "транзакции"}</Text>
+          <View className="flex-row gap-2 items-center justify-center">
+            {category && (
+              <RenderIcon
+                width={24}
+                height={24}
+                color={theme.text}
+                name={category.icon}
+              />
+            )}
+            <Text style={{ color: theme.text }} className="text-xl font-medium">
+              Удаление {category ? `${category.name}` : "транзакции"}
+            </Text>
+          </View>
           <TouchableOpacity onPress={onClose}>
             <CrossIcon width={24} height={24} color={theme.text} />
           </TouchableOpacity>
         </View>
         {category && (
           <>
-            <Text>
-              Удаление категории{" "}
-              <Text
-                style={{ color: category.color }}
-              >{`"${category.name}"`}</Text>{" "}
-              так же удалит <Text>({transactionsFromCategory?.length})</Text>{" "}
-              транзакций связанных с этой категорией.
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-regular"
+            >
+              Все операции (
+              <Text style={{ color: theme.text }} className="font-medium">
+                {transactionsFromCategory?.length || 0}
+              </Text>
+              ) связанные с этой категорией будут удалены.
             </Text>
-            <Text>
-              Если вам нужно временно скрыть категорию, возспользуйтесь кнопкой Архивировать.
-              Если вы все же хотите удалить категорию, нажмите Удалить.
+
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-regular"
+            >
+              Категорию нельзя будет восстановить. Если вы хотите скрыть
+              категорию выберите{" "}
+              <Text style={{ color: theme.text }} className="font-medium">
+                Архивировать
+              </Text>
             </Text>
           </>
         )}
+        <View className="w-full flex-row gap-2 item-center justify-end">
+          <TouchableOpacity
+            className="rounded-xl px-3 py-2 items-center justify-center"
+            onPress={onClose}
+          >
+            <Text
+              style={{ color: theme.primary }}
+              className="text-base font-medium"
+            >
+              Отменить
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ backgroundColor: withOpacity(theme.primary, 0.4) }}
+            className="rounded-xl px-3 py-2 items-center justify-center"
+            onPress={onSubmit}
+          >
+            <Text
+              style={{
+                color: getContrastColor(theme.primary),
+              }}
+              className="text-base font-medium"
+            >
+              Удалить
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );

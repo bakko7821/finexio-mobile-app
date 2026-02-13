@@ -99,6 +99,7 @@ export default function CategoriesList({
         category={selectedCategory}
       />
       <InfoCategoryModal
+        onRefresh={onRefresh}
         category={selectedCategory}
         visible={isOpenInfoCategoryModal}
         onClose={() => setIsOpenInfoCategoryModal(false)}
