@@ -10,7 +10,7 @@ export type CreateCategoryDto = {
   gasType?: string;
   gasPrice?: number;
 
-  subcategoryIds?: number[];
+  subcategories?: CreateSubCategoryDto[];
 };
 
 export type Category = {
@@ -26,5 +26,15 @@ export type Category = {
   gasType?: string;
   gasPrice?: number;
 
-  subcategoryIds?: number[];
+  subcategories?: SubCategory[];
 };
+
+export type CreateSubCategoryDto = {
+  name: string;
+}
+
+export type SubCategory = {
+  id: number;
+  name: string;
+  value: number;
+}

@@ -14,7 +14,9 @@ import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import PickColorComponent from "@/components/Categories/PickColorComponent";
 import PickIconComponent from "@/components/Categories/PickIconComponent";
+import { SubCategoriesList } from "@/components/SubCategories/SubCategoriesList";
 import { createCategory } from "@/database/queries/categories";
+import { CreateSubCategoryDto } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import Modal from "react-native-modal";
@@ -56,6 +58,28 @@ export default function CreateCategoryModal({
 
   const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
+
+  const [isOpenCreateNameSubcategories, setIsOpenCreateNameSubcategories] =
+    useState(false);
+  const [subCategoryName, setSubcategoryName] = useState("");
+  const [subcategoriesArray, setSubcategoriesArray] = useState<
+    CreateSubCategoryDto[]
+  >([]);
+
+  const createSubCategoryHandle = () => {
+    if (!subCategoryName.trim()) return;
+
+    setSubcategoriesArray((prev) => [
+      ...prev,
+      { name: subCategoryName.trim() },
+    ]);
+
+    setSubcategoryName("");
+  };
+
+  const deleteSmallCategory = (name: string) => {
+    setSubcategoriesArray((prev) => prev.filter((item) => item.name !== name));
+  };
 
   const createCategoryHandle = async () => {
     if (!categoryNameValue.trim()) {
@@ -315,12 +339,35 @@ export default function CreateCategoryModal({
                 >
                   Подкатегории
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setIsOpenCreateNameSubcategories(true)}
+                >
                   <PlusIcon width={20} height={20} color={theme.primary} />
                 </TouchableOpacity>
               </View>
               <Plug />
-              <View className="flex-col gap-2"></View>
+              {subcategoriesArray.length > 0 ? (
+                <View className="flex-col gap-2">
+                  <Text
+                    style={{ color: theme.secondary }}
+                    className="text-sm font-medium"
+                  >
+                    Свайпните влево для удаления подкатегории
+                  </Text>
+                  <SubCategoriesList
+                    smallCategories={subcategoriesArray}
+                    selectedColor={selectedColor}
+                    onDelete={deleteSmallCategory}
+                  />
+                </View>
+              ) : (
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  У вас отсутствуют подкатегории.
+                </Text>
+              )}
             </View>
           </View>
         )}
@@ -355,6 +402,14 @@ export default function CreateCategoryModal({
           </TouchableOpacity>
         )}
       </View>
+      <InputModal
+        title="Введите название подкатегории."
+        visible={isOpenCreateNameSubcategories}
+        onClose={() => setIsOpenCreateNameSubcategories(false)}
+        value={subCategoryName}
+        onChange={setSubcategoryName}
+        handleDone={createSubCategoryHandle}
+      />
       <InputModal
         title="Укажите тип топлива."
         visible={isOpenInputGasTypeModal}

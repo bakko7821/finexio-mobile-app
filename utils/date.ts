@@ -61,21 +61,25 @@ export const getCurrentMonthAndYear = (): { month: number; year: number } => {
   };
 };
 
-export const parseDate = (dateString: string) => {
-  const date = new Date(dateString);
+export const parseDate = (date: string) => {
+  const [year, month, day] = date.split("-").map(Number);
+  const parsedDate = new Date(year, month - 1, day);
 
   return {
-    day: String(date.getDate()),
-    month: MONTHS[date.getMonth()],
-    year: String(date.getFullYear()),
-    date,
+    date: parsedDate,
+    day,
+    month: MONTHS[month - 1],
+    year: String(year),
   };
 };
 
 export const getDateLabel = (date: Date): string => {
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
   const today = new Date();
   const yesterday = new Date();
-
   yesterday.setDate(today.getDate() - 1);
 
   const isSameDay = (a: Date, b: Date) =>
@@ -86,8 +90,9 @@ export const getDateLabel = (date: Date): string => {
   if (isSameDay(date, today)) return "Сегодня";
   if (isSameDay(date, yesterday)) return "Вчера";
 
-  return WEEK_DAYS[date.getDay()];
+  return WEEK_DAYS[date.getDay()] ?? "";
 };
+
 
 const calculateGroupedCount = (transactions: Transaction[]) =>
   transactions.reduce((acc, tx) => {
@@ -108,6 +113,8 @@ export const groupTransactionsByDate = (
 
   return Array.from(map.entries()).map(([date, txs]) => {
     const { day, month, year, date: parsedDate } = parseDate(date);
+
+    console.log("PARSED DATE", date, parsedDate, isNaN(parsedDate.getTime()));
 
     return {
       date,

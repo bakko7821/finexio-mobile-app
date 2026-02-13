@@ -33,13 +33,15 @@ export default function TransactionList({ data }: TransactionListProps) {
                   style={{ color: theme.secondary }}
                   className="text-xs font-regulas"
                 >
-                  {group.label.toLocaleUpperCase("ru-RU")}
+                  {(group.label ?? "").toLocaleUpperCase("ru-RU")}
                 </Text>
                 <Text
                   style={{ color: withOpacity(theme.primary, 0.6) }}
                   className="text-base font-bold"
                 >
-                  {`${group.month} ${group.year}`.toLocaleUpperCase("ru-RU")}
+                  {`${group.month ?? ""} ${group.year ?? ""}`.toLocaleUpperCase(
+                    "ru-RU",
+                  )}
                 </Text>
               </View>
             </View>

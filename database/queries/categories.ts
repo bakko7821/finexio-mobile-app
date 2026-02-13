@@ -1,45 +1,90 @@
 import { Category, CreateCategoryDto } from "@/utils/categories";
 import { getDb } from "../db";
+import { CategoryWithSubRow, mapCategoriesWithSubs } from "../mappers/category.mapper";
 
 export const createCategory = async (
   dto: CreateCategoryDto,
 ): Promise<number> => {
   const db = await getDb();
-  const result = await db.runAsync(
-    `
-    INSERT INTO categories (
-      name, color, icon, type,
-      isArchive, isGas, gasType, gasPrice
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `,
-    [
-      dto.name,
-      dto.color,
-      dto.icon,
-      dto.type,
-      dto.isArchive ? 1 : 0,
-      dto.isGas ? 1 : 0,
-      dto.gasType ?? null,
-      dto.gasPrice ?? null,
-    ],
-  );
 
-  return result.lastInsertRowId;
+  await db.execAsync("BEGIN TRANSACTION");
+
+  try {
+    const result = await db.runAsync(
+      `
+      INSERT INTO categories (
+        name, color, icon, type,
+        isArchive, isGas, gasType, gasPrice
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        dto.name,
+        dto.color,
+        dto.icon,
+        dto.type,
+        dto.isArchive ? 1 : 0,
+        dto.isGas ? 1 : 0,
+        dto.gasType ?? null,
+        dto.gasPrice ?? null,
+      ],
+    );
+
+    const categoryId = result.lastInsertRowId;
+
+    if (dto.subcategories?.length) {
+      for (const sub of dto.subcategories) {
+        await db.runAsync(
+          `
+          INSERT INTO subcategories (name, categoryId)
+          VALUES (?, ?)
+          `,
+          [sub.name, categoryId],
+        );
+      }
+    }
+
+    await db.execAsync("COMMIT");
+    return categoryId;
+  } catch (e) {
+    await db.execAsync("ROLLBACK");
+    throw e;
+  }
 };
+
 
 export const getCategoriesByType = async (
   type: number,
 ): Promise<Category[]> => {
   const db = await getDb();
-  return await db.getAllAsync(
+
+  const rows = await db.getAllAsync<CategoryWithSubRow>(
     `
-    SELECT * FROM categories
-    WHERE isArchive = 0 AND type = ?
+    SELECT
+      c.id            AS category_id,
+      c.name          AS category_name,
+      c.color         AS category_color,
+      c.icon          AS category_icon,
+      c.type          AS category_type,
+      c.isArchive     AS category_isArchive,
+      c.isGas         AS category_isGas,
+      c.gasType       AS category_gasType,
+      c.gasPrice      AS category_gasPrice,
+
+      s.id            AS sub_id,
+      s.name          AS sub_name,
+      s.value         AS sub_value
+    FROM categories c
+    LEFT JOIN subcategories s ON s.categoryId = c.id
+    WHERE c.isArchive = 0 AND c.type = ?
+    ORDER BY c.id, s.id
     `,
     [type],
   );
+
+  return mapCategoriesWithSubs(rows);
 };
+
 
 export async function deleteCategory(id: number): Promise<void> {
   const db = await getDb();

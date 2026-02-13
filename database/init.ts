@@ -30,5 +30,15 @@ export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
       FOREIGN KEY (categoryId) REFERENCES categories(id)
         ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS subcategories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      value REAL DEFAULT 0,
+      categoryId INTEGER NOT NULL,
+
+      FOREIGN KEY (categoryId) REFERENCES categories(id)
+        ON DELETE CASCADE
+    );
   `);
 };
