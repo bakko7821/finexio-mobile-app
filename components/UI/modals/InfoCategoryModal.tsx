@@ -1,4 +1,4 @@
-import ArchiveIcon from "@/assets/ui/Archive.svg";
+import ArchiveIcon from "@/assets/ui/Archivebox.svg";
 import EditIcon from "@/assets/ui/Edit.svg";
 import TrashIcon from "@/assets/ui/Trash.svg";
 import { getTransactionsByCategoryAndDateAsync } from "@/database";
@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../RenderIcon";
+import DeleteModal from "./DeleteModal";
 
 interface InfoCategoryModalProps {
   category: Category | null;
@@ -25,18 +26,17 @@ export default function InfoCategoryModal({
   onClose,
 }: InfoCategoryModalProps) {
   const theme = useTheme();
+  const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  const handleDeleteModal = () => {
+    alert(123);
+  };
 
   useEffect(() => {
     try {
       if (!category) return;
-      console.log(category.id, typeof category.id);
-      console.log("Category id:", category.id);
-
-      const { month, year } = getCurrentMonthAndYear();
-      console.log(month, year);
-
       const fetchTransactionsByCategoryId = async () => {
         const { month, year } = getCurrentMonthAndYear();
         const data = await getTransactionsByCategoryAndDateAsync({
@@ -44,7 +44,6 @@ export default function InfoCategoryModal({
           month,
           year,
         });
-        console.log("Transactions:", data);
         setTransactions(data);
       };
 
@@ -121,7 +120,7 @@ export default function InfoCategoryModal({
         <View className="p-4 flex-row items-center justify-around">
           <TouchableOpacity className="gap-2 flex-col items-center justify-center">
             <View
-              style={{ backgroundColor: withOpacity(theme.text, 0.4) }}
+              style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
               className="p-3 rounded-full items-center justify-center"
             >
               <EditIcon width={32} height={32} color={theme.text} />
@@ -132,7 +131,7 @@ export default function InfoCategoryModal({
           </TouchableOpacity>
           <TouchableOpacity className="gap-2 flex-col items-center justify-center">
             <View
-              style={{ backgroundColor: withOpacity(theme.text, 0.4) }}
+              style={{ backgroundColor: withOpacity("#ffe11e", 0.4) }}
               className="p-3 rounded-full items-center justify-center"
             >
               <ArchiveIcon width={32} height={32} color={theme.text} />
@@ -142,9 +141,12 @@ export default function InfoCategoryModal({
               Архивировать
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="gap-2 flex-col items-center justify-center">
+          <TouchableOpacity
+            onPress={() => setIsVisibleDeleteModal(true)}
+            className="gap-2 flex-col items-center justify-center"
+          >
             <View
-              style={{ backgroundColor: withOpacity(theme.text, 0.4) }}
+              style={{ backgroundColor: withOpacity(theme.red, 0.4) }}
               className="p-3 rounded-full items-center justify-center"
             >
               <TrashIcon width={32} height={32} color={theme.text} />
@@ -156,6 +158,13 @@ export default function InfoCategoryModal({
           </TouchableOpacity>
         </View>
       </View>
+      <DeleteModal
+        visible={isVisibleDeleteModal}
+        onClose={() => setIsVisibleDeleteModal(false)}
+        onSubmit={handleDeleteModal}
+        category={category}
+        transactionsFromCategory={transactions}
+      />
     </Modal>
   );
 }
