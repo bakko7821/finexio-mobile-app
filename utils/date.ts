@@ -114,8 +114,6 @@ export const groupTransactionsByDate = (
   return Array.from(map.entries()).map(([date, txs]) => {
     const { day, month, year, date: parsedDate } = parseDate(date);
 
-    console.log("PARSED DATE", date, parsedDate, isNaN(parsedDate.getTime()));
-
     return {
       date,
       label: getDateLabel(parsedDate),

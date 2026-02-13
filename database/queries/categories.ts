@@ -1,10 +1,13 @@
-import { Category, CreateCategoryDto } from "@/utils/categories";
+import { Category, CreateCategoryDto, SubCategory } from "@/utils/categories";
 import { getDb } from "../db";
-import { CategoryWithSubRow, mapCategoriesWithSubs } from "../mappers/category.mapper";
+import {
+  CategoryWithSubRow,
+  mapCategoriesWithSubs,
+} from "../mappers/category.mapper";
 
 export const createCategory = async (
   dto: CreateCategoryDto,
-): Promise<number> => {
+): Promise<{ categoryId: number; subcategories: SubCategory[] }> => {
   const db = await getDb();
 
   await db.execAsync("BEGIN TRANSACTION");
@@ -32,26 +35,34 @@ export const createCategory = async (
 
     const categoryId = result.lastInsertRowId;
 
+    const insertedSubcategories: SubCategory[] = [];
+
     if (dto.subcategories?.length) {
       for (const sub of dto.subcategories) {
-        await db.runAsync(
+        const subResult = await db.runAsync(
           `
           INSERT INTO subcategories (name, categoryId)
           VALUES (?, ?)
           `,
           [sub.name, categoryId],
         );
+
+        insertedSubcategories.push({
+          id: subResult.lastInsertRowId,
+          name: sub.name,
+          value: 0, // ✅ присваиваем value
+        });
       }
     }
 
     await db.execAsync("COMMIT");
-    return categoryId;
+
+    return { categoryId, subcategories: insertedSubcategories };
   } catch (e) {
     await db.execAsync("ROLLBACK");
     throw e;
   }
 };
-
 
 export const getCategoriesByType = async (
   type: number,
@@ -84,7 +95,6 @@ export const getCategoriesByType = async (
 
   return mapCategoriesWithSubs(rows);
 };
-
 
 export async function deleteCategory(id: number): Promise<void> {
   const db = await getDb();

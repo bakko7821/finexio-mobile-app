@@ -4,7 +4,7 @@ import { Platform, Text, TouchableOpacity, View } from "react-native";
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { createTransaction } from "@/database/queries/transactions";
-import { Category } from "@/utils/categories";
+import { Category, SubCategory } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -31,6 +31,8 @@ export default function CreateTransactionsModal({
   const [gasValue, setGasValue] = useState(0);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
   const [date, setDate] = useState(nowDay);
+  const [selectedSubCategory, setSelectedSubCategory] =
+    useState<SubCategory | null>(null);
 
   useEffect(() => {
     if (!category?.gasPrice) {
@@ -50,7 +52,7 @@ export default function CreateTransactionsModal({
   if (category === null) return;
 
   const handleClose = () => {
-    setDate(nowDay)
+    setDate(nowDay);
     setCoutValue("0");
     setGasValue(0);
     onClose();
@@ -62,6 +64,7 @@ export default function CreateTransactionsModal({
       count: Number(countValue),
       categoryId: category.id,
 
+      subCategoryId: selectedSubCategory?.id,
       note: undefined,
       gasValue: gasValue ? Number(gasValue) : undefined,
     });
@@ -97,6 +100,34 @@ export default function CreateTransactionsModal({
         </View>
         <View className="w-full flex-col gap-3">
           <CategoryComponent category={category} />
+          {category.subcategories && category.subcategories.length > 0 && (
+            <View className="w-full flex-row flex-wrap gap-2 items-center justify-start">
+              {category.subcategories.map((subcategory) => {
+                const isSelected = selectedSubCategory?.id === subcategory.id;
+
+                return (
+                  <TouchableOpacity
+                    key={subcategory.id}
+                    onPress={() => setSelectedSubCategory(subcategory)}
+                    style={{
+                      borderColor: category.color,
+                      backgroundColor: isSelected
+                        ? category.color
+                        : "transparent",
+                    }}
+                    className="px-3 py-1 items-center justify-center rounded-lg border-[2px] border-solid"
+                  >
+                    <Text
+                      className="text-sm font-medium"
+                      style={{ color: isSelected ? "#fff" : theme.text }}
+                    >
+                      {subcategory.name}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
           <View className="flex-col gap-1 items-start justify-start">
             <Text
               style={{ color: theme.secondary }}

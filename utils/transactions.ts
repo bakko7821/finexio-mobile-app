@@ -1,10 +1,11 @@
-import { Category } from "./categories";
+import { Category, SubCategory } from "./categories";
 
 export type CreateTransactionDto = {
   date: string;
   count: number;
   categoryId: number;
 
+  subCategoryId?: number;
   note?: string;
   gasValue?: number;
 };
@@ -15,6 +16,9 @@ export type Transaction = {
   count: number;
   categoryId: number;
   category: Category;
+
+  subCategoryId?: number;
+  subCategory?: SubCategory
 
   note?: string;
   gasValue?: number;

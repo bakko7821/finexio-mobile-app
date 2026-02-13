@@ -75,7 +75,7 @@ export default function DeleteModal({
               style={{ color: theme.text }}
               className="text-base font-regular"
             >
-              Все операции (
+              Все транзакции (
               <Text style={{ color: theme.text }} className="font-medium">
                 {transactionsFromCategory?.length || 0}
               </Text>

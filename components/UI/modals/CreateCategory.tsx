@@ -109,6 +109,8 @@ export default function CreateCategoryModal({
 
         gasPrice:
           isGasCategory && gasValuePerLitre > 0 ? gasValuePerLitre : undefined,
+
+        subcategories: subcategoriesArray,
       });
 
       onRefresh?.();

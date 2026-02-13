@@ -15,17 +15,18 @@ export const createTransaction = async (
     INSERT INTO transactions (
       date,
       count,
-      note,
       categoryId,
+      subCategoryId,
+      note,
       gasValue
-    )
-    VALUES (?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?)
     `,
     [
       dto.date,
       dto.count,
-      dto.note ?? null,
       dto.categoryId,
+      dto.subCategoryId ?? null,
+      dto.note ?? null,
       dto.gasValue ?? null,
     ],
   );
@@ -39,30 +40,32 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 
   const sql = `
     SELECT
-      t.id        AS transaction_id,
-      t.date      AS transaction_date,
-      t.count     AS transaction_count,
-      t.note      AS transaction_note,
-      t.gasValue  AS transaction_gasValue,
+      t.id AS transaction_id,
+      t.date AS transaction_date,
+      t.count AS transaction_count,
+      t.note AS transaction_note,
+      t.gasValue AS transaction_gasValue,
       t.categoryId AS transaction_categoryId,
+      t.subCategoryId AS transaction_subCategoryId,
 
-      c.id        AS category_id,
-      c.name      AS category_name,
-      c.color     AS category_color,
-      c.icon      AS category_icon,
-      c.type      AS category_type,
+      c.id AS category_id,
+      c.name AS category_name,
+      c.color AS category_color,
+      c.icon AS category_icon,
+      c.type AS category_type,
       c.isArchive AS category_isArchive,
-      c.isGas     AS category_isGas,
-      c.gasType   AS category_gasType,
+      c.isGas AS category_isGas,
+      c.gasType AS category_gasType,
       c.gasPrice AS category_gasPrice,
 
-      NULL AS sub_id,
-      NULL AS sub_name,
-      NULL AS sub_value
+      s.id        AS sub_id,
+      s.name      AS sub_name,
+      s.value     AS sub_value
     FROM transactions t
     LEFT JOIN categories c ON c.id = t.categoryId
+    LEFT JOIN subcategories s ON s.id = t.subCategoryId
     ORDER BY t.date DESC
-`;
+  `;
 
   const rows: TransactionWithCategoryRow[] =
     await db.getAllAsync<TransactionWithCategoryRow>(sql);
@@ -87,6 +90,7 @@ export const getAllTransactionsByCategory = async ({
       t.note      AS transaction_note,
       t.gasValue  AS transaction_gasValue,
       t.categoryId AS transaction_categoryId,
+      t.subCategoryId AS transaction_subCategoryId,
 
       c.id        AS category_id,
       c.name      AS category_name,
@@ -98,11 +102,12 @@ export const getAllTransactionsByCategory = async ({
       c.gasType   AS category_gasType,
       c.gasPrice AS category_gasPrice,
 
-      NULL AS sub_id,
-      NULL AS sub_name,
-      NULL AS sub_value
+      s.id        AS sub_id,
+      s.name      AS sub_name,
+      s.value     AS sub_value
     FROM transactions t
     INNER JOIN categories c ON c.id = t.categoryId
+    LEFT JOIN subcategories s ON s.id = t.subCategoryId
     WHERE t.categoryId = ?
     ORDER BY t.date DESC
     `,
@@ -136,6 +141,7 @@ export const getTransactionsByCategoryAndDateAsync = async ({
       t.note      AS transaction_note,
       t.gasValue  AS transaction_gasValue,
       t.categoryId AS transaction_categoryId,
+      t.subCategoryId AS transaction_subCategoryId,
 
       c.id        AS category_id,
       c.name      AS category_name,
@@ -147,11 +153,12 @@ export const getTransactionsByCategoryAndDateAsync = async ({
       c.gasType   AS category_gasType,
       c.gasPrice AS category_gasPrice,
 
-      NULL AS sub_id,
-      NULL AS sub_name,
-      NULL AS sub_value
+      s.id        AS sub_id,
+      s.name      AS sub_name,
+      s.value     AS sub_value
     FROM transactions t
     INNER JOIN categories c ON c.id = t.categoryId
+    LEFT JOIN subcategories s ON s.id = t.subCategoryId
     WHERE t.categoryId = ?
       AND strftime('%m', t.date) = ?
       AND strftime('%Y', t.date) = ?

@@ -28,6 +28,9 @@ export default function TransactionComponent({
         <View className="flex-col  items-start justify-start">
           <Text style={{ color: theme.text }} className="text-base font-medium">
             {transaction.category.name}
+            {transaction.subCategory?.name
+              ? ` (${transaction.subCategory.name})`
+              : ""}
           </Text>
           {transaction.category.isGas ? (
             <Text
