@@ -1,10 +1,11 @@
 import { View } from "react-native";
 import { SmallCategory, SwipeableSmallCategory } from "./SwipeableSubCategory";
+import { SubCategoryFormItem } from "@/utils/categories";
 
 interface SubCategoriesListProps {
-  smallCategories: SmallCategory[];
+  smallCategories: SubCategoryFormItem[];
   selectedColor: string;
-  onDelete: (name: string) => void;
+  onDelete: (item: SubCategoryFormItem) => void;
 }
 
 export const SubCategoriesList: React.FC<SubCategoriesListProps> = ({

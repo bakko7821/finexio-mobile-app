@@ -15,27 +15,38 @@ import PlusIcon from "@/assets/ui/Plus.svg";
 import PickColorComponent from "@/components/Categories/PickColorComponent";
 import PickIconComponent from "@/components/Categories/PickIconComponent";
 import { SubCategoriesList } from "@/components/SubCategories/SubCategoriesList";
-import { createCategory } from "@/database/queries/categories";
-import { CreateSubCategoryDto } from "@/utils/categories";
+import { createCategory, updateCategory } from "@/database/queries/categories";
+import { deleteSubCategory } from "@/database/queries/subcategories";
+import {
+  Category,
+  CreateSubCategoryDto,
+  SubCategoryFormItem,
+  UpdateCategoryDto,
+  UpdateSubCategoryDto,
+} from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import Plug from "../Plug";
 import { RenderIcon } from "../RenderIcon";
 import InputModal from "./InputModal";
 
 interface CreateCategoryModalProps {
+  category?: Category;
   title: string;
   visible: boolean;
   onClose: () => void;
   onRefresh?: () => void;
+  handleCloseSmallModal?: () => void;
 }
 
 export default function CreateCategoryModal({
+  category,
   title = "Новая категория",
   visible,
   onClose,
   onRefresh,
+  handleCloseSmallModal,
 }: CreateCategoryModalProps) {
   const theme = useTheme();
 
@@ -59,32 +70,113 @@ export default function CreateCategoryModal({
   const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
 
+  useEffect(() => {
+    if (!category) return;
+
+    setHeaderTitle(`Изменение категории ${category.name}`);
+    setCategoryNameValue(category.name);
+    setSelectedIcon(category.icon);
+    setSelectedColor(category.color);
+
+    if (category.isGas) {
+      setGasTypeValue(category.gasType ?? "");
+      setGasValuePerLitre(category.gasPrice ?? 0);
+    }
+
+    if (!category?.subcategories) return;
+
+    setSubcategories(
+      category.subcategories.map((sub) => ({
+        id: sub.id,
+        name: sub.name,
+        value: sub.value,
+        isNew: false,
+      })),
+    );
+  }, [category]);
+
   const [isOpenCreateNameSubcategories, setIsOpenCreateNameSubcategories] =
     useState(false);
   const [subCategoryName, setSubcategoryName] = useState("");
-  const [subcategoriesArray, setSubcategoriesArray] = useState<
-    CreateSubCategoryDto[]
-  >([]);
+  const [subcategories, setSubcategories] = useState<SubCategoryFormItem[]>([]);
 
   const createSubCategoryHandle = () => {
     if (!subCategoryName.trim()) return;
 
-    setSubcategoriesArray((prev) => [
+    setSubcategories((prev) => [
       ...prev,
-      { name: subCategoryName.trim() },
+      {
+        name: subCategoryName.trim(),
+        isNew: true,
+      },
     ]);
 
     setSubcategoryName("");
   };
 
-  const deleteSmallCategory = (name: string) => {
-    setSubcategoriesArray((prev) => prev.filter((item) => item.name !== name));
+  const deleteSmallCategory = (item: SubCategoryFormItem) => {
+    setSubcategories((prev) =>
+      prev.filter((sub) => (sub.isNew ? sub !== item : sub.id !== item.id)),
+    );
+
+    if (!item.isNew && item.id) {
+      deleteSubCategory(item.id);
+    }
+  };
+
+  const newSubcategories: CreateSubCategoryDto[] = subcategories
+    .filter((s) => s.isNew)
+    .map((s) => ({ name: s.name }));
+
+  const updatedSubcategories: UpdateSubCategoryDto[] = subcategories
+    .filter((s) => !s.isNew && s.id)
+    .map((s) => ({
+      id: s.id!,
+      name: s.name,
+    }));
+
+  const updateCategoryHandle = async () => {
+    if (!categoryNameValue.trim()) return;
+    if (!category) return;
+
+    const isGasCategory =
+      selectedIcon === "gas" ||
+      ["топливо", "бензин", "заправка"].includes(
+        categoryNameValue.trim().toLowerCase(),
+      );
+
+    try {
+      const dto: UpdateCategoryDto = {
+        name: categoryNameValue.trim(),
+        color: selectedColor,
+        icon: selectedIcon,
+        isArchive: false,
+        subcategories: [...updatedSubcategories, ...newSubcategories],
+      };
+
+      if (isGasCategory) {
+        dto.gasType = gasTypeValue.trim() || undefined;
+        dto.gasPrice = gasValuePerLitre > 0 ? gasValuePerLitre : undefined;
+      }
+
+      await updateCategory(category.id, dto);
+    } catch (error) {
+      console.error(error);
+    }
+
+    onRefresh?.();
+    setCategoryNameValue("");
+    setCategoryType(1);
+    setGasTypeValue("");
+    setGasValuePerLitre(0);
+    setSelectedColor("#ff0000");
+    setSelectedIcon("burger");
+    onClose();
+    handleCloseSmallModal?.();
   };
 
   const createCategoryHandle = async () => {
-    if (!categoryNameValue.trim()) {
-      return;
-    }
+    if (!categoryNameValue.trim()) return;
 
     const isGasCategory =
       selectedIcon === "gas" ||
@@ -110,7 +202,7 @@ export default function CreateCategoryModal({
         gasPrice:
           isGasCategory && gasValuePerLitre > 0 ? gasValuePerLitre : undefined,
 
-        subcategories: subcategoriesArray,
+        subcategories: subcategories,
       });
 
       onRefresh?.();
@@ -171,46 +263,49 @@ export default function CreateCategoryModal({
                 style={{ color: theme.primary }}
                 className="text-xl font-semibold"
               >
-                Настройки
+                {category !== undefined ? "Параметры" : "Настройки"}
               </Text>
               <Plug />
               <View className="flex-col gap-2">
-                <View className="w-full flex-row items-center justify-between">
-                  <Text
-                    style={{ color: theme.secondary }}
-                    className="text-base font-medium"
-                  >
-                    Тип транзакции:
-                  </Text>
-                  <TouchableOpacity
-                    className="flex-row items-center gap-1"
-                    onPress={() =>
-                      setCategoryType((prev) => (prev === 1 ? 2 : 1))
-                    }
-                  >
-                    {categoryType === 1 ? (
-                      <TypeArrowDownIcon
-                        width={20}
-                        height={20}
-                        color={theme.red}
-                      />
-                    ) : (
-                      <TypeArrowUpIcon
-                        width={20}
-                        height={20}
-                        color={theme.green}
-                      />
-                    )}
+                {category !== undefined ? null : (
+                  <View className="w-full flex-row items-center justify-between">
                     <Text
-                      style={{
-                        color: categoryType === 1 ? theme.red : theme.green,
-                      }}
+                      style={{ color: theme.secondary }}
                       className="text-base font-medium"
                     >
-                      {categoryType === 1 ? "Расходы" : "Доходы"}
+                      Тип транзакции:
                     </Text>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity
+                      className="flex-row items-center gap-1"
+                      onPress={() =>
+                        setCategoryType((prev) => (prev === 1 ? 2 : 1))
+                      }
+                    >
+                      {categoryType === 1 ? (
+                        <TypeArrowDownIcon
+                          width={20}
+                          height={20}
+                          color={theme.red}
+                        />
+                      ) : (
+                        <TypeArrowUpIcon
+                          width={20}
+                          height={20}
+                          color={theme.green}
+                        />
+                      )}
+                      <Text
+                        style={{
+                          color: categoryType === 1 ? theme.red : theme.green,
+                        }}
+                        className="text-base font-medium"
+                      >
+                        {categoryType === 1 ? "Расходы" : "Доходы"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
                 <View className="w-full flex-row items-center justify-between">
                   <Text
                     style={{ color: theme.secondary }}
@@ -348,7 +443,7 @@ export default function CreateCategoryModal({
                 </TouchableOpacity>
               </View>
               <Plug />
-              {subcategoriesArray.length > 0 ? (
+              {subcategories.length > 0 ? (
                 <View className="flex-col gap-2">
                   <Text
                     style={{ color: theme.secondary }}
@@ -357,7 +452,7 @@ export default function CreateCategoryModal({
                     Свайпните влево для удаления подкатегории
                   </Text>
                   <SubCategoriesList
-                    smallCategories={subcategoriesArray}
+                    smallCategories={subcategories}
                     selectedColor={selectedColor}
                     onDelete={deleteSmallCategory}
                   />
@@ -391,7 +486,7 @@ export default function CreateCategoryModal({
         )}
         {isCreateComponent && (
           <TouchableOpacity
-            onPress={createCategoryHandle}
+            onPress={category ? updateCategoryHandle : createCategoryHandle}
             style={{ backgroundColor: theme.primary }}
             className="flex-row w-full item-center justify-center p-3 rounded-full"
           >
@@ -399,7 +494,7 @@ export default function CreateCategoryModal({
               style={{ color: getContrastColor(theme.primary) }}
               className="text-base font-medium"
             >
-              Создать
+              {category !== undefined ? "Сохранить" : "Создать"}
             </Text>
           </TouchableOpacity>
         )}

@@ -2,20 +2,24 @@ import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import React, { useRef } from "react";
 import {
-    Animated,
-    PanResponder,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  PanResponder,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export interface SmallCategory {
+  id?: number;
   name: string;
+  value?: number;
+  isNew: boolean;
 }
+
 interface SwipeableSmallCategoryProps {
   item: SmallCategory;
   selectedColor: string;
-  onDelete: (name: string) => void;
+  onDelete: (item: SmallCategory) => void; // <-- объект
 }
 
 export const SwipeableSmallCategory: React.FC<SwipeableSmallCategoryProps> = ({
@@ -44,7 +48,7 @@ export const SwipeableSmallCategory: React.FC<SwipeableSmallCategoryProps> = ({
             duration: 200,
             useNativeDriver: true,
           }).start(() => {
-            onDelete(item.name);
+            onDelete(item);
           });
         } else {
           Animated.spring(translateX, {

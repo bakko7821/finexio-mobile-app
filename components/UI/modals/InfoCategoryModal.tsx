@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../RenderIcon";
+import CreateCategoryModal from "./CreateCategory";
 import DeleteModal from "./DeleteModal";
 
 interface InfoCategoryModalProps {
@@ -47,6 +48,12 @@ export default function InfoCategoryModal({
     setIsVisibleDeleteModal(false);
     onClose();
     onRefresh?.();
+  };
+
+  const [isEditCategory, setIsEditCategory] = useState(false);
+
+  const handleUpdateCategory = async () => {
+    alert(123);
   };
 
   useEffect(() => {
@@ -141,7 +148,10 @@ export default function InfoCategoryModal({
           <View></View>
         </View>
         <View className="p-4 flex-row items-center justify-around">
-          <TouchableOpacity className="gap-2 flex-col items-center justify-center">
+          <TouchableOpacity
+            className="gap-2 flex-col items-center justify-center"
+            onPress={() => setIsEditCategory(true)}
+          >
             <View
               style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
               className="p-3 rounded-full items-center justify-center"
@@ -187,6 +197,14 @@ export default function InfoCategoryModal({
         onSubmit={handleDeleteModal}
         category={category}
         transactionsFromCategory={allTransactionsByCategory}
+      />
+      <CreateCategoryModal
+        onRefresh={onRefresh}
+        category={category}
+        visible={isEditCategory}
+        onClose={() => setIsEditCategory(false)}
+        title={""}
+        handleCloseSmallModal={onClose}
       />
     </Modal>
   );
