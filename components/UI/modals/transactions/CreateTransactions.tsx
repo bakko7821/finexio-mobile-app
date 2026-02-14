@@ -52,6 +52,7 @@ export default function CreateTransactionsModal({
   if (category === null) return;
 
   const handleClose = () => {
+    setSelectedSubCategory(null);
     setDate(nowDay);
     setCoutValue("0");
     setGasValue(0);

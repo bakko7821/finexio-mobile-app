@@ -169,6 +169,7 @@ export default function CreateCategoryModal({
     }
 
     onRefresh?.();
+    setSubcategories([]);
     setCategoryNameValue("");
     setCategoryType(1);
     setGasTypeValue("");

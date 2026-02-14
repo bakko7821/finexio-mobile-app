@@ -19,6 +19,7 @@ export default function TransactionComponent({
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
   const theme = useTheme();
+  console.log(transaction);
 
   return (
     <View className="relative overflow-hidden rounded-xl">
@@ -49,17 +50,31 @@ export default function TransactionComponent({
               }}
               className="text-base font-medium"
             >
-              {transaction.category.name}
+              {transaction.category.name}{" "}
+              {transaction.subCategory?.name !== null
+                ? `(${transaction.subCategory?.name})`
+                : ""}
             </Text>
+            {}
             <Text
               style={{
                 color: theme.secondary,
               }}
               className="text-sm"
             >
-              {isArchive
-                ? "Категория архивированна"
-                : transaction.note || "Заметка отсутствует..."}
+              {isArchive ? (
+                "Категория архивированна"
+              ) : transaction.category.isGas ? (
+                <Text style={{ color: transaction.category.color }}>
+                  {transaction.category.gasType}
+                  {""}
+                  <Text style={{ color: theme.secondary }}>
+                    ( {`${transaction.gasValue} литров`} )
+                  </Text>
+                </Text>
+              ) : (
+                transaction.note
+              )}
             </Text>
           </View>
         </View>

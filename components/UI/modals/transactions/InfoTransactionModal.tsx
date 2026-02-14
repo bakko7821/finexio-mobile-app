@@ -39,7 +39,9 @@ export default function InfoTransactionModal({
   const [transactionValue, setTransactionsValue] = useState(
     `${transaction?.count}` || "0",
   );
-  const [transactionNote, setTransactionNote] = useState("");
+  const [transactionNote, setTransactionNote] = useState(
+    transaction?.note || "",
+  );
   const [isEdit, setIsEdit] = useState(false);
   const [date, setDate] = useState(transaction?.date);
   const [transactionGasValue, setTransactionGasValue] = useState(
@@ -65,13 +67,13 @@ export default function InfoTransactionModal({
     if (!transaction) return;
 
     const dto: UpdateTransactionDto = {
-      note: transactionNote,
-      date: date,
+      note: transactionNote ?? "",
+      date: date ?? "",
       count: Number(transactionValue),
-      gasValue: transactionGasValue,
+      gasValue: transactionGasValue ?? null,
     };
 
-    await updateTransaction(transaction?.id, dto);
+    await updateTransaction(transaction.id, dto);
     onClose();
     onRefresh?.();
   };
@@ -158,7 +160,7 @@ export default function InfoTransactionModal({
             className="text-base font-regular rounded-xl w-full items-center justify-center text-center"
             placeholder="Заметка..."
           />
-          {transactionNote.length > 0 && (
+          {transactionNote.length > 0 && !isEdit && (
             <TouchableOpacity
               style={{ backgroundColor: transaction.category.color }}
               className="w-full p-3 items-center justify-center rounded-full"
