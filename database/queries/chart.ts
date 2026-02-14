@@ -33,6 +33,7 @@ export const getChartData = async ({
     FROM transactions t
     INNER JOIN categories c ON c.id = t.categoryId
     WHERE c.type = ? 
+      AND c.isArchive = 0
       AND strftime('%m', t.date) = ? 
       AND strftime('%Y', t.date) = ?
     GROUP BY t.categoryId

@@ -5,9 +5,10 @@ import {
   deleteCategory,
   getAllTransactionsByCategory,
   getTransactionsByCategoryAndDateAsync,
+  updateCategory,
 } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category, UpdateCategoryDto } from "@/utils/categories";
 import { getSum } from "@/utils/chart";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { getCurrentMonthAndYear } from "@/utils/date";
@@ -16,6 +17,7 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../RenderIcon";
+import ArchiveModal from "./ArchiveModal";
 import CreateCategoryModal from "./CreateCategory";
 import DeleteModal from "./DeleteModal";
 
@@ -51,9 +53,24 @@ export default function InfoCategoryModal({
   };
 
   const [isEditCategory, setIsEditCategory] = useState(false);
+  const [isOpenArchiveModal, setIsOpenArchiveModal] = useState(false);
 
-  const handleUpdateCategory = async () => {
-    alert(123);
+  const handleArhiveCategory = async () => {
+    if (!category) return;
+
+    try {
+      const dto: UpdateCategoryDto = {
+        isArchive: true,
+      };
+
+      await updateCategory(category.id, dto);
+      console.log("категория архивированна");
+      setIsOpenArchiveModal(false);
+      onClose();
+      onRefresh?.();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -162,7 +179,10 @@ export default function InfoCategoryModal({
               Изменить
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="gap-2 flex-col items-center justify-center">
+          <TouchableOpacity
+            className="gap-2 flex-col items-center justify-center"
+            onPress={() => setIsOpenArchiveModal(true)}
+          >
             <View
               style={{ backgroundColor: withOpacity("#ffe11e", 0.4) }}
               className="p-3 rounded-full items-center justify-center"
@@ -205,6 +225,12 @@ export default function InfoCategoryModal({
         onClose={() => setIsEditCategory(false)}
         title={""}
         handleCloseSmallModal={onClose}
+      />
+      <ArchiveModal
+        visible={isOpenArchiveModal}
+        category={category}
+        onClose={() => setIsOpenArchiveModal(false)}
+        onSubmit={handleArhiveCategory}
       />
     </Modal>
   );

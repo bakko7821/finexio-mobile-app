@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import Plug from "../Plug";
 import { RenderIcon } from "../RenderIcon";
+import { AnimatedToggle } from "../ToggleSwithc";
 import InputModal from "./InputModal";
 
 interface CreateCategoryModalProps {
@@ -70,6 +71,8 @@ export default function CreateCategoryModal({
   const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
 
+  const [isArchive, setIsArchive] = useState(false);
+
   useEffect(() => {
     if (!category) return;
 
@@ -77,6 +80,7 @@ export default function CreateCategoryModal({
     setCategoryNameValue(category.name);
     setSelectedIcon(category.icon);
     setSelectedColor(category.color);
+    setIsArchive(!!category.isArchive);
 
     if (category.isGas) {
       setGasTypeValue(category.gasType ?? "");
@@ -150,7 +154,7 @@ export default function CreateCategoryModal({
         name: categoryNameValue.trim(),
         color: selectedColor,
         icon: selectedIcon,
-        isArchive: false,
+        isArchive: isArchive,
         subcategories: [...updatedSubcategories, ...newSubcategories],
       };
 
@@ -466,6 +470,30 @@ export default function CreateCategoryModal({
                 </Text>
               )}
             </View>
+            {category !== undefined && (
+              <View className="flex-col gap-2">
+                <View className="w-full flex-row items-center justify-start">
+                  <Text
+                    style={{ color: theme.primary }}
+                    className="text-xl font-semibold"
+                  >
+                    Взаимодействие
+                  </Text>
+                </View>
+                <Plug />
+                <View className="flex-col gap-2">
+                  <View className="w-full flex-row items-center justify-between">
+                    <Text
+                      style={{ color: theme.secondary }}
+                      className="text-base font-medium"
+                    >
+                      Архивная категория
+                    </Text>
+                    <AnimatedToggle value={isArchive} onChange={setIsArchive} />
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
         )}
         {isIconComponent && (
