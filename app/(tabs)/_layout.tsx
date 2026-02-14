@@ -2,7 +2,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import { TAB_ROUTES, TABS } from "@/utils/tabs";
 import { Tabs, useRouter, useSegments } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
   const theme = useTheme();
@@ -31,19 +31,19 @@ export default function TabsLayout() {
                   key={tab.name}
                   onPress={() => router.replace(routePath)}
                   style={{
-                    flex: isActive ? 1 : undefined,
+                    // flex: tab.name !== "settings" && isActive ? 1 : undefined,
                     backgroundColor: isActive ? theme.primary : "transparent",
                   }}
                   className="overflow-hidden flex-row rounded-full items-center justify-start gap-2 p-3"
                 >
                   <Icon
-                    width={24}
-                    height={24}
+                    width={36}
+                    height={36}
                     color={
                       isActive ? getContrastColor(theme.primary) : theme.text
                     }
                   />
-                  {isActive && (
+                  {/* {isActive && (
                     <Text
                       style={{
                         color: isActive
@@ -55,7 +55,7 @@ export default function TabsLayout() {
                     >
                       {tab.label}
                     </Text>
-                  )}
+                  )} */}
                 </TouchableOpacity>
               );
             })}
