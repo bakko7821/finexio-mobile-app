@@ -1,5 +1,21 @@
 import { GroupedTransactions, Transaction } from "./transactions";
 
+const MONTHS_SHORT = [
+  "янв.",
+  "февр.",
+  "март",
+  "апр.",
+  "апр.",
+  "май",
+  "июнь",
+  "июль",
+  "авг.",
+  "сент.",
+  "окт.",
+  "нояб.",
+  "дек.",
+];
+
 const MONTHS = [
   "января",
   "февраля",
@@ -24,6 +40,29 @@ const WEEK_DAYS = [
   "пятница",
   "суббота",
 ];
+
+export const formatDateRu = (dateStr: string): string => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (isNaN(date.getTime())) return "";
+
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const isSameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+
+  // if (isSameDay(date, today)) return "Сегодня";
+  // if (isSameDay(date, yesterday)) return "Вчера";
+
+  const dayOfWeek = WEEK_DAYS[date.getDay()];
+  const monthName = MONTHS_SHORT[month - 1]; // сокращённый месяц
+  return `${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)} ${day} ${monthName} ${year}г.`;
+};
 
 const now = new Date();
 

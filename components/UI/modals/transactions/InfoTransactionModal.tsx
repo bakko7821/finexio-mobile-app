@@ -1,16 +1,24 @@
-import {
-    deleteCategory,
-    getAllTransactionsByCategory,
-    getTransactionsByCategoryAndDateAsync,
-    updateCategory,
-} from "@/database";
+import CalendarIcon from "@/assets/ui/Calendar4Week.svg";
+import CopyIcon from "@/assets/ui/Copy.svg";
+import CrossIcon from "@/assets/ui/CrossFilled.svg";
+import DeleteIcon from "@/assets/ui/Trash.svg";
+import { deleteTransaction, updateTransaction } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
-import { UpdateCategoryDto } from "@/utils/categories";
-import { getCurrentMonthAndYear } from "@/utils/date";
-import { Transaction } from "@/utils/transactions";
+import { getContrastColor, withOpacity } from "@/utils/colors";
+import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
+import { Transaction, UpdateTransactionDto } from "@/utils/transactions";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import {
+    Platform,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import Modal from "react-native-modal";
+import NumberInput from "../../NumberInput";
+import { RenderIcon } from "../../RenderIcon";
 import DeleteModal from "../categories/DeleteModal";
 
 interface InfoTransactionModalProps {
@@ -28,70 +36,45 @@ export default function InfoTransactionModal({
 }: InfoTransactionModalProps) {
   const theme = useTheme();
   const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
+  const [transactionValue, setTransactionsValue] = useState(
+    `${transaction?.count}` || "0",
+  );
+  const [transactionNote, setTransactionNote] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [date, setDate] = useState(transaction?.date);
+  const [transactionGasValue, setTransactionGasValue] = useState(
+    transaction?.gasValue || 0,
+  );
+  const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [allTransactionsByCategory, setAllTransactionsByCategory] = useState<
-    Transaction[]
-  >([]);
+  useEffect(() => {
+    handleUpdateTransaction();
+  }, [date]);
 
-  const handleDeleteModal = async () => {
+  const handleDelete = async () => {
     if (!transaction) return;
 
-    await deleteCategory(transaction?.id);
-    console.log("категория удаления");
+    await deleteTransaction(transaction?.id);
+
     setIsVisibleDeleteModal(false);
     onClose();
     onRefresh?.();
   };
 
-  const [isEditCategory, setIsEditCategory] = useState(false);
-  const [isOpenArchiveModal, setIsOpenArchiveModal] = useState(false);
-
-  const handleArhiveCategory = async () => {
+  const handleUpdateTransaction = async () => {
     if (!transaction) return;
 
-    try {
-      const dto: UpdateCategoryDto = {
-        isArchive: true,
-      };
+    const dto: UpdateTransactionDto = {
+      note: transactionNote,
+      date: date,
+      count: Number(transactionValue),
+      gasValue: transactionGasValue,
+    };
 
-      await updateCategory(transaction.id, dto);
-      console.log("категория архивированна");
-      setIsOpenArchiveModal(false);
-      onClose();
-      onRefresh?.();
-    } catch (error) {
-      console.error(error);
-    }
+    await updateTransaction(transaction?.id, dto);
+    onClose();
+    onRefresh?.();
   };
-
-  useEffect(() => {
-    try {
-      if (!transaction) return;
-
-      const fetchTransactionsByCategoryIdAndDate = async () => {
-        const { month, year } = getCurrentMonthAndYear();
-        const data = await getTransactionsByCategoryAndDateAsync({
-          categoryId: transaction.id,
-          month,
-          year,
-        });
-        setTransactions(data);
-      };
-
-      const fetchAllTransactionsByCategory = async () => {
-        const data = await getAllTransactionsByCategory({
-          categoryId: transaction.id,
-        });
-        setAllTransactionsByCategory(data);
-      };
-
-      fetchTransactionsByCategoryIdAndDate();
-      fetchAllTransactionsByCategory();
-    } catch (error: unknown) {
-      console.error(error);
-    }
-  }, [transaction]);
 
   if (!transaction) return;
 
@@ -110,19 +93,198 @@ export default function InfoTransactionModal({
     >
       <View
         style={{ backgroundColor: theme.header }}
-        className="overflow-hidden rounded-t-3xl flex-col min-h-[40%]"
+        className="overflow-hidden rounded-t-3xl flex-col"
       >
-        <View>
-          <Text>Транзакция за {transaction.date}</Text>
+        <View
+          className="p-4 flex-row items-center justify-between"
+          style={{ backgroundColor: transaction.category.color }}
+        >
+          <View className="items-center justify-center flex-row gap-2">
+            <RenderIcon
+              name={transaction.category.icon}
+              width={24}
+              height={24}
+              color={getContrastColor(transaction.category.color)}
+            />
+            <Text
+              style={{ color: getContrastColor(transaction.category.color) }}
+              className="text-base font-medium"
+            >
+              {transaction.category.name}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={onClose}>
+            <CrossIcon
+              width={24}
+              height={24}
+              color={getContrastColor(transaction.category.color)}
+            />
+          </TouchableOpacity>
         </View>
+        <View className="flex-col gap-3 p-4">
+          <TouchableOpacity
+            onPress={() => setIsEdit(true)}
+            className="flex-col items-center justify-center"
+          >
+            <Text
+              style={{
+                color:
+                  transaction.category.type === 1 ? theme.red : theme.green,
+              }}
+              className="text-sm font-medium"
+            >
+              {transaction.category.type === 1 ? "Расходы" : "Доходы"}
+            </Text>
+            <Text
+              style={{
+                color:
+                  transaction.category.type === 1 ? theme.red : theme.green,
+              }}
+              className="text-2xl font-bold"
+            >
+              {transactionValue} ₽
+            </Text>
+          </TouchableOpacity>
+          <TextInput
+            value={transactionNote}
+            onChangeText={(text: string) => setTransactionNote(text)}
+            onFocus={() => setIsEdit(false)}
+            placeholderTextColor={theme.secondary}
+            style={{
+              color: theme.text,
+              backgroundColor: theme.card,
+              padding: 12,
+            }}
+            className="text-base font-regular rounded-xl w-full items-center justify-center text-center"
+            placeholder="Заметка..."
+          />
+          {transactionNote.length > 0 && (
+            <TouchableOpacity
+              style={{ backgroundColor: transaction.category.color }}
+              className="w-full p-3 items-center justify-center rounded-full"
+              onPress={handleUpdateTransaction}
+            >
+              <Text
+                style={{
+                  color: getContrastColor(transaction.category.color),
+                }}
+                className="text-base font-medium"
+              >
+                Сохранить изменения
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isEdit && (
+            <View>
+              <NumberInput
+                value={transactionValue}
+                setValue={setTransactionsValue}
+              />
+              <TouchableOpacity
+                style={{ backgroundColor: transaction.category.color }}
+                className="w-full p-3 items-center justify-center rounded-full"
+                onPress={handleUpdateTransaction}
+              >
+                <Text
+                  style={{
+                    color: getContrastColor(transaction.category.color),
+                  }}
+                  className="text-base font-medium"
+                >
+                  Сохранить изменения
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <Text
+            style={{ color: isEdit ? transaction.category.color : theme.text }}
+            className="text-base font-medium w-full items-center justify-center text-center"
+          >
+            {formatDateRu(date ?? "")}
+          </Text>
+        </View>
+        {!isEdit && (
+          <View
+            style={{ backgroundColor: theme.card }}
+            className="w-full p-4 flex-row items-center justify-evenly"
+          >
+            <TouchableOpacity
+              className="gap-2 flex-col items-center justify-center"
+              onPress={() => setIsVisibleDeleteModal(true)}
+            >
+              <View
+                style={{ backgroundColor: withOpacity(theme.red, 0.4) }}
+                className="p-3 rounded-full items-center justify-center"
+              >
+                <DeleteIcon
+                  width={24}
+                  height={24}
+                  color={getContrastColor(withOpacity(theme.red, 0.4))}
+                />
+              </View>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Удалить
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="gap-2 flex-col items-center justify-center"
+              onPress={() => setIsOpenDateModal(true)}
+            >
+              <View
+                style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
+                className="p-3 rounded-full items-center justify-center"
+              >
+                <CalendarIcon width={24} height={24} color={theme.text} />
+              </View>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Дата
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="gap-2 flex-col items-center justify-center"
+              onPress={() => alert("IN DEV")}
+            >
+              <View
+                style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
+                className="p-3 rounded-full items-center justify-center"
+              >
+                <CopyIcon width={24} height={24} color={theme.text} />
+              </View>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Дублировать
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <DeleteModal
         visible={isVisibleDeleteModal}
         onClose={() => setIsVisibleDeleteModal(false)}
-        onSubmit={handleDeleteModal}
+        onSubmit={handleDelete}
         transaction={transaction}
-        transactionsFromCategory={allTransactionsByCategory}
       />
+      {Platform.OS === "android" && isOpenDateModal && (
+        <DateTimePicker
+          value={isoToDateSafe(date)}
+          mode="date"
+          display="default"
+          themeVariant={theme.isDark ? "dark" : "light"}
+          onChange={(event, selectedDate) => {
+            setIsOpenDateModal(false);
+            if (!selectedDate) return;
+            setDate(dateToIso(selectedDate));
+          }}
+        />
+      )}
     </Modal>
   );
 }

@@ -1,5 +1,6 @@
 import ArchiveIcon from "@/assets/ui/Archivebox.svg";
 import EditIcon from "@/assets/ui/Edit.svg";
+import TransactionIcon from "@/assets/ui/Transaction.svg";
 import TrashIcon from "@/assets/ui/Trash.svg";
 import {
   deleteCategory,
@@ -164,7 +165,7 @@ export default function InfoCategoryModal({
           </View>
           <View></View>
         </View>
-        <View className="p-4 flex-row items-center justify-around">
+        <View className="p-4 flex-row items-center justify-evenly">
           <TouchableOpacity
             className="gap-2 flex-col items-center justify-center"
             onPress={() => setIsEditCategory(true)}
@@ -177,6 +178,20 @@ export default function InfoCategoryModal({
             </View>
             <Text style={{ color: theme.text }} className="text-sm font-medium">
               Изменить
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="gap-2 flex-col items-center justify-center"
+            onPress={() => null}
+          >
+            <View
+              style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
+              className="p-3 rounded-full items-center justify-center"
+            >
+              <TransactionIcon width={32} height={32} color={theme.text} />
+            </View>
+            <Text style={{ color: theme.text }} className="text-sm font-medium">
+              Транзакции
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

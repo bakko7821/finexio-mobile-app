@@ -1,4 +1,8 @@
-import { CreateTransactionDto, Transaction } from "@/utils/transactions";
+import {
+  CreateTransactionDto,
+  Transaction,
+  UpdateTransactionDto,
+} from "@/utils/transactions";
 import { getDb } from "../db";
 import {
   mapTransactionsWithCategories,
@@ -72,6 +76,51 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 
   return mapTransactionsWithCategories(rows);
 };
+
+export const updateTransaction = async (
+  id: number,
+  dto: UpdateTransactionDto,
+): Promise<void> => {
+  const db = await getDb();
+
+  const fields: string[] = [];
+  const values: any[] = [];
+
+  if (dto.date !== undefined) {
+    fields.push("date = ?");
+    values.push(dto.date);
+  }
+  if (dto.count !== undefined) {
+    fields.push("count = ?");
+    values.push(dto.count);
+  }
+  if (dto.note !== undefined) {
+    fields.push("note = ?");
+    values.push(dto.note);
+  }
+  if (dto.gasValue !== undefined) {
+    fields.push("gasValue = ?");
+    values.push(dto.gasValue);
+  }
+
+  if (fields.length === 0) return;
+
+  values.push(id);
+
+  const query = `
+    UPDATE transactions
+    SET ${fields.join(", ")}
+    WHERE id = ?
+  `;
+
+  await db.runAsync(query, values);
+};
+
+export async function deleteTransaction(id: number): Promise<void> {
+  const db = await getDb();
+
+  await db.runAsync(`DELETE FROM transactions WHERE id = ?`, [id]);
+}
 
 export const getAllTransactionsByCategory = async ({
   categoryId,

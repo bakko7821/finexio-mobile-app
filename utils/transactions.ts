@@ -10,6 +10,13 @@ export type CreateTransactionDto = {
   gasValue?: number;
 };
 
+export type UpdateTransactionDto = {
+  date?: string;
+  count?: number;
+  note?: string;
+  gasValue?: number;
+}
+
 export type Transaction = {
   id: number
   date: string;

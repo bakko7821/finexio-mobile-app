@@ -9,10 +9,12 @@ import InfoTransactionModal from "../UI/modals/transactions/InfoTransactionModal
 interface TransactionComponentProps {
   transaction: Transaction;
   isArchive?: boolean;
+  onRefresh?: () => void;
 }
 export default function TransactionComponent({
   transaction,
   isArchive = false,
+  onRefresh,
 }: TransactionComponentProps) {
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
@@ -77,7 +79,7 @@ export default function TransactionComponent({
         visible={isOpenTransactionInfoModal}
         onClose={() => setIsOpenTransactionInfoModal(false)}
         transaction={transaction}
-        // onRefresh={}
+        onRefresh={onRefresh}
       />
     </View>
   );

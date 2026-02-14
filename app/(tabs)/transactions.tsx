@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function TransactionsScreen() {
@@ -15,6 +15,7 @@ export default function TransactionsScreen() {
     () => groupTransactionsByDate(transactions),
     [transactions],
   );
+  const [refreshFlag, setRefreshFlag] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +40,25 @@ export default function TransactionsScreen() {
     }, []),
   );
 
+  useEffect(() => {
+    let isActive = true;
+
+    const fetchTransactions = async () => {
+      try {
+        const data = await getTransactions();
+        if (isActive) setTransactions(data);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+
+    fetchTransactions();
+
+    return () => {
+      isActive = false;
+    };
+  }, [refreshFlag]);
+
   return (
     <View
       style={{ backgroundColor: theme.background }}
@@ -53,7 +73,10 @@ export default function TransactionsScreen() {
         className=" w-full flex-col gap-2"
       >
         {transactionsList.length > 0 ? (
-          <TransactionList data={transactionsList} />
+          <TransactionList
+            onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+            data={transactionsList}
+          />
         ) : (
           <Text
             style={{ color: theme.secondary }}

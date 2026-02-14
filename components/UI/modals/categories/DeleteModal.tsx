@@ -94,6 +94,16 @@ export default function DeleteModal({
             </Text>
           </>
         )}
+        {transaction && (
+          <>
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-regular"
+            >
+              Транзакция будет удалена. Действие невозможно будет отменить.
+            </Text>
+          </>
+        )}
         <View className="w-full flex-row gap-2 item-center justify-end">
           <TouchableOpacity
             className="rounded-xl px-3 py-2 items-center justify-center"
