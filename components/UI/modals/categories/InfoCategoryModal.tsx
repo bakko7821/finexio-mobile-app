@@ -16,7 +16,7 @@ import { Transaction } from "@/utils/transactions";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
-import { RenderIcon } from "../RenderIcon";
+import { RenderIcon } from "../../RenderIcon";
 import ArchiveModal from "./ArchiveModal";
 import CreateCategoryModal from "./CreateCategory";
 import DeleteModal from "./DeleteModal";

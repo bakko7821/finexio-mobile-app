@@ -27,10 +27,10 @@ import {
 import { getContrastColor } from "@/utils/colors";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
-import Plug from "../Plug";
-import { RenderIcon } from "../RenderIcon";
-import { AnimatedToggle } from "../ToggleSwithc";
-import InputModal from "./InputModal";
+import Plug from "../../Plug";
+import { RenderIcon } from "../../RenderIcon";
+import { AnimatedToggle } from "../../ToggleSwithc";
+import InputModal from "../InputModal";
 
 interface CreateCategoryModalProps {
   category?: Category;

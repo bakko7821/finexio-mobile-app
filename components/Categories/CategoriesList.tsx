@@ -3,9 +3,9 @@ import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import CreateTransactionsModal from "../UI/modals/CreateTransactions";
+import InfoCategoryModal from "../UI/modals/categories/InfoCategoryModal";
+import CreateTransactionsModal from "../UI/modals/transactions/CreateTransactions";
 import { RenderIcon } from "../UI/RenderIcon";
-import InfoCategoryModal from "../UI/modals/InfoCategoryModal";
 
 interface CategoriesListProps {
   categories: Category[];
@@ -91,7 +91,7 @@ export default function CategoriesList({
           ))}
         </View>
       )}
-      
+
       <CreateTransactionsModal
         onRefresh={onRefresh}
         visible={isOpenCreateTransactionModal}

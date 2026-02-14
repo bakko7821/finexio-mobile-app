@@ -10,7 +10,7 @@ import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
-import NumberInput from "../NumberInput";
+import NumberInput from "../../NumberInput";
 
 interface CreateTransactionModalProps {
   category: Category | null;

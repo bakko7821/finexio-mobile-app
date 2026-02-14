@@ -47,7 +47,12 @@ export default function TransactionList({ data }: TransactionListProps) {
             </View>
             <Text
               style={{
-                color: group.groupedCount < 0 ? theme.red : theme.green,
+                color:
+                  group.groupedCount < 0
+                    ? theme.red
+                    : group.groupedCount > 0
+                      ? theme.green
+                      : theme.secondary,
               }}
               className="text-xl font-medium"
             >
@@ -57,6 +62,7 @@ export default function TransactionList({ data }: TransactionListProps) {
           <View className="flex-col gap-1 w-full px-2">
             {group.transactions.map((transaction, idx) => (
               <TransactionComponent
+                isArchive={transaction.category.isArchive}
                 key={`${transaction.categoryId}-${transaction.count}-${idx}`}
                 transaction={transaction}
               />

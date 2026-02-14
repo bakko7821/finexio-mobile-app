@@ -2,23 +2,28 @@ import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
+import { Transaction } from "@/utils/transactions";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
-import { RenderIcon } from "../RenderIcon";
+import { RenderIcon } from "../../RenderIcon";
 
-interface ArchiveModalProps {
+interface DeleteModalProps {
   category?: Category;
+  transactionsFromCategory?: Transaction[];
+  transaction?: Transaction;
   visible: boolean;
   onClose: () => void;
   onSubmit: () => void;
 }
 
-export default function ArchiveModal({
+export default function DeleteModal({
   visible,
   onClose,
   onSubmit,
   category,
-}: ArchiveModalProps) {
+  transaction,
+  transactionsFromCategory,
+}: DeleteModalProps) {
   const theme = useTheme();
 
   return (
@@ -57,7 +62,7 @@ export default function ArchiveModal({
               />
             )}
             <Text style={{ color: theme.text }} className="text-xl font-medium">
-              Скрыть {category?.name} ?
+              Удаление {category ? `${category.name}` : "транзакции"}
             </Text>
           </View>
           <TouchableOpacity onPress={onClose}>
@@ -70,15 +75,22 @@ export default function ArchiveModal({
               style={{ color: theme.text }}
               className="text-base font-regular"
             >
-              Вы уверенны что хотите скрыть категорию:{" "}
-              <Text>{`"${category.name}"`} ?</Text>
+              Все транзакции (
+              <Text style={{ color: theme.text }} className="font-medium">
+                {transactionsFromCategory?.length || 0}
+              </Text>
+              ) связанные с этой категорией будут удалены.
             </Text>
 
             <Text
               style={{ color: theme.text }}
               className="text-base font-regular"
             >
-              Вы всегда сможете восстановить её, если вдруг понадобиться.
+              Категорию нельзя будет восстановить. Если вы хотите скрыть
+              категорию выберите{" "}
+              <Text style={{ color: theme.text }} className="font-medium">
+                Архивировать
+              </Text>
             </Text>
           </>
         )}
@@ -105,7 +117,7 @@ export default function ArchiveModal({
               }}
               className="text-base font-medium"
             >
-              Архивировать
+              Удалить
             </Text>
           </TouchableOpacity>
         </View>

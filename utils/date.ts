@@ -93,9 +93,10 @@ export const getDateLabel = (date: Date): string => {
   return WEEK_DAYS[date.getDay()] ?? "";
 };
 
-
 const calculateGroupedCount = (transactions: Transaction[]) =>
   transactions.reduce((acc, tx) => {
+    if (tx.category.isArchive) return acc;
+
     return tx.category.type === 1 ? acc - tx.count : acc + tx.count;
   }, 0);
 

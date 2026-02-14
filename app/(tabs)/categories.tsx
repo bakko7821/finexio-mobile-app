@@ -3,10 +3,10 @@ import Plug from "@/components/UI/Plug";
 import { useTheme } from "@/hooks/useTheme";
 import { Text, TouchableOpacity, View } from "react-native";
 
-import ListIcon from "@/assets/ui/ListOrdered.svg";
 import GridIcon from "@/assets/ui/Grid.svg";
+import ListIcon from "@/assets/ui/ListOrdered.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
-import CreateCategoryModal from "@/components/UI/modals/CreateCategory";
+import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { getChartData, getSumByType } from "@/database/queries/chart";
 import { Category } from "@/utils/categories";
