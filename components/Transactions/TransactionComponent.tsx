@@ -18,8 +18,8 @@ export default function TransactionComponent({
 }: TransactionComponentProps) {
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
+
   const theme = useTheme();
-  console.log(transaction);
 
   return (
     <View className="relative overflow-hidden rounded-xl">
@@ -28,7 +28,6 @@ export default function TransactionComponent({
         className="w-full p-2 flex-row items-center justify-between"
         onPress={() => setIsOpenTransactionInfoModal(true)}
       >
-        {/* контент */}
         <View className="flex-row items-start gap-2">
           <View
             style={{ backgroundColor: transaction.category.color }}

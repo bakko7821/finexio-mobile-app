@@ -27,7 +27,7 @@ export default function PickIconComponent({
       data={iconsArray}
       keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={{ paddingRight: 8 }}
-      initialNumToRender={2} // 🔥 сколько секций рендерить сразу
+      initialNumToRender={2}
       windowSize={5}
       removeClippedSubviews
       renderItem={({ item: iconList, index }) => (
@@ -35,7 +35,6 @@ export default function PickIconComponent({
           entering={FadeInDown.duration(200).delay(Math.min(index * 30, 150))}
           className="flex-1 flex-col gap-2 pb-[16px]"
         >
-          {/* Заголовок */}
           <View className="flex flex-row items-center gap-2">
             <Text
               style={{ color: theme.secondary }}
@@ -48,8 +47,6 @@ export default function PickIconComponent({
               className="flex-1 h-[2px]"
             />
           </View>
-
-          {/* Иконки */}
           <View className="flex flex-row flex-wrap gap-2">
             {iconList.items.map((item) => {
               const Icon = item.Icon;
