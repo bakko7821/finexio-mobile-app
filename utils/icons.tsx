@@ -104,23 +104,61 @@ import TrainIcon from "@/assets/icons/transport/TrainProfile.svg";
 import YachtIcon from "@/assets/icons/transport/Yacht.svg";
 
 // SHOPPING
+import BackPackIcon from "@/assets/icons/shopping/Backpack.svg";
+import BarcodeIcon from "@/assets/icons/shopping/Barcode.svg";
+import CapIcon from "@/assets/icons/shopping/BaseballCap.svg";
+import BeltIcon from "@/assets/icons/shopping/Belt.svg";
 import BootIcon from "@/assets/icons/shopping/Boot.svg";
 import ClothesIcon from "@/assets/icons/shopping/ClothesHoodie.svg";
 import ComputerIcon from "@/assets/icons/shopping/ComputerKeyboardComputerKeyboardDeviceElectronicsDvorakQwerty.svg";
 import CosmeticIcon from "@/assets/icons/shopping/CosmeticLinear.svg";
+import DressIcon from "@/assets/icons/shopping/Dress.svg";
+import GiftCardIcon from "@/assets/icons/shopping/GiftCard24Regular.svg";
+import GiftIcon from "@/assets/icons/shopping/GiftOutlined.svg";
+import HandbagIcon from "@/assets/icons/shopping/Handbag.svg";
+import EarringIcon from "@/assets/icons/shopping/HeartEarrings.svg";
 import HorseToyIcon from "@/assets/icons/shopping/HorseToy.svg";
+import JacketIcon from "@/assets/icons/shopping/Jacket.svg";
+import JeansIcon from "@/assets/icons/shopping/Jeans.svg";
+import PerfumeIcon from "@/assets/icons/shopping/Perfume.svg";
+import ReceiptIcon from "@/assets/icons/shopping/ReceiptSparkles16Regular.svg";
+import RedheadIcon from "@/assets/icons/shopping/Redhat.svg";
+import RingIcon from "@/assets/icons/shopping/Ring.svg";
 import ShoppingBagIcon from "@/assets/icons/shopping/ShoppingBag.svg";
 import DiamondIcon from "@/assets/icons/shopping/ShoppingCatergoriesRingMoneyDiamondPaymentWealthFinanceRingAccessories.svg";
+import WatchIcon from "@/assets/icons/shopping/Smartwatch.svg";
+import SunglassesIcon from "@/assets/icons/shopping/Sunglasses.svg";
+import TshirtIcon from "@/assets/icons/shopping/Tshirt.svg";
+import UmbrellaIcon from "@/assets/icons/shopping/Umbrella.svg";
 
 // HEALTH
+import AmbulanceIcon from "@/assets/icons/health/Ambulance.svg";
+import BandageIcon from "@/assets/icons/health/Bandage.svg";
+import BrainIcon from "@/assets/icons/health/BrainOutline.svg";
+import DoctorIcon from "@/assets/icons/health/Doctor.svg";
+import DumbbellsIcon from "@/assets/icons/health/Dumbbells2Broken.svg";
+import MaskIcon from "@/assets/icons/health/Facemask.svg";
+import ThermometrIcon from "@/assets/icons/health/FaceWithThermometer.svg";
+import FirstAidIcon from "@/assets/icons/health/FirstAid.svg";
 import GymIcon from "@/assets/icons/health/Gym.svg";
 import HealthSecondIcon from "@/assets/icons/health/Health.svg";
 import HealthOneIcon from "@/assets/icons/health/Health_one.svg";
+import HeartBeatIcon from "@/assets/icons/health/HeartbeatOutline.svg";
+import HeartIcon from "@/assets/icons/health/HeartOutlined.svg";
+import HospitalIcon from "@/assets/icons/health/Hospital.svg";
+import PillsBottleIcon from "@/assets/icons/health/JarOfPillsLinear.svg";
+import JumpRopeIcon from "@/assets/icons/health/JumpRope.svg";
+import LungsIcon from "@/assets/icons/health/Lungs.svg";
+import NurceIcon from "@/assets/icons/health/Nurse.svg";
+import SanitizerIcon from "@/assets/icons/health/PersonalHygieneHandSanitizerLiquidDrop.svg";
 import PharmacyIcon from "@/assets/icons/health/Pharmacy.svg";
 import PillsIcon from "@/assets/icons/health/Pills.svg";
 import RunningIcon from "@/assets/icons/health/Running.svg";
 import ScalesIcon from "@/assets/icons/health/Scales.svg";
+import SleepIcon from "@/assets/icons/health/SleepyOutline.svg";
 import SyringeIcon from "@/assets/icons/health/Syringe20Regular.svg";
+import ToothIcon from "@/assets/icons/health/Tooth.svg";
+import ToothBrushIcon from "@/assets/icons/health/Toothbrush.svg";
 import WaterIcon from "@/assets/icons/health/WaterDrop.svg";
 import YogaIcon from "@/assets/icons/health/Yoga.svg";
 
@@ -139,6 +177,80 @@ import PiggyBankIcon from "@/assets/icons/finance/PiggyBankLine.svg";
 import RUBIcon from "@/assets/icons/finance/Ruble.svg";
 import WalletIcon from "@/assets/icons/finance/Wallet.svg";
 import JPYIcon from "@/assets/icons/finance/Yen.svg";
+
+// HOME
+import BedIcon from "@/assets/icons/home/Bed.svg";
+import ApartmentIcon from "@/assets/icons/home/BuildingApartmentLight.svg";
+import ChairIcon from "@/assets/icons/home/Chair.svg";
+import DoorIcon from "@/assets/icons/home/Door.svg";
+import FridgeIcon from "@/assets/icons/home/Fridge.svg";
+import GasPipeIcon from "@/assets/icons/home/Gas.svg";
+import HeaterIcon from "@/assets/icons/home/Heater.svg";
+import HomeIcon from "@/assets/icons/home/HomeOutlined.svg";
+import AirConditionerIcon from "@/assets/icons/home/HotelAirConditioner.svg";
+import HouseIcon from "@/assets/icons/home/House.svg";
+import KeyIcon from "@/assets/icons/home/Key.svg";
+import KitchenIcon from "@/assets/icons/home/KitchenSet.svg";
+import LampIcon from "@/assets/icons/home/Lamp.svg";
+import BroomIcon from "@/assets/icons/home/MagicBroom.svg";
+import MicrowaveIcon from "@/assets/icons/home/MicrowaveOven.svg";
+import TableIcon from "@/assets/icons/home/OutlineTableBar.svg";
+import RecycleIcon from "@/assets/icons/home/Recycle.svg";
+import SofaIcon from "@/assets/icons/home/Sofa.svg";
+import TrashIcon from "@/assets/icons/home/Trash.svg";
+import VacuumIcon from "@/assets/icons/home/Vacuum.svg";
+import WashingMachineIcon from "@/assets/icons/home/WashingMachineOne.svg";
+import ElectricityIcon from "@/assets/icons/home/WindElectricity.svg";
+import WindowIcon from "@/assets/icons/home/Window.svg";
+
+// WORK
+import AlarmIcon from "@/assets/icons/work/Alarm.svg";
+import ArchiveIcon from "@/assets/icons/work/Archive.svg";
+import ScannerIcon from "@/assets/icons/work/BaselineScanner.svg";
+import BriefcaseIcon from "@/assets/icons/work/Briefcase.svg";
+import CalendarIcon from "@/assets/icons/work/Calendar.svg";
+import ChecklistIcon from "@/assets/icons/work/Checklist.svg";
+import ClipboardIcon from "@/assets/icons/work/ClipboardAltOutline.svg";
+import ClockIcon from "@/assets/icons/work/Clock.svg";
+import DeskIcon from "@/assets/icons/work/Desk.svg";
+import DocumentIcon from "@/assets/icons/work/DocumentOutline.svg";
+import EmailIcon from "@/assets/icons/work/EmailLine.svg";
+import ForlderIcon from "@/assets/icons/work/FolderOpenOutlined.svg";
+import MeetingIcon from "@/assets/icons/work/GroupDiscussionMeetingOutline.svg";
+import InboxIcon from "@/assets/icons/work/Inbox.svg";
+import OfficeIcon from "@/assets/icons/work/OfficeBuilding.svg";
+import PresentationIcon from "@/assets/icons/work/Presentation.svg";
+import PrinterIcon from "@/assets/icons/work/Printer.svg";
+import ProjectIcon from "@/assets/icons/work/Project.svg";
+import OfficeChairIcon from "@/assets/icons/work/Roomsoffice.svg";
+import SignatureIcon from "@/assets/icons/work/Signature.svg";
+import StampIcon from "@/assets/icons/work/Stamp.svg";
+import TaskIcon from "@/assets/icons/work/Task.svg";
+
+// TECH
+import BugIcon from "@/assets/icons/tech/BugOutlined.svg";
+import CloudIcon from "@/assets/icons/tech/Cloud.svg";
+import CodeIcon from "@/assets/icons/tech/CodeSlash.svg";
+import DatabaseIcon from "@/assets/icons/tech/Database.svg";
+import DownloadIcon from "@/assets/icons/tech/Download.svg";
+import FaceIdIcon from "@/assets/icons/tech/FaceId.svg";
+import FingerprintIcon from "@/assets/icons/tech/FingerprintRecognition.svg";
+import HeadsetIcon from "@/assets/icons/tech/Headset.svg";
+import KeyboardIcon from "@/assets/icons/tech/Keyboard.svg";
+import LaptopIcon from "@/assets/icons/tech/Laptop.svg";
+import LinkIcon from "@/assets/icons/tech/LinkChain.svg";
+import UnLockIcon from "@/assets/icons/tech/LockOff.svg";
+import LockIcon from "@/assets/icons/tech/LockOn.svg";
+import MonitorIcon from "@/assets/icons/tech/MonitorOutline.svg";
+import MouseIcon from "@/assets/icons/tech/MouseOutline.svg";
+import QrCodeIcon from "@/assets/icons/tech/QrCode.svg";
+import RouterIcon from "@/assets/icons/tech/Router.svg";
+import ServerIcon from "@/assets/icons/tech/ServerOutline.svg";
+import ShieldIcon from "@/assets/icons/tech/Shield.svg";
+import SmartphoneIcon from "@/assets/icons/tech/Smartphone.svg";
+import TabletIcon from "@/assets/icons/tech/TabletDevice.svg";
+import UploadIcon from "@/assets/icons/tech/Upload.svg";
+import WifiIcon from "@/assets/icons/tech/Wifi.svg";
 
 export const iconsArray = [
   {
@@ -289,6 +401,25 @@ export const iconsArray = [
       { id: 38, name: "horse-toy", Icon: HorseToyIcon },
       { id: 39, name: "shopping-bag", Icon: ShoppingBagIcon },
       { id: 40, name: "diamond", Icon: DiamondIcon },
+      { id: 130, name: "backpack", Icon: BackPackIcon },
+      { id: 131, name: "barcode", Icon: BarcodeIcon },
+      { id: 132, name: "cap", Icon: CapIcon },
+      { id: 133, name: "belt", Icon: BeltIcon },
+      { id: 134, name: "dress", Icon: DressIcon },
+      { id: 135, name: "gift", Icon: GiftIcon },
+      { id: 136, name: "gift-card", Icon: GiftCardIcon },
+      { id: 137, name: "handbag", Icon: HandbagIcon },
+      { id: 138, name: "earrings", Icon: EarringIcon },
+      { id: 139, name: "jacket", Icon: JacketIcon },
+      { id: 140, name: "jeans", Icon: JeansIcon },
+      { id: 141, name: "perfume", Icon: PerfumeIcon },
+      { id: 142, name: "receipt", Icon: ReceiptIcon },
+      { id: 143, name: "hat", Icon: RedheadIcon },
+      { id: 144, name: "ring", Icon: RingIcon },
+      { id: 145, name: "watch", Icon: WatchIcon },
+      { id: 146, name: "sun-glasses", Icon: SunglassesIcon },
+      { id: 147, name: "t-shirt", Icon: TshirtIcon },
+      { id: 148, name: "umbrella", Icon: UmbrellaIcon },
     ],
   },
   {
@@ -305,6 +436,111 @@ export const iconsArray = [
       { id: 48, name: "syringe", Icon: SyringeIcon },
       { id: 49, name: "water", Icon: WaterIcon },
       { id: 50, name: "yoga", Icon: YogaIcon },
+      { id: 149, name: "ambulance", Icon: AmbulanceIcon },
+      { id: 150, name: "bandage", Icon: BandageIcon },
+      { id: 151, name: "brain", Icon: BrainIcon },
+      { id: 152, name: "doctor", Icon: DoctorIcon },
+      { id: 153, name: "nurce", Icon: NurceIcon },
+      { id: 154, name: "dumbbells", Icon: DumbbellsIcon },
+      { id: 155, name: "mask", Icon: MaskIcon },
+      { id: 156, name: "thermometer", Icon: ThermometrIcon },
+      { id: 157, name: "first-aid", Icon: FirstAidIcon },
+      { id: 158, name: "heart", Icon: HeartIcon },
+      { id: 159, name: "heart-beat", Icon: HeartBeatIcon },
+      { id: 160, name: "hospital", Icon: HospitalIcon },
+      { id: 161, name: "pills-bottle", Icon: PillsBottleIcon },
+      { id: 162, name: "jump-rope", Icon: JumpRopeIcon },
+      { id: 163, name: "lungs", Icon: LungsIcon },
+      { id: 164, name: "sanitizer", Icon: SanitizerIcon },
+      { id: 165, name: "sleep", Icon: SleepIcon },
+      { id: 166, name: "tooth", Icon: ToothIcon },
+      { id: 167, name: "tooth-brush", Icon: ToothBrushIcon },
+    ],
+  },
+  {
+    id: 6,
+    title: "Дом и коммунальные услуги",
+    items: [
+      { id: 168, name: "home", Icon: HomeIcon },
+      { id: 169, name: "apartment", Icon: ApartmentIcon },
+      { id: 170, name: "house", Icon: HouseIcon },
+      { id: 171, name: "key", Icon: KeyIcon },
+      { id: 172, name: "door", Icon: DoorIcon },
+      { id: 173, name: "window", Icon: WindowIcon },
+      { id: 174, name: "lamp", Icon: LampIcon },
+      { id: 175, name: "sofa", Icon: SofaIcon },
+      { id: 176, name: "bed", Icon: BedIcon },
+      { id: 177, name: "chair", Icon: ChairIcon },
+      { id: 178, name: "table", Icon: TableIcon },
+      { id: 179, name: "kitchen", Icon: KitchenIcon },
+      { id: 180, name: "fridge", Icon: FridgeIcon },
+      { id: 181, name: "microwave", Icon: MicrowaveIcon },
+      { id: 182, name: "washing-machine", Icon: WashingMachineIcon },
+      { id: 183, name: "vacuum", Icon: VacuumIcon },
+      { id: 184, name: "broom", Icon: BroomIcon },
+      { id: 185, name: "trash", Icon: TrashIcon },
+      { id: 186, name: "recycle", Icon: RecycleIcon },
+      { id: 187, name: "electricity", Icon: ElectricityIcon },
+      { id: 188, name: "gas-pipe", Icon: GasPipeIcon },
+      { id: 189, name: "heater", Icon: HeaterIcon },
+      { id: 190, name: "air-conditioner", Icon: AirConditionerIcon },
+    ],
+  },
+  {
+    id: 7,
+    title: "Работа и бизнес",
+    items: [
+      { id: 191, name: "briefcase", Icon: BriefcaseIcon },
+      { id: 192, name: "office", Icon: OfficeIcon },
+      { id: 193, name: "desk", Icon: DeskIcon },
+      { id: 194, name: "chair-office", Icon: OfficeChairIcon },
+      { id: 195, name: "calendar", Icon: CalendarIcon },
+      { id: 196, name: "clock", Icon: ClockIcon },
+      { id: 197, name: "alarm", Icon: AlarmIcon },
+      { id: 198, name: "meeting", Icon: MeetingIcon },
+      { id: 199, name: "presentation", Icon: PresentationIcon },
+      { id: 200, name: "project", Icon: ProjectIcon },
+      { id: 201, name: "task", Icon: TaskIcon },
+      { id: 202, name: "checklist", Icon: ChecklistIcon },
+      { id: 203, name: "clipboard", Icon: ClipboardIcon },
+      { id: 204, name: "document", Icon: DocumentIcon },
+      { id: 205, name: "folder", Icon: ForlderIcon },
+      { id: 206, name: "archive", Icon: ArchiveIcon },
+      { id: 207, name: "printer", Icon: PrinterIcon },
+      { id: 208, name: "scanner", Icon: ScannerIcon },
+      { id: 209, name: "email", Icon: EmailIcon },
+      { id: 210, name: "inbox", Icon: InboxIcon },
+      { id: 211, name: "signature", Icon: SignatureIcon },
+      { id: 212, name: "stamp", Icon: StampIcon },
+    ],
+  },
+  {
+    id: 8,
+    title: "Цифровые технологии",
+    items: [
+      { id: 213, name: "smartphone", Icon: SmartphoneIcon },
+      { id: 214, name: "tablet", Icon: TabletIcon },
+      { id: 215, name: "laptop", Icon: LaptopIcon },
+      { id: 216, name: "monitor", Icon: MonitorIcon },
+      { id: 217, name: "keyboard", Icon: KeyboardIcon },
+      { id: 218, name: "mouse", Icon: MouseIcon },
+      { id: 219, name: "headset", Icon: HeadsetIcon },
+      { id: 220, name: "router", Icon: RouterIcon },
+      { id: 221, name: "wifi", Icon: WifiIcon },
+      { id: 222, name: "cloud", Icon: CloudIcon },
+      { id: 223, name: "server", Icon: ServerIcon },
+      { id: 224, name: "database", Icon: DatabaseIcon },
+      { id: 225, name: "code", Icon: CodeIcon },
+      { id: 226, name: "bug", Icon: BugIcon },
+      { id: 227, name: "shield", Icon: ShieldIcon },
+      { id: 228, name: "lock", Icon: LockIcon },
+      { id: 229, name: "unlock", Icon: UnLockIcon },
+      { id: 230, name: "fingerprint", Icon: FingerprintIcon },
+      { id: 231, name: "face-id", Icon: FaceIdIcon },
+      { id: 232, name: "qr-code", Icon: QrCodeIcon },
+      { id: 233, name: "link", Icon: LinkIcon },
+      { id: 234, name: "download", Icon: DownloadIcon },
+      { id: 235, name: "upload", Icon: UploadIcon },
     ],
   },
 ];
