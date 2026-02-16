@@ -1,19 +1,18 @@
-import PlusIcon from "@/assets/ui/Plus.svg";
-import Plug from "@/components/UI/Plug";
-import { useTheme } from "@/hooks/useTheme";
-import { Animated, Text, TouchableOpacity, View } from "react-native";
-
-import ArrowIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
+import PlusIcon from "@/assets/ui/Plus.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
+import MonthHeader from "@/components/UI/MonthHeader";
+import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { getChartData, getSumByType } from "@/database/queries/chart";
+import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
 import { PieItem } from "@/utils/chart";
 import { getMonthYearByOffset, getMonthYearTitle } from "@/utils/date";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
@@ -118,28 +117,11 @@ export default function CategoriesScreen() {
       >
         <PlusIcon width={32} height={32} color={theme.text} />
       </TouchableOpacity>
-      <View
-        style={{ backgroundColor: theme.card }}
-        className="pt-[50px] p-4 w-full flex-row items-center justify-between"
-      >
-        <TouchableOpacity
-          onPress={() => setMonthOffset((o) => o - 1)}
-          hitSlop={10}
-        >
-          <ArrowIcon width={24} height={24} color={theme.text} />
-        </TouchableOpacity>
-        <Text style={{ color: theme.text }} className="text-lg font-semibold">
-          {monthTitle}
-        </Text>
-        <TouchableOpacity
-          onPress={() => setMonthOffset((o) => o + 1)}
-          hitSlop={10}
-          style={{ transform: [{ scaleX: -1 }] }}
-          className="transform"
-        >
-          <ArrowIcon width={24} height={24} color={theme.text} />
-        </TouchableOpacity>
-      </View>
+      <MonthHeader
+        monthTitle={monthTitle}
+        setMonthOffset={setMonthOffset}
+        theme={theme}
+      />
       <View className="flex-col w-full gap-2">
         <View>
           <Text
@@ -185,9 +167,12 @@ export default function CategoriesScreen() {
             data={chartInfo}
             donut
             radius={120}
-            innerRadius={100}
+            innerRadius={80}
+            isAnimated
+            animationDuration={800}
             centerLabelComponent={() => (
               <TouchableOpacity
+                activeOpacity={0.5}
                 onPress={() =>
                   setCategoriesType((prev) => (prev === 1 ? 2 : 1))
                 }
