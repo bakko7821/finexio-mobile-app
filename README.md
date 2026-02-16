@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# Finexio 📊
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Finexio** — мобильное приложение для удобного учета личных финансов. Приложение помогает отслеживать доходы и расходы, а также анализировать свои траты с помощью наглядной статистики.
 
-## Get started
+---
 
-1. Install dependencies
+## Основные возможности
 
-   ```bash
-   npm install
-   ```
+- 💰 **Учет доходов и расходов** — легко добавляйте, изменяйте и удаляйте транзакции.
+- 🗂️ **Категории** — создавайте, редактируйте и удаляйте категории для лучшей организации расходов.
+- 📈 **Статистика** — один наглядный график, который показывает распределение расходов по категориям.
+- ⚡ **Простота и удобство** — минималистичный интерфейс для быстрого и комфортного управления финансами.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## Скриншоты
 
-In the output, you'll find options to open the app in a
+<p align="center">
+  <img src="screenshots/Screenshot_20260216-171458.jpg" width="45%" />
+  <img src="screenshots/Screenshot_20260216-171503.jpg" width="45%" />
+</p>
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Установка
 
-## Get a fresh project
+Скачайте и установите APK на своё устройство Android:
 
-When you're ready, run:
+[Скачать Finexio.apk](https://github.com/bakko7821/finexio-mobile-app/releases/tag/v1.0.0)
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Планы на будущее
 
-## Learn more
+- Добавление нескольких графиков и расширенной аналитики
+- Возможность экспорта данных
+- Улучшение интерфейса и пользовательского опыта
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+**Finexio** — ваш первый шаг к контролю над личными финансами. Простое, удобное и эффективное решение для ежедневного учета доходов и расходов.
