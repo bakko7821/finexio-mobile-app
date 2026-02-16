@@ -9,7 +9,10 @@ type TransactionListProps = {
   data: GroupedTransactions[];
 };
 
-export default function TransactionList({ data, onRefresh }: TransactionListProps) {
+export default function TransactionList({
+  data,
+  onRefresh,
+}: TransactionListProps) {
   const theme = useTheme();
   return (
     <View className=" w-full flex-col gap-2">
@@ -63,10 +66,11 @@ export default function TransactionList({ data, onRefresh }: TransactionListProp
           <View className="flex-col gap-1 w-full px-2">
             {group.transactions.map((transaction, idx) => (
               <TransactionComponent
-                onRefresh={onRefresh}
-                isArchive={transaction.category.isArchive}
                 key={`${transaction.categoryId}-${transaction.count}-${idx}`}
                 transaction={transaction}
+                isArchive={transaction.category.isArchive}
+                onRefresh={onRefresh}
+                index={idx}
               />
             ))}
           </View>

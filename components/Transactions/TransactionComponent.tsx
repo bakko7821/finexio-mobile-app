@@ -1,8 +1,8 @@
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import { Transaction } from "@/utils/transactions";
-import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 import InfoTransactionModal from "../UI/modals/transactions/InfoTransactionModal";
 
@@ -10,19 +10,51 @@ interface TransactionComponentProps {
   transaction: Transaction;
   isArchive?: boolean;
   onRefresh?: () => void;
+  index: number;
 }
 export default function TransactionComponent({
   transaction,
   isArchive = false,
   onRefresh,
+  index,
 }: TransactionComponentProps) {
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
 
   const theme = useTheme();
 
+  const anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: 1,
+      duration: 200,
+      delay: index * 50, // 🔥 stagger
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View className="relative overflow-hidden rounded-xl">
+    <Animated.View
+      className="relative overflow-hidden rounded-xl"
+      style={{
+        opacity: anim,
+        transform: [
+          {
+            translateY: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [10, 0],
+            }),
+          },
+          {
+            scale: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.95, 1],
+            }),
+          },
+        ],
+      }}
+    >
       <TouchableOpacity
         style={{ opacity: isArchive ? 0.5 : 1 }}
         className="w-full p-2 flex-row items-center justify-between"
@@ -95,6 +127,6 @@ export default function TransactionComponent({
         transaction={transaction}
         onRefresh={onRefresh}
       />
-    </View>
+    </Animated.View>
   );
 }

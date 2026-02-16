@@ -16,20 +16,36 @@ const MONTHS_SHORT = [
   "дек.",
 ];
 
-const MONTHS = [
-  "января",
-  "февраля",
-  "марта",
-  "апреля",
-  "мая",
-  "июня",
-  "июля",
-  "августа",
-  "сентября",
-  "октября",
-  "ноября",
-  "декабря",
-];
+export const MONTHS_RU = {
+  nominative: [
+    "январь",
+    "февраль",
+    "март",
+    "апрель",
+    "май",
+    "июнь",
+    "июль",
+    "август",
+    "сентябрь",
+    "октябрь",
+    "ноябрь",
+    "декабрь",
+  ],
+  genitive: [
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря",
+  ],
+} as const;
 
 const WEEK_DAYS = [
   "воскресенье",
@@ -40,6 +56,42 @@ const WEEK_DAYS = [
   "пятница",
   "суббота",
 ];
+
+export function getMonthYearByOffset(
+  offset: number,
+  baseDate: Date = new Date()
+) {
+  const date = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth() + offset,
+    1
+  );
+
+  return {
+    month: date.getMonth() + 1, // 1–12 (для SQL)
+    year: date.getFullYear(),
+  };
+}
+
+export function getMonthYearTitle(
+  offset: number,
+  baseDate: Date = new Date(),
+  locale: string = "ru-RU"
+): string {
+  const date = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth() + offset,
+    1
+  );
+
+  const formatted = new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
+  // убираем " г." для UI
+  return formatted.replace(" г.", "");
+}
 
 export const formatDateRu = (dateStr: string): string => {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -55,9 +107,6 @@ export const formatDateRu = (dateStr: string): string => {
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
-
-  // if (isSameDay(date, today)) return "Сегодня";
-  // if (isSameDay(date, yesterday)) return "Вчера";
 
   const dayOfWeek = WEEK_DAYS[date.getDay()];
   const monthName = MONTHS_SHORT[month - 1]; // сокращённый месяц
@@ -107,7 +156,7 @@ export const parseDate = (date: string) => {
   return {
     date: parsedDate,
     day,
-    month: MONTHS[month - 1],
+    month: MONTHS_RU.genitive[month - 1],
     year: String(year),
   };
 };

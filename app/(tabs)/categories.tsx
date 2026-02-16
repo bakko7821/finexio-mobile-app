@@ -1,8 +1,9 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
 import Plug from "@/components/UI/Plug";
 import { useTheme } from "@/hooks/useTheme";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 
+import ArrowIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
@@ -11,8 +12,8 @@ import { getCategoriesByType } from "@/database/queries/categories";
 import { getChartData, getSumByType } from "@/database/queries/chart";
 import { Category } from "@/utils/categories";
 import { PieItem } from "@/utils/chart";
-import { getCurrentMonthAndYear } from "@/utils/date";
-import { useEffect, useState } from "react";
+import { getMonthYearByOffset, getMonthYearTitle } from "@/utils/date";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
@@ -37,53 +38,108 @@ export default function CategoriesScreen() {
         const data = await getCategoriesByType(categoriesType);
 
         setCategories(data);
-        setLoadingCategories(false);
       } catch (error: unknown) {
         console.error(error);
       }
     };
 
     fetchCategories();
+
+    fetchCategories().finally(() => setLoadingCategories(false));
   }, [categoriesType, refreshFlag]);
 
+  const [monthOffset, setMonthOffset] = useState(0);
+
   useEffect(() => {
-    const { month, year } = getCurrentMonthAndYear();
+    const { month, year } = getMonthYearByOffset(monthOffset);
 
     const fetchPieChartData = async () => {
       try {
+        setLoadingChartInfo(true);
+
         const data = await getChartData({
           type: categoriesType,
-          month: month,
-          year: year,
+          month,
+          year,
         });
-        setChartInfo(data);
-        setLoadingChartInfo(false);
 
-        setExpensive(await getSumByType(1));
-        setIncome(await getSumByType(2));
+        setChartInfo(data);
+
+        setExpensive(await getSumByType({ type: 1, month, year }));
+        setIncome(await getSumByType({ type: 2, month, year }));
       } catch (error: unknown) {
         console.error(error);
+      } finally {
+        setLoadingChartInfo(false);
       }
     };
 
     fetchPieChartData();
-  }, [categoriesType, refreshFlag]);
+  }, [categoriesType, refreshFlag, monthOffset]);
+
+  const monthTitle = useMemo(() => {
+    const title = getMonthYearTitle(monthOffset);
+    return title.charAt(0).toUpperCase() + title.slice(1);
+  }, [monthOffset]);
+
+  const chartAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(chartAnim, {
+      toValue: loadingChartInfo ? 0.8 : 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [loadingChartInfo]);
+
+  const categoriesAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(categoriesAnim, {
+      toValue: loadingCategories ? 0.3 : 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [loadingCategories]);
 
   return (
     <View
       style={{ backgroundColor: theme.background }}
-      className="pt-[50px] flex-1 flex-col gap-2 items-start justify-start relative"
+      className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
       <TouchableOpacity
         style={{
           borderColor: theme.secondary,
           backgroundColor: theme.header,
+          zIndex: 999,
         }}
         onPress={() => setIsVisibleCreateCategoryModal(true)}
         className="items-center justify-center absolute bottom-[0px] left-[16px] p-2 rounded-full border-[2px] border-dashed"
       >
         <PlusIcon width={32} height={32} color={theme.text} />
       </TouchableOpacity>
+      <View
+        style={{ backgroundColor: theme.card }}
+        className="pt-[50px] p-4 w-full flex-row items-center justify-between"
+      >
+        <TouchableOpacity
+          onPress={() => setMonthOffset((o) => o - 1)}
+          hitSlop={10}
+        >
+          <ArrowIcon width={24} height={24} color={theme.text} />
+        </TouchableOpacity>
+        <Text style={{ color: theme.text }} className="text-lg font-semibold">
+          {monthTitle}
+        </Text>
+        <TouchableOpacity
+          onPress={() => setMonthOffset((o) => o + 1)}
+          hitSlop={10}
+          style={{ transform: [{ scaleX: -1 }] }}
+          className="transform"
+        >
+          <ArrowIcon width={24} height={24} color={theme.text} />
+        </TouchableOpacity>
+      </View>
       <View className="flex-col w-full gap-2">
         <View>
           <Text
@@ -100,61 +156,76 @@ export default function CategoriesScreen() {
             {categoriesType === 1 ? "доходы" : "расходы"}.
           </Text>
         </View>
-        <View className="w-full p-4 justify-center items-center">
-          {!loadingChartInfo ? (
-            <PieChart
-              data={chartInfo}
-              donut
-              radius={120}
-              innerRadius={100}
-              centerLabelComponent={() => (
-                <TouchableOpacity
-                  onPress={() =>
-                    setCategoriesType((prev) => (prev === 1 ? 2 : 1))
-                  }
-                  style={{
-                    backgroundColor: theme.card,
-                  }}
-                  className="flex-col items-center justify-center rounded-full w-[200px] h-[200px]"
-                >
-                  <Text
-                    style={{ color: theme.text }}
-                    className="text-xl font-medium"
-                  >
-                    {categoriesType === 1 ? "Расходы" : "Доходы"}
-                  </Text>
-                  <Text
-                    style={{
-                      color: categoriesType === 1 ? theme.red : theme.green,
-                    }}
-                    className="text-2xl font-medium"
-                  >
-                    {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
-                  </Text>
-                  <Text
-                    style={{
-                      color: categoriesType === 1 ? theme.green : theme.red,
-                      opacity: 0.4,
-                    }}
-                    className="text-base font-medium"
-                  >
-                    {categoriesType === 1 ? `+${income}` : `-${expensive}`} ₽
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          ) : (
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-sm font-medium"
-            >
-              Загрузка категорий...
-            </Text>
+        <Animated.View
+          style={{
+            opacity: chartAnim,
+            transform: [
+              {
+                scale: chartAnim.interpolate({
+                  inputRange: [0.8, 1],
+                  outputRange: [0.96, 1],
+                }),
+              },
+            ],
+          }}
+          className="w-full p-4 justify-center items-center"
+        >
+          {loadingChartInfo && (
+            <View className="absolute inset-0 items-center justify-center">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Загрузка...
+              </Text>
+            </View>
           )}
-        </View>
+
+          <PieChart
+            data={chartInfo}
+            donut
+            radius={120}
+            innerRadius={100}
+            centerLabelComponent={() => (
+              <TouchableOpacity
+                onPress={() =>
+                  setCategoriesType((prev) => (prev === 1 ? 2 : 1))
+                }
+                style={{
+                  backgroundColor: theme.card,
+                }}
+                className="flex-col items-center justify-center rounded-full w-[200px] h-[200px]"
+              >
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-xl font-medium"
+                >
+                  {categoriesType === 1 ? "Расходы" : "Доходы"}
+                </Text>
+                <Text
+                  style={{
+                    color: categoriesType === 1 ? theme.red : theme.green,
+                  }}
+                  className="text-2xl font-medium"
+                >
+                  {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
+                </Text>
+                <Text
+                  style={{
+                    color: categoriesType === 1 ? theme.green : theme.red,
+                    opacity: 0.4,
+                  }}
+                  className="text-base font-medium"
+                >
+                  {categoriesType === 1 ? `+${income}` : `-${expensive}`} ₽
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </Animated.View>
       </View>
       <Plug />
-      <View className="flex-col w-full gap-2">
+      <View className="flex-col w-full gap-2 flex-1">
         <View className="px-4 flex-row w-full items-center justify-between">
           <Text style={{ color: theme.text }} className="text-lg font-medium">
             Категории
@@ -167,7 +238,21 @@ export default function CategoriesScreen() {
             )}
           </TouchableOpacity>
         </View>
-        <View className="w-full px-4">
+        <Animated.View
+          style={{
+            flex: 1,
+            opacity: categoriesAnim,
+            transform: [
+              {
+                scale: categoriesAnim.interpolate({
+                  inputRange: [0.3, 1],
+                  outputRange: [0.96, 1],
+                }),
+              },
+            ],
+          }}
+          className="w-full px-4"
+        >
           {!loadingCategories ? (
             <CategoriesList
               onRefresh={() => setRefreshFlag((prev) => prev + 1)}
@@ -182,7 +267,7 @@ export default function CategoriesScreen() {
               Загрузка категорий...
             </Text>
           )}
-        </View>
+        </Animated.View>
       </View>
       <CreateCategoryModal
         title="Новая категория"
