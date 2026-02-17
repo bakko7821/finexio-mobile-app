@@ -1,7 +1,11 @@
+// metro.config.cjs
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
+const path = require("path");
 
-const config = getDefaultConfig(__dirname);
+// Используем path.resolve для корректных абсолютных путей
+const projectRoot = path.resolve(__dirname);
+const config = getDefaultConfig(projectRoot);
 
 const newConfig = {
   ...config,
@@ -16,4 +20,6 @@ const newConfig = {
   },
 };
 
-module.exports = withNativeWind(newConfig, { input: "./global.css" });
+module.exports = withNativeWind(newConfig, {
+  input: path.resolve(projectRoot, "global.css"),
+});

@@ -175,4 +175,70 @@ export const colorsArray = [
   { color: "#007078" },
   { color: "#006269" },
   { color: "#00545a" },
+
+  // BLUE
+  { color: "#2b00ff"},
+  { color: "#370fff"},
+  { color: "#441eff"},
+  { color: "#502dff"},
+  { color: "#5d3cff"},
+  { color: "#694bff"},
+
+  { color: "#350ff0"},
+  { color: "#3f1ee1"},
+  { color: "#492dd2"},
+  { color: "#533cc3"},
+  { color: "#5d4bb4"},
+  { color: "#675aa5"},
+
+  { color: "#1c00a5"},
+  { color: "#190096"},
+  { color: "#170087"},
+  { color: "#140078"},
+  { color: "#120069"},
+  { color: "#0f005a"},
+
+  //  PURPLE
+  { color: "#9900ff"},
+  { color: "#a51eff"},
+  { color: "#b13cff"},
+  { color: "#bd5aff"},
+  { color: "#c978ff"},
+  { color: "#d596ff"},
+
+  { color: "#9808f8"},
+  { color: "#960ff0"},
+  { color: "#931ee1"},
+  { color: "#902dd2"},
+  { color: "#8d3cc3"},
+  { color: "#8a4bb4"},
+
+  { color: "#6300a5"},
+  { color: "#5a0096"},
+  { color: "#510087"},
+  { color: "#480078"},
+  { color: "#3f0069"},
+  { color: "#36005a"},
+
+  //  PINK
+  { color: "#fb00ff"},
+  { color: "#fb1eff"},
+  { color: "#fc3cff"},
+  { color: "#fc5aff"},
+  { color: "#fd78ff"},
+  { color: "#fd96ff"},
+
+  { color: "#d02dd2"},
+  { color: "#c835cb"},
+  { color: "#c13cc3"},
+  { color: "#ba44bc"},
+  { color: "#b34bb4"},
+  { color: "#ab53ad"},
+
+  { color: "#a200a5"},
+  { color: "#940096"},
+  { color: "#850087"},
+  { color: "#760078"},
+  { color: "#670069"},
+  { color: "#59005a"},
 ];
