@@ -10,11 +10,11 @@ import { Transaction, UpdateTransactionDto } from "@/utils/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import {
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Modal from "react-native-modal";
 import NumberInput from "../../NumberInput";
@@ -151,6 +151,7 @@ export default function InfoTransactionModal({
             value={transactionNote}
             onChangeText={(text: string) => setTransactionNote(text)}
             onFocus={() => setIsEdit(false)}
+            onPress={() => setIsEdit(false)}
             placeholderTextColor={theme.secondary}
             style={{
               color: theme.text,

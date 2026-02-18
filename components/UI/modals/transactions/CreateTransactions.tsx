@@ -1,5 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
@@ -28,11 +28,13 @@ export default function CreateTransactionsModal({
   const theme = useTheme();
 
   const [countValue, setCoutValue] = useState("0");
+  const [noteValue, setNoteValue] = useState("")
   const [gasValue, setGasValue] = useState(0);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
   const [date, setDate] = useState(nowDay);
   const [selectedSubCategory, setSelectedSubCategory] =
     useState<SubCategory | null>(null);
+  const [isVisibleNumberInput, setIsVisibleNumberInput] = useState(true)
 
   useEffect(() => {
     if (!category?.gasPrice) {
@@ -52,6 +54,7 @@ export default function CreateTransactionsModal({
   if (category === null) return;
 
   const handleClose = () => {
+    setNoteValue("");
     setSelectedSubCategory(null);
     setDate(nowDay);
     setCoutValue("0");
@@ -64,9 +67,9 @@ export default function CreateTransactionsModal({
       date: date,
       count: Number(countValue),
       categoryId: category.id,
+      note: noteValue || undefined,
 
       subCategoryId: selectedSubCategory?.id,
-      note: undefined,
       gasValue: gasValue ? Number(gasValue) : undefined,
     });
 
@@ -130,6 +133,21 @@ export default function CreateTransactionsModal({
             </View>
           )}
           <View className="flex-col gap-1 items-start justify-start">
+            <TextInput
+              value={noteValue}
+              onChangeText={(text: string) => setNoteValue(text)}
+              onPress={() => setIsVisibleNumberInput(false)}
+              onFocus={() => setIsVisibleNumberInput(false)}
+              onSubmitEditing={() => setIsVisibleNumberInput(true)}
+              placeholderTextColor={theme.secondary}
+              style={{
+                color: theme.text,
+                backgroundColor: theme.card,
+                padding: 12,
+              }}
+              className="text-base font-regular rounded-xl w-full items-center justify-center text-center"
+              placeholder="Заметка..."
+            />
             <Text
               style={{ color: theme.secondary }}
               className="text-sm font-medium"
@@ -148,7 +166,7 @@ export default function CreateTransactionsModal({
               </Text>
             </View>
           </View>
-          <View className="flex-col gap-1 items-start justify-start">
+          {isVisibleNumberInput && <View className="flex-col gap-1 items-start justify-start">
             <Text
               style={{ color: theme.secondary }}
               className="text-sm font-medium"
@@ -161,7 +179,8 @@ export default function CreateTransactionsModal({
               value={countValue}
               setValue={setCoutValue}
             />
-          </View>
+          </View>}
+          
           {category?.isGas ? (
             <View className="flex-col gap-1 items-start justify-start">
               <View className="w-full flex-row items-center justify-between">

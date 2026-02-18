@@ -70,7 +70,6 @@ export default function CreateCategoryModal({
 
   const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
-
   const [isArchive, setIsArchive] = useState(false);
 
   useEffect(() => {
@@ -211,6 +210,7 @@ export default function CreateCategoryModal({
         subcategories: subcategories,
       });
 
+      setSubcategories([]);
       onRefresh?.();
       setCategoryNameValue("");
       setCategoryType(1);
