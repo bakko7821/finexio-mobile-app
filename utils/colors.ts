@@ -154,6 +154,21 @@ export const colorsArray = [
   { color: "#206900" },
   { color: "#1b5a00" },
 
+  // LIME
+  { color: "#bbff00" },
+  { color: "#b4f00f" },
+  { color: "#ade11e" },
+  { color: "#a6d22d" },
+  { color: "#9fc33c" },
+  { color: "#98b44b" },
+
+  { color: "#79a500" },
+  { color: "#6e9600" },
+  { color: "#638700" },
+  { color: "#587800" },
+  { color: "#4d6900" },
+  { color: "#425a00" },
+
   // SKY
   { color: "#00eeff" },
   { color: "#1ef0ff" },
@@ -241,4 +256,27 @@ export const colorsArray = [
   { color: "#760078"},
   { color: "#670069"},
   { color: "#59005a"},
+
+  // BLACK
+  { color: "#000000"},
+  { color: "#1e1e1e"},
+  { color: "#3c3c3c"},
+  { color: "#5a5a5a"},
+  { color: "#787878"},
+  { color: "#969696"},
+
+  { color: "#2d2d2d"},
+  { color: "#353535"},
+  { color: "#444444"},
+  { color: "#4b4b4b"},
+  { color: "#535353"},
+  { color: "#626262"},
+
+  // WHITE
+  { color: "#ffffff"},
+  { color: "#f0f0f0"},
+  { color: "#e1e1e1"},
+  { color: "#d2d2d2"},
+  { color: "#c3c3c3"},
+  { color: "#b4b4b4"},
 ];
