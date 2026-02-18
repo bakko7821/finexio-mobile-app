@@ -34,16 +34,17 @@ export default function CategoriesList({
   const [isOpenInfoCategoryModal, setIsOpenInfoCategoryModal] = useState(false);
 
   // анимации для каждой категории
-  const animValues = useRef(
-    categories.map(() => new Animated.Value(0)),
-  ).current;
+  const animValues = useRef<Animated.Value[]>([]);
 
   // эффект: при смене categories плавно показываем иконки
   useEffect(() => {
-    animValues.forEach((anim) => anim.setValue(0)); // сброс
+    animValues.current = categories.map(
+      (_, index) => animValues.current[index] ?? new Animated.Value(0),
+    );
+
     Animated.stagger(
       50,
-      animValues.map((anim) =>
+      animValues.current.map((anim) =>
         Animated.timing(anim, {
           toValue: 1,
           duration: 200,
@@ -72,7 +73,8 @@ export default function CategoriesList({
   }
 
   const renderItem = ({ item, index }: ListRenderItemInfo<Category>) => {
-    const anim = animValues[index];
+    const anim = animValues.current[index];
+    if (!anim) return null;
 
     return (
       <Animated.View
@@ -126,7 +128,9 @@ export default function CategoriesList({
           showsVerticalScrollIndicator={false}
         >
           {categories.map((item, index) => {
-            const anim = animValues[index];
+            const anim = animValues.current[index];
+            if (!anim) return null;
+
             return (
               <Animated.View
                 key={item.name}
@@ -175,7 +179,9 @@ export default function CategoriesList({
       ) : (
         <View className="w-full flex-row flex-wrap gap-2">
           {categories.map((category, index) => {
-            const anim = animValues[index];
+            const anim = animValues.current[index];
+            if (!anim) return null;
+            
             return (
               <Animated.View
                 key={category.name}

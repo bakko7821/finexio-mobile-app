@@ -111,6 +111,7 @@ export default function CreateCategoryModal({
       ...prev,
       {
         name: subCategoryName.trim(),
+        value: 0,      // ✅ ОБЯЗАТЕЛЬНО
         isNew: true,
       },
     ]);
