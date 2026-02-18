@@ -12,7 +12,6 @@ export const getChartData = async ({
 }): Promise<PieItem[]> => {
   const db = await getDb();
 
-  // форматируем месяц и день для SQL
   const monthStr = month.toString().padStart(2, "0");
   const yearStr = year.toString();
 
@@ -37,17 +36,38 @@ export const getChartData = async ({
       AND strftime('%m', t.date) = ? 
       AND strftime('%Y', t.date) = ?
     GROUP BY t.categoryId
+    ORDER BY sumCount DESC
     `,
     [type, monthStr, yearStr],
   );
 
-  return rows.map((row) => ({
+  if (!rows.length) return [];
+
+  // берем топ-5
+  const top5 = rows.slice(0, 5);
+
+  // суммируем остальные
+  const othersSum = rows.slice(5).reduce((acc, row) => acc + row.sumCount, 0);
+
+  const result: PieItem[] = top5.map((row) => ({
     value: row.sumCount,
     color: row.color,
     text: row.name,
     icon: row.icon,
   }));
+
+  if (othersSum > 0) {
+    result.push({
+      value: othersSum,
+      color: "#9c9c9c", // серый цвет
+      text: "Прочие",
+      icon: "recycle", // можно оставить иконку-заглушку
+    });
+  }
+
+  return result;
 };
+
 
 export const getSumByType = async ({
   type,
