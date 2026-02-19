@@ -1,9 +1,11 @@
 import CalendarIcon from "@/assets/ui/Calendar4Week.svg";
 import CopyIcon from "@/assets/ui/Copy.svg";
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
+import SearchIcon from "@/assets/ui/Search.svg";
 import DeleteIcon from "@/assets/ui/Trash.svg";
 import { deleteTransaction, updateTransaction } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
+import { Category } from "@/utils/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
 import { Transaction, UpdateTransactionDto } from "@/utils/transactions";
@@ -22,6 +24,7 @@ import { RenderIcon } from "../../RenderIcon";
 import DeleteModal from "../categories/DeleteModal";
 
 interface InfoTransactionModalProps {
+  setFilter?: (category: Category) => void;
   onRefresh?: () => void;
   transaction: Transaction | null;
   visible: boolean;
@@ -29,6 +32,7 @@ interface InfoTransactionModalProps {
 }
 
 export default function InfoTransactionModal({
+  setFilter,
   onRefresh,
   transaction,
   visible,
@@ -230,6 +234,27 @@ export default function InfoTransactionModal({
                 className="text-sm font-medium"
               >
                 Удалить
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="gap-2 flex-col items-center justify-center"
+              onPress={() => setFilter?.(transaction.category)}
+            >
+              <View
+                style={{ backgroundColor: withOpacity(transaction.category.color, 0.4) }}
+                className="p-3 rounded-full items-center justify-center"
+              >
+                <SearchIcon
+                  width={24}
+                  height={24}
+                  color={getContrastColor(withOpacity(transaction.category.color, 0.4))}
+                />
+              </View>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Транзакции
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

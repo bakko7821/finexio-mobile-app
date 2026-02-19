@@ -103,7 +103,7 @@ export default function CreateTransactionsModal({
           </TouchableOpacity>
         </View>
         <View className="w-full flex-col gap-3">
-          <CategoryComponent category={category} />
+          <CategoryComponent fullsize category={category} />
           {category.subcategories && category.subcategories.length > 0 && (
             <View className="w-full flex-row flex-wrap gap-2 items-center justify-start">
               {category.subcategories.map((subcategory) => {

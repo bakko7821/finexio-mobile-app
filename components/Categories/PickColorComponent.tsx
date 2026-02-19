@@ -1,16 +1,30 @@
 import { colorsArray, getContrastColor } from "@/utils/colors";
-import React from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { InteractionManager, ScrollView, TouchableOpacity, View } from "react-native";
 
 interface PickColorComponentProps {
   selectedColor: string | null;
   onSelect: (color: string) => void;
 }
 
+const FIRST_BATCH_SIZE = 66; // сколько цветов рендерим сразу
+
 export default function PickColorComponent({
   selectedColor,
   onSelect,
 }: PickColorComponentProps) {
+  // --- progressive data ---
+  const initialData = useMemo(() => colorsArray.slice(0, FIRST_BATCH_SIZE), []);
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
+      setData(colorsArray); // подгружаем все цвета после первой отрисовки
+    });
+
+    return () => task.cancel();
+  }, []);
+
   return (
     <ScrollView
       className="flex-1"
@@ -22,7 +36,7 @@ export default function PickColorComponent({
         paddingBottom: 16,
       }}
     >
-      {colorsArray.map((color) => {
+      {data.map((color) => {
         const isSelected = selectedColor === color.color;
 
         return (
@@ -36,10 +50,8 @@ export default function PickColorComponent({
               <View
                 className="w-full h-full rounded-full"
                 style={{
-                  borderWidth: isSelected ? 3 : 0,
-                  borderColor: isSelected
-                    ? getContrastColor(color.color)
-                    : "transparent",
+                  borderWidth: 3,
+                  borderColor: getContrastColor(color.color),
                   backgroundColor: color.color,
                 }}
               />

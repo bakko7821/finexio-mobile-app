@@ -6,7 +6,7 @@ type MonthHeaderProps = {
   monthTitle: string;
   setMonthOffset: (updater: (prev: number) => number) => void;
   theme: {
-    card: string;
+    header: string;
     text: string;
   };
 };
@@ -52,7 +52,7 @@ const MonthHeader: React.FC<MonthHeaderProps> = ({
 
   return (
     <View
-      style={{ backgroundColor: theme.card }}
+      style={{ backgroundColor: theme.header }}
       className="pt-[50px] p-4 w-full flex-row items-center justify-between"
     >
       <TouchableOpacity onPress={() => handleChangeMonth(-1)} hitSlop={10}>

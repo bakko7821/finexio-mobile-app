@@ -3,15 +3,18 @@ import { withOpacity } from "@/utils/colors";
 import { GroupedTransactions } from "@/utils/transactions";
 import { Text, View } from "react-native";
 import TransactionComponent from "./TransactionComponent";
+import { Category } from "@/utils/categories";
 
 type TransactionListProps = {
   onRefresh?: () => void;
   data: GroupedTransactions[];
+  setFilter?: (category: Category) => void;
 };
 
 export default function TransactionList({
   data,
   onRefresh,
+  setFilter,
 }: TransactionListProps) {
   const theme = useTheme();
   return (
@@ -66,6 +69,7 @@ export default function TransactionList({
           <View className="flex-col gap-1 w-full px-2">
             {group.transactions.map((transaction, idx) => (
               <TransactionComponent
+                setFilter={setFilter}
                 key={`${transaction.categoryId}-${transaction.count}-${idx}`}
                 transaction={transaction}
                 isArchive={transaction.category.isArchive}

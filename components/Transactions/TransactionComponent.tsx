@@ -1,4 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
+import { Category } from "@/utils/categories";
 import { getContrastColor } from "@/utils/colors";
 import { Transaction } from "@/utils/transactions";
 import { useEffect, useRef, useState } from "react";
@@ -7,7 +8,8 @@ import { RenderIcon } from "../UI/RenderIcon";
 import InfoTransactionModal from "../UI/modals/transactions/InfoTransactionModal";
 
 interface TransactionComponentProps {
-  transaction: Transaction;
+  setFilter?: (category: Category) => void;
+  transaction: Transaction; 
   isArchive?: boolean;
   onRefresh?: () => void;
   index: number;
@@ -17,6 +19,7 @@ export default function TransactionComponent({
   isArchive = false,
   onRefresh,
   index,
+  setFilter,
 }: TransactionComponentProps) {
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
@@ -122,6 +125,7 @@ export default function TransactionComponent({
         </Text>
       </TouchableOpacity>
       <InfoTransactionModal
+        setFilter={setFilter}
         visible={isOpenTransactionInfoModal}
         onClose={() => setIsOpenTransactionInfoModal(false)}
         transaction={transaction}
