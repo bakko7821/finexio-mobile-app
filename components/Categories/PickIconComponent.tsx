@@ -1,8 +1,39 @@
 import { useTheme } from "@/hooks/useTheme";
 import { iconsArray } from "@/utils/icons";
-import React, { useEffect } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Animated,
+  FlatList,
+  InteractionManager,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const FIRST_BATCH_SIZE = 100;
+
+function sliceIcons(array: typeof iconsArray, count: number) {
+  return array.map(section => ({
+    ...section,
+    items: section.items.slice(0, count),
+  }));
+}
+
+function mergeIcons(
+  base: typeof iconsArray,
+  full: typeof iconsArray
+) {
+  return base.map((section, i) => ({
+    ...section,
+    items: full[i].items,
+  }));
+}
+
+const MemoIcon = React.memo(
+  ({ Icon, color }: { Icon: any; color: string }) => (
+    <Icon width={32} height={32} color={color} />
+  )
+);
 
 interface PickIconComponentProps {
   selectedIcon: string;
@@ -15,69 +46,110 @@ export default function PickIconComponent({
 }: PickIconComponentProps) {
   const theme = useTheme();
 
-  const [visible, setVisible] = React.useState(false);
+  const initialData = useMemo(
+    () => sliceIcons(iconsArray, FIRST_BATCH_SIZE),
+    []
+  );
+
+  const [data, setData] = useState(initialData);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 50);
-    return () => clearTimeout(t);
+    const task = InteractionManager.runAfterInteractions(() => {
+      setData(prev => mergeIcons(prev, iconsArray));
+    });
+
+    return () => task.cancel();
   }, []);
 
-  return (
-    <FlatList
-      data={iconsArray}
-      keyExtractor={(item) => item.id.toString()}
-      contentContainerStyle={{ paddingRight: 8 }}
-      initialNumToRender={2}
-      windowSize={5}
-      removeClippedSubviews
-      renderItem={({ item: iconList, index }) => (
-        <Animated.View
-          entering={FadeInDown.duration(200).delay(Math.min(index * 30, 150))}
-          className="flex-1 flex-col gap-2 pb-[16px]"
-        >
-          <View className="flex flex-row items-center gap-2">
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-xl font-medium"
-            >
-              {iconList.title}
-            </Text>
-            <View
-              style={{ backgroundColor: theme.secondary }}
-              className="flex-1 h-[2px]"
-            />
-          </View>
-          <View className="flex flex-row flex-wrap gap-2">
-            {iconList.items.map((item) => {
-              const Icon = item.Icon;
-              const isSelected = selectedIcon === item.name;
+  const anim = useRef(new Animated.Value(0)).current;
 
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  onPress={() => onSelect(item.name)}
-                  className="w-13 h-13 p-2 rounded-xl items-center justify-center"
-                  style={{ backgroundColor: theme.card }}
-                >
-                  {isSelected && (
-                    <View
-                      style={{
-                        borderColor: theme.primary,
-                      }}
-                      className="rounded-xl border-[2px] border-soli absolute inset-0"
-                    />
-                  )}
-                  {visible ? (
-                    <Icon width={32} height={32} color={theme.text} />
-                  ) : (
-                    <View className="w-8 h-8 rounded-md bg-gray-300 dark:bg-gray-700" />
-                  )}
-                </TouchableOpacity>
-              );
-            })}
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const animatedStyle = {
+    opacity: anim,
+    transform: [
+      {
+        scale: anim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.96, 1],
+        }),
+      },
+    ],
+  };
+
+  return (
+    <Animated.View style={[animatedStyle, {flex: 1}]}>
+      <FlatList
+        data={data}
+        scrollEnabled
+        contentContainerStyle={{
+          paddingRight: 8,
+          alignItems: "flex-start",
+        }}
+        style={{flex: 1}}
+        keyExtractor={(item) => item.id.toString()}
+        removeClippedSubviews
+        windowSize={3}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        updateCellsBatchingPeriod={16}
+        renderItem={({ item: iconList }) => (
+          <View className="w-full flex-col gap-2 pb-[16px]">
+            {/* header */}
+            <View className="flex flex-row items-center gap-2">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-xl font-medium"
+              >
+                {iconList.title}
+              </Text>
+              <View
+                style={{ backgroundColor: theme.secondary }}
+                className="flex-1 h-[2px]"
+              />
+            </View>
+
+            {/* icons grid */}
+            <View
+              key={`${iconList.id}-${iconList.items.length}`}
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                alignContent: "flex-start",
+              }}
+              className="gap-2"
+            >
+              {iconList.items.map((item) => {
+                const isSelected = selectedIcon === item.name;
+
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => onSelect(item.name)}
+                    className="w-13 h-13 p-2 rounded-xl items-center justify-center"
+                    style={{ backgroundColor: theme.card }}
+                  >
+                    {isSelected && (
+                      <View
+                        style={{ borderColor: theme.primary }}
+                        className="absolute inset-0 rounded-xl border-[2px]"
+                      />
+                    )}
+
+                    <MemoIcon Icon={item.Icon} color={theme.text} />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
-        </Animated.View>
-      )}
-    />
+        )}
+      />
+    </Animated.View>
   );
 }

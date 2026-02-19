@@ -179,7 +179,7 @@ export default function CategoriesScreen() {
                 style={{
                   backgroundColor: theme.card,
                 }}
-                className="flex-col items-center justify-center rounded-full w-[200px] h-[200px]"
+                className="flex-col items-center justify-center rounded-full w-[170px] h-[170px]"
               >
                 <Text
                   style={{ color: theme.text }}

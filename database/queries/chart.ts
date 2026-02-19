@@ -59,9 +59,9 @@ export const getChartData = async ({
   if (othersSum > 0) {
     result.push({
       value: othersSum,
-      color: "#9c9c9c", // серый цвет
+      color: "#9c9c9c",
       text: "Прочие",
-      icon: "recycle", // можно оставить иконку-заглушку
+      icon: "recycle",
     });
   }
 

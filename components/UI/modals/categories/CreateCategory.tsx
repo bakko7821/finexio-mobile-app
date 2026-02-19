@@ -235,6 +235,7 @@ export default function CreateCategoryModal({
       onBackdropPress={onClose}
       onBackButtonPress={onClose}
       useNativeDriver
+      removeClippedSubviews={false}
       style={{ margin: 0, justifyContent: "flex-end" }}
     >
       <View
@@ -499,7 +500,7 @@ export default function CreateCategoryModal({
           </View>
         )}
         {isIconComponent && (
-          <View className="w-full flex-1">
+          <View style={{ flex: 1, minHeight: 1 }}>
             <PickIconComponent
               selectedIcon={selectedIcon}
               onSelect={setSelectedIcon}
