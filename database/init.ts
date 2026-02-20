@@ -41,5 +41,13 @@ export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
       FOREIGN KEY (categoryId) REFERENCES categories(id)
         ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS wallets (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      icon TEXT NOT NULL,
+      color TEXT NOT NULL,
+      value REAL DEFAULT 0
+    )
   `);
 };
