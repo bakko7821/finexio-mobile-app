@@ -219,3 +219,54 @@ export const getTransactionsByCategoryAndDateAsync = async ({
 
   return mapTransactionsWithCategories(rows);
 };
+
+export const getTransactionsByDateAsync = async ({
+  month,
+  year,
+}: {
+  month: number;
+  year: number;
+}): Promise<Transaction[]> => {
+  const db = await getDb();
+  if (!db) return [];
+
+  const monthStr = month.toString().padStart(2, "0");
+  const yearStr = year.toString();
+
+  const rows = await db.getAllAsync<TransactionWithCategoryRow>(
+    `
+    SELECT
+      t.id        AS transaction_id,
+      t.date      AS transaction_date,
+      t.count     AS transaction_count,
+      t.note      AS transaction_note,
+      t.gasValue  AS transaction_gasValue,
+      t.categoryId AS transaction_categoryId,
+      t.subCategoryId AS transaction_subCategoryId,
+
+      c.id        AS category_id,
+      c.name      AS category_name,
+      c.color     AS category_color,
+      c.icon      AS category_icon,
+      c.type      AS category_type,
+      c.isArchive AS category_isArchive,
+      c.isGas     AS category_isGas,
+      c.gasType   AS category_gasType,
+      c.gasPrice AS category_gasPrice,
+
+      s.id        AS sub_id,
+      s.name      AS sub_name,
+      s.value     AS sub_value
+    FROM transactions t
+    INNER JOIN categories c ON c.id = t.categoryId
+    LEFT JOIN subcategories s ON s.id = t.subCategoryId
+    WHERE strftime('%m', t.date) = ?
+      AND strftime('%Y', t.date) = ?
+    ORDER BY t.date DESC
+
+    `,
+    [monthStr, yearStr],
+  );
+
+  return mapTransactionsWithCategories(rows);
+};

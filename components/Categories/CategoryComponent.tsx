@@ -19,24 +19,28 @@ export default function CategoryComponent({
 
   if (category !== null && smallIcon === true) return (
     <View style={{backgroundColor: category.color}} className="p-2 rounded-full items-center justify-center">
-      <RenderIcon name={category.icon} width={16} height={16} />
+      <RenderIcon name={category.icon} width={24} height={24} />
     </View>
   )
 
   if (category !== null) return (
     <View
-      style={{ backgroundColor: category.color}}
-      className="w-full flex-row items-center justify-start gap-2 p-3 rounded-xl"
+      style={{ backgroundColor: category.color, 
+        padding: fullsize ? 12 : 4,
+        paddingHorizontal: fullsize ? 12 : 8,
+        borderRadius: fullsize ? 12 : 999,
+        gap: fullsize ? 8 : 4}}
+      className="w-full flex-row items-center justify-start"
     >
       <RenderIcon
         name={category.icon}
-        width={24}
-        height={24}
+        width={fullsize ? 24 : 16}
+        height={fullsize ? 24 : 16}
         color={getContrastColor(category.color)}
       />
       <Text
         style={{ color: getContrastColor(category.color) }}
-        className="text-base font-medium"
+        className={fullsize ? "text-base font-medium" : "text-xs font-medium"}
       >
         {category.name}
       </Text>

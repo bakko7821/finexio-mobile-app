@@ -1,10 +1,10 @@
-import SearchIcon from "@/assets/ui/Search.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import TransactionList from "@/components/Transactions/TransactionList";
-import { getAllTransactionsByCategory, getTransactions } from "@/database/queries/transactions";
+import MonthHeader from "@/components/UI/MonthHeader";
+import { getTransactions, getTransactionsByCategoryAndDateAsync, getTransactionsByDateAsync } from "@/database/queries/transactions";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/categories";
-import { groupTransactionsByDate } from "@/utils/date";
+import { getMonthYearByOffset, getMonthYearTitle, groupTransactionsByDate } from "@/utils/date";
 import { Transaction } from "@/utils/transactions";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -21,9 +21,18 @@ export default function TransactionsScreen() {
   const [refreshFlag, setRefreshFlag] = useState(0);  
   const [filtredCategory, setFiltredCategory] = useState<Category | null>(null)
 
+    const [monthOffset, setMonthOffset] = useState(0);
+
+  const monthTitle = useMemo(() => {
+    const title = getMonthYearTitle(monthOffset);
+    return title.charAt(0).toUpperCase() + title.slice(1);
+  }, [monthOffset]);
+
 
   useFocusEffect(
     useCallback(() => {
+      const { month, year } = getMonthYearByOffset(monthOffset);
+
       let isActive = true;
 
       const fetchTransactions = async () => {
@@ -47,15 +56,16 @@ export default function TransactionsScreen() {
 
   useEffect(() => {
     let isActive = true;
+    const { month, year } = getMonthYearByOffset(monthOffset);
 
     const fetchTransactions = async () => {
       try {
         let data: Transaction[] = [];
 
         if (filtredCategory !== null) {
-          data = await getAllTransactionsByCategory({ categoryId: filtredCategory.id });
+          data = await getTransactionsByCategoryAndDateAsync({ categoryId: filtredCategory.id, month: month, year: year });
         } else {
-          data = await getTransactions();
+          data = await getTransactionsByDateAsync({month: month, year: year});
         }
 
         if (isActive) setTransactions(data);
@@ -69,7 +79,7 @@ export default function TransactionsScreen() {
     return () => {
       isActive = false;
     };
-  }, [filtredCategory, refreshFlag]);
+  }, [filtredCategory, refreshFlag, monthOffset]);
 
 
   return (
@@ -77,26 +87,21 @@ export default function TransactionsScreen() {
       style={{ backgroundColor: theme.background }}
       className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
-      <View style={{backgroundColor: theme.header}} className="flex-col items-start justify-start gap-1 pt-[50px] p-4 w-full">
-        <View className="w-full flex-row items-center justify-between">
-          <Text style={{ color: theme.text }} className="text-lg font-medium">
-            Транзакции
-          </Text>
-          <TouchableOpacity onPress={() => alert("Пока в разработке!")}>
-            <SearchIcon width={24} height={24} color={theme.secondary} />
+      <MonthHeader
+        monthTitle={monthTitle}
+        setMonthOffset={setMonthOffset}
+        theme={theme}
+      />
+      <View className="px-4 w-full flex-row gap-2 items-center">
+        <Text style={{color: theme.secondary}} className="text-lg font-medium">Фильтры:</Text>
+        {filtredCategory !== null ? (
+          <TouchableOpacity onPress={() => setFiltredCategory(null)}>
+            <CategoryComponent category={filtredCategory} />
           </TouchableOpacity>
-        </View>
-        <View className="w-full flex-row gap-2 items-center">
-          <Text style={{color: theme.secondary}} className="text-lg font-medium">Фильтры:</Text>
-          {filtredCategory !== null ? (
-            <TouchableOpacity onPress={() => setFiltredCategory(null)}>
-              <CategoryComponent smallIcon category={filtredCategory} />
-            </TouchableOpacity>
-          ) : (
-            <Text style={{color: theme.text}} className="text-lg font-medium">Все категории</Text>
-          )}
-        </View>
-      </View> 
+        ) : (
+          <Text style={{color: theme.text}} className="text-lg font-medium">Все категории.</Text>
+        )}
+      </View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
