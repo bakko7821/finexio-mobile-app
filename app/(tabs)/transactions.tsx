@@ -18,10 +18,10 @@ export default function TransactionsScreen() {
     () => groupTransactionsByDate(transactions),
     [transactions],
   );
-  const [refreshFlag, setRefreshFlag] = useState(0);  
+  const [refreshFlag, setRefreshFlag] = useState(0);
   const [filtredCategory, setFiltredCategory] = useState<Category | null>(null)
 
-    const [monthOffset, setMonthOffset] = useState(0);
+  const [monthOffset, setMonthOffset] = useState(0);
 
   const monthTitle = useMemo(() => {
     const title = getMonthYearTitle(monthOffset);
@@ -65,7 +65,7 @@ export default function TransactionsScreen() {
         if (filtredCategory !== null) {
           data = await getTransactionsByCategoryAndDateAsync({ categoryId: filtredCategory.id, month: month, year: year });
         } else {
-          data = await getTransactionsByDateAsync({month: month, year: year});
+          data = await getTransactionsByDateAsync({ month: month, year: year });
         }
 
         if (isActive) setTransactions(data);
@@ -93,13 +93,13 @@ export default function TransactionsScreen() {
         theme={theme}
       />
       <View className="px-4 w-full flex-row gap-2 items-center">
-        <Text style={{color: theme.secondary}} className="text-lg font-medium">Фильтры:</Text>
+        <Text style={{ color: theme.secondary }} className="text-lg font-medium">Фильтры:</Text>
         {filtredCategory !== null ? (
           <TouchableOpacity onPress={() => setFiltredCategory(null)}>
             <CategoryComponent category={filtredCategory} />
           </TouchableOpacity>
         ) : (
-          <Text style={{color: theme.text}} className="text-lg font-medium">Все категории.</Text>
+          <Text style={{ color: theme.text }} className="text-lg font-medium">Все категории.</Text>
         )}
       </View>
       <ScrollView
