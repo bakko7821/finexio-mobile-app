@@ -9,11 +9,11 @@ import {
   updateCategory,
 } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
-import { Category, UpdateCategoryDto } from "@/utils/categories";
-import { getSum } from "@/utils/chart";
+import { Category, UpdateCategoryDto } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { getCurrentMonthAndYear } from "@/utils/date";
-import { Transaction } from "@/utils/transactions";
+import { Transaction } from "@/utils/types/transactions";
+import { getSum } from "@/utils/types/chart";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";

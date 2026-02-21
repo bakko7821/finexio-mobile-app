@@ -3,7 +3,7 @@ import {
   CreateCategoryDto,
   SubCategory,
   UpdateCategoryDto,
-} from "@/utils/categories";
+} from "@/utils/types/categories";
 import { getDb } from "../db";
 import {
   CategoryWithSubRow,

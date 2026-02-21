@@ -1,5 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useEffect, useRef, useState } from "react";
 import {

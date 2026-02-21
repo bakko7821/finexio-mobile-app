@@ -1,4 +1,4 @@
-import { CreateSubCategoryDto } from "@/utils/categories";
+import { CreateSubCategoryDto } from "@/utils/types/categories";
 import { getDb } from "../db";
 
 export const updateSubCategory = async (

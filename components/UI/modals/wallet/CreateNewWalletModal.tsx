@@ -2,6 +2,7 @@ import ArrowIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import PickColorComponent from "@/components/Categories/PickColorComponent";
 import PickIconComponent from "@/components/Categories/PickIconComponent";
+import { createWallet } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import { useEffect, useState } from "react";
@@ -63,6 +64,29 @@ export default function CreateNewWalletModal({
   useEffect(() => {
     setDefault();
   }, []);
+
+  const handleCreateNewWallet = async () => {
+    if (!walletNameValue.trim()) {
+      return;
+    }
+
+    try {
+      const dto = {
+        name: walletNameValue.trim(),
+        icon: selectedIcon,
+        color: selectedColor,
+        value: Number(walletValue.replace(",", ".")) || 0,
+      };
+
+      await createWallet(dto);
+
+      onRefresh?.();
+      onClose();
+      setDefault();
+    } catch (e) {
+      console.error("Failed to create wallet", e);
+    }
+  };
 
   return (
     <Modal
@@ -205,6 +229,7 @@ export default function CreateNewWalletModal({
               </View>
             </View>
             <TouchableOpacity
+              onPress={handleCreateNewWallet}
               style={{ backgroundColor: theme.primary }}
               className="flex-row w-full item-center justify-center p-3 rounded-full"
             >

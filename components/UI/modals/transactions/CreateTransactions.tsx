@@ -1,10 +1,16 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { createTransaction } from "@/database/queries/transactions";
-import { Category, SubCategory } from "@/utils/categories";
+import { Category, SubCategory } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -28,13 +34,13 @@ export default function CreateTransactionsModal({
   const theme = useTheme();
 
   const [countValue, setCoutValue] = useState("0");
-  const [noteValue, setNoteValue] = useState("")
+  const [noteValue, setNoteValue] = useState("");
   const [gasValue, setGasValue] = useState(0);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
   const [date, setDate] = useState(nowDay);
   const [selectedSubCategory, setSelectedSubCategory] =
     useState<SubCategory | null>(null);
-  const [isVisibleNumberInput, setIsVisibleNumberInput] = useState(true)
+  const [isVisibleNumberInput, setIsVisibleNumberInput] = useState(true);
 
   useEffect(() => {
     if (!category?.gasPrice) {
@@ -166,21 +172,23 @@ export default function CreateTransactionsModal({
               </Text>
             </View>
           </View>
-          {isVisibleNumberInput && <View className="flex-col gap-1 items-start justify-start">
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-sm font-medium"
-            >
-              Калькулятор:
-            </Text>
+          {isVisibleNumberInput && (
+            <View className="flex-col gap-1 items-start justify-start">
+              <Text
+                style={{ color: theme.secondary }}
+                className="text-sm font-medium"
+              >
+                Калькулятор:
+              </Text>
 
-            <NumberInput
-              openCalendar={() => setIsOpenDateModal(true)}
-              value={countValue}
-              setValue={setCoutValue}
-            />
-          </View>}
-          
+              <NumberInput
+                openCalendar={() => setIsOpenDateModal(true)}
+                value={countValue}
+                setValue={setCoutValue}
+              />
+            </View>
+          )}
+
           {category?.isGas ? (
             <View className="flex-col gap-1 items-start justify-start">
               <View className="w-full flex-row items-center justify-between">

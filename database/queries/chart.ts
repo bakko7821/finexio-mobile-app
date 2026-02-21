@@ -1,4 +1,4 @@
-import { PieItem } from "@/utils/chart";
+import { PieItem } from "@/utils/types/chart";
 import { getDb } from "..";
 
 export const getChartData = async ({
@@ -67,7 +67,6 @@ export const getChartData = async ({
 
   return result;
 };
-
 
 export const getSumByType = async ({
   type,

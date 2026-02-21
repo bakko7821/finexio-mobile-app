@@ -1,21 +1,42 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CreateNewWalletModal from "@/components/UI/modals/wallet/CreateNewWalletModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
+import { getAllWallets } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
-import { useState } from "react";
+import { Wallet } from "@/utils/types/wallet";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-const walletsArray = [
-  { id: 0, name: "Наличные", color: "#ff0000", icon: "money", value: 0 },
-  { id: 1, name: "Карта", color: "#f1f199", icon: "card", value: 0 },
-];
+// const walletsArray = [
+//   { id: 0, name: "Наличные", color: "#ff0000", icon: "money", value: 0 },
+//   { id: 1, name: "Карта", color: "#f1f199", icon: "card", value: 0 },
+// ];
 
 export default function WalletScreen() {
   const theme = useTheme();
 
   const [isOpenNewWalletModal, setIsOpenNewWalletModal] = useState(false);
   const [refreshFlag, setRefreshFlag] = useState(0);
+
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [loadingWallets, setLoadingWallets] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getAllWallets();
+
+        setWallets(data);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+
+    fetchCategories();
+
+    fetchCategories().finally(() => setLoadingWallets(false));
+  }, [refreshFlag]);
 
   return (
     <View
@@ -53,9 +74,27 @@ export default function WalletScreen() {
         showsHorizontalScrollIndicator={false}
         className=" w-full flex-col gap-2"
       >
-        {walletsArray.length > 0 ? (
+        {loadingWallets && (
+          <Text
+            style={{ color: theme.secondary }}
+            className="text-sm font-medium px-4"
+          >
+            Кошельки загружаются...
+          </Text>
+        )}
+
+        {!loadingWallets && wallets.length === 0 && (
+          <Text
+            style={{ color: theme.secondary }}
+            className="text-sm font-medium px-4"
+          >
+            У вас отсутствуют счета.
+          </Text>
+        )}
+
+        {!loadingWallets && wallets.length > 0 && (
           <View className="w-full flex-col">
-            {walletsArray.map((wallet) => (
+            {wallets.map((wallet) => (
               <TouchableOpacity
                 key={wallet.id}
                 style={{ backgroundColor: withOpacity(wallet.color, 0.4) }}
@@ -84,13 +123,6 @@ export default function WalletScreen() {
               </TouchableOpacity>
             ))}
           </View>
-        ) : (
-          <Text
-            style={{ color: theme.secondary }}
-            className="text-sm font-medium px-4"
-          >
-            У вас отсутствуют счета.
-          </Text>
         )}
       </ScrollView>
       <CreateNewWalletModal

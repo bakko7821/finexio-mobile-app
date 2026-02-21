@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
-import { Transaction } from "@/utils/transactions";
+import { Transaction } from "@/utils/types/transactions";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
@@ -9,7 +9,7 @@ import InfoTransactionModal from "../UI/modals/transactions/InfoTransactionModal
 
 interface TransactionComponentProps {
   setFilter?: (category: Category) => void;
-  transaction: Transaction; 
+  transaction: Transaction;
   isArchive?: boolean;
   onRefresh?: () => void;
   index: number;

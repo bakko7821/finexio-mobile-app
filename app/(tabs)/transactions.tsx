@@ -1,11 +1,19 @@
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import TransactionList from "@/components/Transactions/TransactionList";
 import MonthHeader from "@/components/UI/MonthHeader";
-import { getTransactions, getTransactionsByCategoryAndDateAsync, getTransactionsByDateAsync } from "@/database/queries/transactions";
+import {
+  getTransactions,
+  getTransactionsByCategoryAndDateAsync,
+  getTransactionsByDateAsync,
+} from "@/database/queries/transactions";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
-import { getMonthYearByOffset, getMonthYearTitle, groupTransactionsByDate } from "@/utils/date";
-import { Transaction } from "@/utils/transactions";
+import { Category } from "@/utils/types/categories";
+import {
+  getMonthYearByOffset,
+  getMonthYearTitle,
+  groupTransactionsByDate,
+} from "@/utils/date";
+import { Transaction } from "@/utils/types/transactions";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -19,7 +27,7 @@ export default function TransactionsScreen() {
     [transactions],
   );
   const [refreshFlag, setRefreshFlag] = useState(0);
-  const [filtredCategory, setFiltredCategory] = useState<Category | null>(null)
+  const [filtredCategory, setFiltredCategory] = useState<Category | null>(null);
 
   const [monthOffset, setMonthOffset] = useState(0);
 
@@ -27,7 +35,6 @@ export default function TransactionsScreen() {
     const title = getMonthYearTitle(monthOffset);
     return title.charAt(0).toUpperCase() + title.slice(1);
   }, [monthOffset]);
-
 
   useFocusEffect(
     useCallback(() => {
@@ -63,7 +70,11 @@ export default function TransactionsScreen() {
         let data: Transaction[] = [];
 
         if (filtredCategory !== null) {
-          data = await getTransactionsByCategoryAndDateAsync({ categoryId: filtredCategory.id, month: month, year: year });
+          data = await getTransactionsByCategoryAndDateAsync({
+            categoryId: filtredCategory.id,
+            month: month,
+            year: year,
+          });
         } else {
           data = await getTransactionsByDateAsync({ month: month, year: year });
         }
@@ -81,7 +92,6 @@ export default function TransactionsScreen() {
     };
   }, [filtredCategory, refreshFlag, monthOffset]);
 
-
   return (
     <View
       style={{ backgroundColor: theme.background }}
@@ -93,13 +103,20 @@ export default function TransactionsScreen() {
         theme={theme}
       />
       <View className="px-4 w-full flex-row gap-2 items-center">
-        <Text style={{ color: theme.secondary }} className="text-lg font-medium">Фильтры:</Text>
+        <Text
+          style={{ color: theme.secondary }}
+          className="text-lg font-medium"
+        >
+          Фильтры:
+        </Text>
         {filtredCategory !== null ? (
           <TouchableOpacity onPress={() => setFiltredCategory(null)}>
             <CategoryComponent category={filtredCategory} />
           </TouchableOpacity>
         ) : (
-          <Text style={{ color: theme.text }} className="text-lg font-medium">Все категории.</Text>
+          <Text style={{ color: theme.text }} className="text-lg font-medium">
+            Все категории.
+          </Text>
         )}
       </View>
       <ScrollView
@@ -110,7 +127,7 @@ export default function TransactionsScreen() {
         {transactionsList.length > 0 ? (
           <TransactionList
             onRefresh={() => setRefreshFlag((prev) => prev + 1)}
-            setFilter={((prev) => setFiltredCategory(prev))}
+            setFilter={(prev) => setFiltredCategory(prev)}
             data={transactionsList}
           />
         ) : (

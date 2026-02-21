@@ -1,8 +1,8 @@
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
-import { Transaction } from "@/utils/transactions";
+import { Transaction } from "@/utils/types/transactions";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";

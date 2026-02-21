@@ -1,9 +1,9 @@
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/colors";
-import { GroupedTransactions } from "@/utils/transactions";
+import { GroupedTransactions } from "@/utils/types/transactions";
 import { Text, View } from "react-native";
 import TransactionComponent from "./TransactionComponent";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 
 type TransactionListProps = {
   onRefresh?: () => void;

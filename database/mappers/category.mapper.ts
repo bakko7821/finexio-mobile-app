@@ -1,4 +1,4 @@
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 
 export type CategoryWithSubRow = {
   category_id: number;

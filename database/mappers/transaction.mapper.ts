@@ -1,4 +1,4 @@
-import { Transaction } from "@/utils/transactions";
+import { Transaction } from "@/utils/types/transactions";
 import { CategoryWithSubRow, mapCategoriesWithSubs } from "./category.mapper";
 
 export type TransactionWithCategoryRow = CategoryWithSubRow & {

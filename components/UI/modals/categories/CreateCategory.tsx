@@ -23,7 +23,7 @@ import {
   SubCategoryFormItem,
   UpdateCategoryDto,
   UpdateSubCategoryDto,
-} from "@/utils/categories";
+} from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
@@ -110,7 +110,7 @@ export default function CreateCategoryModal({
       ...prev,
       {
         name: subCategoryName.trim(),
-        value: 0,      // ✅ ОБЯЗАТЕЛЬНО
+        value: 0, // ✅ ОБЯЗАТЕЛЬНО
         isNew: true,
       },
     ]);

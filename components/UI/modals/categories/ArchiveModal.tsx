@@ -1,6 +1,6 @@
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";

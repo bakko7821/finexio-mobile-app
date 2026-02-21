@@ -5,10 +5,10 @@ import SearchIcon from "@/assets/ui/Search.svg";
 import DeleteIcon from "@/assets/ui/Trash.svg";
 import { deleteTransaction, updateTransaction } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/categories";
+import { Category } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
-import { Transaction, UpdateTransactionDto } from "@/utils/transactions";
+import { Transaction, UpdateTransactionDto } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import {
@@ -241,13 +241,17 @@ export default function InfoTransactionModal({
               onPress={() => setFilter?.(transaction.category)}
             >
               <View
-                style={{ backgroundColor: withOpacity(transaction.category.color, 0.4) }}
+                style={{
+                  backgroundColor: withOpacity(transaction.category.color, 0.4),
+                }}
                 className="p-3 rounded-full items-center justify-center"
               >
                 <SearchIcon
                   width={24}
                   height={24}
-                  color={getContrastColor(withOpacity(transaction.category.color, 0.4))}
+                  color={getContrastColor(
+                    withOpacity(transaction.category.color, 0.4),
+                  )}
                 />
               </View>
               <Text

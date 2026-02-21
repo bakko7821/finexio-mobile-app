@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { SmallCategory, SwipeableSmallCategory } from "./SwipeableSubCategory";
-import { SubCategoryFormItem } from "@/utils/categories";
+import { SubCategoryFormItem } from "@/utils/types/categories";
 
 interface SubCategoriesListProps {
   smallCategories: SubCategoryFormItem[];

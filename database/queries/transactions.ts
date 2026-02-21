@@ -2,7 +2,7 @@ import {
   CreateTransactionDto,
   Transaction,
   UpdateTransactionDto,
-} from "@/utils/transactions";
+} from "@/utils/types/transactions";
 import { getDb } from "../db";
 import {
   mapTransactionsWithCategories,
