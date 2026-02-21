@@ -13,10 +13,13 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{ headerShown: false }}
       tabBar={(props) => (
-        <View style={{backgroundColor: theme.background}} className="relative p-4 rounded-lg">
+        <View
+          style={{ backgroundColor: theme.background }}
+          className="relative p-4"
+        >
           <View
             style={{ backgroundColor: theme.card }}
-            className="overflow-hidden p-1 rounded-full flex-row items-center justify-center gap-2"
+            className="overflow-hidden p-1 rounded-full flex-row items-center justify-between gap-2"
           >
             {TABS.map((tab) => {
               const isActive = segments.includes(tab.name);
