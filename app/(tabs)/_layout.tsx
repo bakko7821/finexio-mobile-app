@@ -11,6 +11,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      initialRouteName="categories"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => (
         <View
@@ -31,7 +32,6 @@ export default function TabsLayout() {
                   key={tab.name}
                   onPress={() => router.replace(routePath)}
                   style={{
-                    // flex: tab.name !== "settings" && isActive ? 1 : undefined,
                     backgroundColor: isActive ? theme.primary : "transparent",
                   }}
                   className="overflow-hidden flex-row rounded-full items-center justify-start gap-2 p-3"
@@ -43,19 +43,6 @@ export default function TabsLayout() {
                       isActive ? getContrastColor(theme.primary) : theme.text
                     }
                   />
-                  {/* {isActive && (
-                    <Text
-                      style={{
-                        color: isActive
-                          ? getContrastColor(theme.primary)
-                          : theme.text,
-                        fontWeight: isActive ? "600" : "400",
-                      }}
-                      className="text-base"
-                    >
-                      {tab.label}
-                    </Text>
-                  )} */}
                 </TouchableOpacity>
               );
             })}
