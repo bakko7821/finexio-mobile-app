@@ -1,5 +1,6 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CreateNewWalletModal from "@/components/UI/modals/wallet/CreateNewWalletModal";
+import InfoWalletModal from "@/components/UI/modals/wallet/InfoWalletModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
 import { getAllWallets } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
@@ -8,19 +9,17 @@ import { Wallet } from "@/utils/types/wallet";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-// const walletsArray = [
-//   { id: 0, name: "Наличные", color: "#ff0000", icon: "money", value: 0 },
-//   { id: 1, name: "Карта", color: "#f1f199", icon: "card", value: 0 },
-// ];
-
 export default function WalletScreen() {
   const theme = useTheme();
 
   const [isOpenNewWalletModal, setIsOpenNewWalletModal] = useState(false);
+  const [isOpenInfoWalletModal, setIsOpenInfoWalletModal] = useState(false);
   const [refreshFlag, setRefreshFlag] = useState(0);
 
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [loadingWallets, setLoadingWallets] = useState(true);
+
+  const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -96,8 +95,12 @@ export default function WalletScreen() {
           <View className="w-full flex-col">
             {wallets.map((wallet) => (
               <TouchableOpacity
+                onPress={() => (
+                  setSelectedWallet(wallet),
+                  setIsOpenInfoWalletModal(true)
+                )}
                 key={wallet.id}
-                style={{ backgroundColor: withOpacity(wallet.color, 0.4) }}
+                style={{ backgroundColor: withOpacity(wallet.color, 0.6) }}
                 className="w-full p-4 flex-row items-center justify-start gap-2"
               >
                 <RenderIcon
@@ -128,6 +131,12 @@ export default function WalletScreen() {
       <CreateNewWalletModal
         visible={isOpenNewWalletModal}
         onClose={() => setIsOpenNewWalletModal(false)}
+        onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+      />
+      <InfoWalletModal
+        wallet={selectedWallet}
+        visible={isOpenInfoWalletModal}
+        onClose={() => setIsOpenInfoWalletModal(false)}
         onRefresh={() => setRefreshFlag((prev) => prev + 1)}
       />
     </View>
