@@ -1,4 +1,4 @@
-import { GroupedTransactions, Transaction } from "./transactions";
+import { GroupedTransactions, Transaction } from "./types/transactions";
 
 const MONTHS_SHORT = [
   "янв.",

@@ -1,3 +1,4 @@
+import { getRandomColor } from "@/utils/colors";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
@@ -50,4 +51,26 @@ export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
       value REAL DEFAULT 0
     )
   `);
+};
+
+export const initDefaultWallets = async (db: SQLiteDatabase): Promise<void> => {
+  const [{ user_version }] = await db.getAllAsync<{
+    user_version: number;
+  }>("PRAGMA user_version;");
+
+  if (user_version !== 0) {
+    return;
+  }
+
+  await db.runAsync(
+    `
+    INSERT INTO wallets (id, name, icon, color, value)
+    VALUES 
+      (0, ?, ?, ?, 0),
+      (1, ?, ?, ?, 0);
+    `,
+    ["Наличные", "money", getRandomColor(), "Карта", "card", getRandomColor()],
+  );
+
+  await db.execAsync("PRAGMA user_version = 1;");
 };
