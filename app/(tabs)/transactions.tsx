@@ -38,7 +38,7 @@ export default function TransactionsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const { month, year } = getMonthYearByOffset(monthOffset);
+      getMonthYearByOffset(monthOffset);
 
       let isActive = true;
 
@@ -58,7 +58,7 @@ export default function TransactionsScreen() {
       return () => {
         isActive = false;
       };
-    }, []),
+    }, [monthOffset]),
   );
 
   useEffect(() => {

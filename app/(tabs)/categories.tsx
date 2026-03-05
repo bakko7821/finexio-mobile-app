@@ -89,7 +89,7 @@ export default function CategoriesScreen() {
       duration: 200,
       useNativeDriver: true,
     }).start();
-  }, [loadingChartInfo]);
+  }, [chartAnim, loadingChartInfo]);
 
   const categoriesAnim = useRef(new Animated.Value(1)).current;
 
@@ -99,7 +99,7 @@ export default function CategoriesScreen() {
       duration: 200,
       useNativeDriver: true,
     }).start();
-  }, [loadingCategories]);
+  }, [categoriesAnim, loadingCategories]);
 
   return (
     <View
