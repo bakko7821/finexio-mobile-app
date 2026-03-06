@@ -23,7 +23,8 @@ export default function TabsLayout() {
             className="overflow-hidden p-1 rounded-full flex-row items-center justify-between gap-2"
           >
             {TABS.map((tab) => {
-              const isActive = segments.includes(tab.name);
+              const current = segments[segments.length - 1];
+              const isActive = current === tab.name;
               const Icon = tab.icon;
               const routePath = TAB_ROUTES[tab.name];
 

@@ -9,11 +9,11 @@ import TransactionsIcon from "@/assets/ui/Transaction.svg";
 import WalletIcon from "@/assets/ui/Wallet.svg";
 
 export const TAB_ROUTES = {
-  transactions: "/(tabs)/transactions",
-  categories: "/(tabs)/categories",
-  wallet: "/(tabs)/wallet",
-  chart: "/(tabs)/chart",
-  settings: "/(tabs)/settings",
+  transactions: "/transactions",
+  categories: "/categories",
+  wallet: "/wallet",
+  chart: "/chart",
+  settings: "/settings",
 } as const satisfies Record<string, Href>;
 
 export type TabName = keyof typeof TAB_ROUTES;
