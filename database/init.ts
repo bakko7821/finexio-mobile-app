@@ -29,7 +29,7 @@ export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
       note TEXT,
       gasValue REAL,
 
-      FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE
+      FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE,
       FOREIGN KEY (subCategoryId) REFERENCES subcategories(id) ON DELETE SET NULL
     );
 

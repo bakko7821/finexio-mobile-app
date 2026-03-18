@@ -13,27 +13,28 @@ import {
 const FIRST_BATCH_SIZE = 100;
 
 function sliceIcons(array: typeof iconsArray, count: number) {
-  return array.map(section => ({
+  return array.map((section) => ({
     ...section,
     items: section.items.slice(0, count),
   }));
 }
 
-function mergeIcons(
-  base: typeof iconsArray,
-  full: typeof iconsArray
-) {
+function mergeIcons(base: typeof iconsArray, full: typeof iconsArray) {
   return base.map((section, i) => ({
     ...section,
     items: full[i].items,
   }));
 }
 
-const MemoIcon = React.memo(
-  ({ Icon, color }: { Icon: any; color: string }) => (
-    <Icon width={32} height={32} color={color} />
-  )
-);
+const MemoIcon = React.memo(function MemoIcon({
+  Icon,
+  color,
+}: {
+  Icon: any;
+  color: string;
+}) {
+  return <Icon width={32} height={32} color={color} />;
+});
 
 interface PickIconComponentProps {
   selectedIcon: string;
@@ -48,14 +49,14 @@ export default function PickIconComponent({
 
   const initialData = useMemo(
     () => sliceIcons(iconsArray, FIRST_BATCH_SIZE),
-    []
+    [],
   );
 
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
     const task = InteractionManager.runAfterInteractions(() => {
-      setData(prev => mergeIcons(prev, iconsArray));
+      setData((prev) => mergeIcons(prev, iconsArray));
     });
 
     return () => task.cancel();
@@ -69,7 +70,7 @@ export default function PickIconComponent({
       duration: 200,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [anim]);
 
   const animatedStyle = {
     opacity: anim,
@@ -84,7 +85,7 @@ export default function PickIconComponent({
   };
 
   return (
-    <Animated.View style={[animatedStyle, {flex: 1}]}>
+    <Animated.View style={[animatedStyle, { flex: 1 }]}>
       <FlatList
         data={data}
         scrollEnabled
@@ -92,7 +93,7 @@ export default function PickIconComponent({
           paddingRight: 8,
           alignItems: "flex-start",
         }}
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         keyExtractor={(item) => item.id.toString()}
         removeClippedSubviews
         windowSize={3}

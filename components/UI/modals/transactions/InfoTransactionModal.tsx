@@ -5,12 +5,12 @@ import SearchIcon from "@/assets/ui/Search.svg";
 import DeleteIcon from "@/assets/ui/Trash.svg";
 import { deleteTransaction, updateTransaction } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
+import { Category } from "@/utils/types/categories";
 import { Transaction, UpdateTransactionDto } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
   Text,
@@ -53,6 +53,29 @@ export default function InfoTransactionModal({
   );
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
+  const handleUpdateTransaction = useCallback(async () => {
+    if (!transaction) return;
+
+    const dto: UpdateTransactionDto = {
+      note: transactionNote ?? "",
+      date: date ?? "",
+      count: Number(transactionValue),
+      gasValue: transactionGasValue ?? null,
+    };
+
+    await updateTransaction(transaction.id, dto);
+    onClose();
+    onRefresh?.();
+  }, [
+    transaction,
+    transactionNote,
+    date,
+    transactionValue,
+    transactionGasValue,
+    onClose,
+    onRefresh,
+  ]);
+
   useEffect(() => {
     handleUpdateTransaction();
   }, [date]);
@@ -67,22 +90,7 @@ export default function InfoTransactionModal({
     onRefresh?.();
   };
 
-  const handleUpdateTransaction = async () => {
-    if (!transaction) return;
-
-    const dto: UpdateTransactionDto = {
-      note: transactionNote ?? "",
-      date: date ?? "",
-      count: Number(transactionValue),
-      gasValue: transactionGasValue ?? null,
-    };
-
-    await updateTransaction(transaction.id, dto);
-    onClose();
-    onRefresh?.();
-  };
-
-  if (!transaction) return;
+  if (!transaction) return null;
 
   return (
     <Modal

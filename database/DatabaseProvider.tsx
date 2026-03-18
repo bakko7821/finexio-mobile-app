@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { initOnce } from ".";
+import { View } from "react-native";
 
 const DatabaseContext = createContext<boolean>(false);
 
@@ -24,8 +25,8 @@ export const DatabaseProvider = ({
   }, []);
 
   if (!dbReady) {
-    return null;
-  } // Splash / Loader
+    return <View style={{ flex: 1, backgroundColor: "#000" }} />;
+  }
 
   return (
     <DatabaseContext.Provider value={true}>{children}</DatabaseContext.Provider>

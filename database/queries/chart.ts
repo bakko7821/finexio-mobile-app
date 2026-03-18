@@ -1,5 +1,5 @@
 import { PieItem } from "@/utils/types/chart";
-import { getDb } from "..";
+import { getDb } from "../db";
 
 export const getChartData = async ({
   type,

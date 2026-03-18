@@ -9,9 +9,10 @@ export default function TabsLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log(pathname);
+
   return (
     <Tabs
-      initialRouteName="categories"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => (
         <View

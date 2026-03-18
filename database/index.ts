@@ -1,19 +1,20 @@
 import { getDb } from "./db";
 import { initDatabase, initDefaultWallets } from "./init";
 
-let initialized = false;
+let initPromise: Promise<void> | null = null;
 
 export const initOnce = async () => {
-  if (initialized) return;
+  if (!initPromise) {
+    initPromise = (async () => {
+      const db = await getDb();
+      console.log("DB instance", db);
+      await initDatabase(db);
+      await initDefaultWallets(db);
+    })();
+  }
 
-  const db = await getDb();
-  console.log("DB instance", db);
-  await initDatabase(db);
-  await initDefaultWallets(db);
-  initialized = true;
+  return initPromise;
 };
-
-export { getDb };
 
 export * from "./queries/categories";
 export * from "./queries/chart";

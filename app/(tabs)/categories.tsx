@@ -8,8 +8,8 @@ import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { getChartData, getSumByType } from "@/database/queries/chart";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/types/categories";
 import { getMonthYearByOffset, getMonthYearTitle } from "@/utils/date";
+import { Category } from "@/utils/types/categories";
 import { PieItem } from "@/utils/types/chart";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
@@ -35,16 +35,15 @@ export default function CategoriesScreen() {
     const fetchCategories = async () => {
       try {
         const data = await getCategoriesByType(categoriesType);
-
         setCategories(data);
-      } catch (error: unknown) {
+      } catch (error) {
         console.error(error);
+      } finally {
+        setLoadingCategories(false);
       }
     };
 
     fetchCategories();
-
-    fetchCategories().finally(() => setLoadingCategories(false));
   }, [categoriesType, refreshFlag]);
 
   const [monthOffset, setMonthOffset] = useState(0);

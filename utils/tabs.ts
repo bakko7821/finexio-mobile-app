@@ -1,4 +1,3 @@
-import type { Href } from "expo-router";
 import type { ComponentType } from "react";
 import type { SvgProps } from "react-native-svg";
 
@@ -9,12 +8,12 @@ import TransactionsIcon from "@/assets/ui/Transaction.svg";
 import WalletIcon from "@/assets/ui/Wallet.svg";
 
 export const TAB_ROUTES = {
-  transactions: "/(tabs)/transactions",
-  categories: "/(tabs)/categories",
-  wallet: "/(tabs)/wallet",
-  chart: "/(tabs)/chart",
-  settings: "/(tabs)/settings",
-} as const satisfies Record<string, Href>;
+  transactions: "/transactions",
+  categories: "/categories",
+  wallet: "/wallet",
+  chart: "/chart",
+  settings: "/settings",
+} as const;
 
 export type TabName = keyof typeof TAB_ROUTES;
 

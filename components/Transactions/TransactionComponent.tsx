@@ -35,7 +35,7 @@ export default function TransactionComponent({
       delay: index * 50, // 🔥 stagger
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [anim, index]);
 
   return (
     <Animated.View
