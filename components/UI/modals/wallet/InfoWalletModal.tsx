@@ -65,7 +65,17 @@ export default function InfoWalletModal({
               />
             </TouchableOpacity>
           </View>
-          <View style={{ backgroundColor: theme.card }} className="p-4"></View>
+          <View
+            style={{ backgroundColor: theme.header }}
+            className="p-4 items-center justify-center"
+          >
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-base font-medium"
+            >
+              Пока что в разработке.
+            </Text>
+          </View>
         </View>
       </Modal>
     );

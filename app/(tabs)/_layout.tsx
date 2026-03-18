@@ -1,13 +1,13 @@
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import { TAB_ROUTES, TABS } from "@/utils/tabs";
-import { Tabs, useRouter, useSegments } from "expo-router";
+import { Tabs, usePathname, useRouter } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
   const theme = useTheme();
   const router = useRouter();
-  const segments = useSegments() as string[];
+  const pathname = usePathname();
 
   return (
     <Tabs
@@ -23,15 +23,14 @@ export default function TabsLayout() {
             className="overflow-hidden p-1 rounded-full flex-row items-center justify-between gap-2"
           >
             {TABS.map((tab) => {
-              const current = segments[segments.length - 1];
-              const isActive = current === tab.name;
-              const Icon = tab.icon;
               const routePath = TAB_ROUTES[tab.name];
+              const isActive = pathname === routePath;
+              const Icon = tab.icon;
 
               return (
                 <TouchableOpacity
                   key={tab.name}
-                  onPress={() => router.replace(routePath)}
+                  onPress={() => router.push(routePath)}
                   style={{
                     backgroundColor: isActive ? theme.primary : "transparent",
                   }}

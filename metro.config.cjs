@@ -3,7 +3,6 @@ const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
 
-// Используем path.resolve для корректных абсолютных путей
 const projectRoot = path.resolve(__dirname);
 const config = getDefaultConfig(projectRoot);
 
