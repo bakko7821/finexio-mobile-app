@@ -1,8 +1,11 @@
+import Loader from "@/components/Loader";
+import { useProgress } from "@/providers/ProgressProvider";
+import * as SplashScreen from "expo-splash-screen";
 import { createContext, useContext, useEffect, useState } from "react";
-import { initOnce } from ".";
-import { View } from "react-native";
+import { getDb } from "./db";
+import { initDatabase, initDefaultWallets } from "./init";
 
-const DatabaseContext = createContext<boolean>(false);
+const DatabaseContext = createContext(false);
 
 export const DatabaseProvider = ({
   children,
@@ -10,14 +13,30 @@ export const DatabaseProvider = ({
   children: React.ReactNode;
 }) => {
   const [dbReady, setDbReady] = useState(false);
+  const { setProgress } = useProgress();
 
   useEffect(() => {
     const init = async () => {
       try {
-        await initOnce();
+        setProgress(0.1);
+
+        const db = await getDb();
+        setProgress(0.3);
+
+        await initDatabase(db);
+        setProgress(0.6);
+
+        await initDefaultWallets(db);
+        setProgress(0.9);
+
         setDbReady(true);
+        setProgress(1);
       } catch (e) {
         console.error("DB INIT FAILED", e);
+      } finally {
+        try {
+          await SplashScreen.hideAsync();
+        } catch {}
       }
     };
 
@@ -25,7 +44,7 @@ export const DatabaseProvider = ({
   }, []);
 
   if (!dbReady) {
-    return <View style={{ flex: 1, backgroundColor: "#000" }} />;
+    return <Loader />;
   }
 
   return (
