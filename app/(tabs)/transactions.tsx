@@ -2,17 +2,16 @@ import CategoryComponent from "@/components/Categories/CategoryComponent";
 import TransactionList from "@/components/Transactions/TransactionList";
 import MonthHeader from "@/components/UI/MonthHeader";
 import {
-  getTransactions,
   getTransactionsByCategoryAndDateAsync,
   getTransactionsByDateAsync,
 } from "@/database/queries/transactions";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/types/categories";
 import {
   getMonthYearByOffset,
   getMonthYearTitle,
   groupTransactionsByDate,
 } from "@/utils/date";
+import { Category } from "@/utils/types/categories";
 import { Transaction } from "@/utils/types/transactions";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -38,27 +37,8 @@ export default function TransactionsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      getMonthYearByOffset(monthOffset);
-
-      let isActive = true;
-
-      const fetchTransactions = async () => {
-        try {
-          const data = await getTransactions();
-          if (isActive) {
-            setTransactions(data);
-          }
-        } catch (error: unknown) {
-          console.error(error);
-        }
-      };
-
-      fetchTransactions();
-
-      return () => {
-        isActive = false;
-      };
-    }, [monthOffset]),
+      setRefreshFlag((prev) => prev + 1);
+    }, []),
   );
 
   useEffect(() => {
@@ -102,23 +82,38 @@ export default function TransactionsScreen() {
         setMonthOffset={setMonthOffset}
         theme={theme}
       />
-      <View className="px-4 w-full flex-row gap-2 items-center">
-        <Text
-          style={{ color: theme.secondary }}
-          className="text-lg font-medium"
-        >
-          Фильтры:
-        </Text>
-        {filtredCategory !== null ? (
-          <TouchableOpacity onPress={() => setFiltredCategory(null)}>
-            <CategoryComponent category={filtredCategory} />
-          </TouchableOpacity>
-        ) : (
-          <Text style={{ color: theme.text }} className="text-lg font-medium">
-            Все категории.
-          </Text>
-        )}
-      </View>
+      {transactionsList.length > 0 ? (
+        <View className="px-4 flex-col items-start justify-start gap-1">
+          {filtredCategory !== null ? (
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-xs font-medium"
+            >
+              Нажмите на выбранную категорию, чтобы очистить фильтры.
+            </Text>
+          ) : null}
+          <View className="w-full flex-row gap-2 items-center">
+            <Text
+              style={{ color: theme.secondary }}
+              className="text-sm font-medium"
+            >
+              Фильтры:
+            </Text>
+            {filtredCategory !== null ? (
+              <TouchableOpacity onPress={() => setFiltredCategory(null)}>
+                <CategoryComponent category={filtredCategory} />
+              </TouchableOpacity>
+            ) : (
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Все категории
+              </Text>
+            )}
+          </View>
+        </View>
+      ) : null}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
