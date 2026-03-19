@@ -24,7 +24,7 @@ export const createCategory = async (
         name, color, icon, type,
         isArchive, isGas, gasType, gasPrice
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?  )
       `,
       [
         dto.name,
