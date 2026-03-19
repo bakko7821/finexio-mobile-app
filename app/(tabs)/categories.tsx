@@ -2,6 +2,7 @@ import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
+import CustomGraph from "@/components/Categories/CustomGraph";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
 import MonthHeader from "@/components/UI/MonthHeader";
 import Plug from "@/components/UI/Plug";
@@ -13,7 +14,6 @@ import { Category } from "@/utils/types/categories";
 import { PieItem } from "@/utils/types/chart";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
-import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
   const theme = useTheme();
@@ -121,17 +121,14 @@ export default function CategoriesScreen() {
         setMonthOffset={setMonthOffset}
         theme={theme}
       />
-      <View className="flex-col w-full gap-2">
+      <View className="flex-col flex-1 w-full gap-2 px-4">
         <View>
-          <Text
-            style={{ color: theme.text }}
-            className="px-4 text-lg font-medium"
-          >
+          <Text style={{ color: theme.text }} className="text-lg font-medium">
             Статистика
           </Text>
           <Text
             style={{ color: theme.secondary }}
-            className="text-sm font-medium px-4"
+            className="text-sm font-medium"
           >
             Нажимите в центр графика чтобы указать{" "}
             {categoriesType === 1 ? "доходы" : "расходы"}.
@@ -149,7 +146,7 @@ export default function CategoriesScreen() {
               },
             ],
           }}
-          className="w-full p-4 justify-center items-center"
+          className="w-full justify-center flex-1 items-center"
         >
           {loadingChartInfo && (
             <View className="absolute inset-0 items-center justify-center">
@@ -162,7 +159,9 @@ export default function CategoriesScreen() {
             </View>
           )}
 
-          <PieChart
+          <CustomGraph />
+
+          {/* <PieChart
             data={chartInfo}
             donut
             radius={120}
@@ -205,7 +204,7 @@ export default function CategoriesScreen() {
                 </Text>
               </TouchableOpacity>
             )}
-          />
+          /> */}
         </Animated.View>
       </View>
       <Plug />

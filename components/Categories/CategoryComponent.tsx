@@ -15,8 +15,6 @@ export default function CategoryComponent({
   fullsize = false,
   smallIcon = false,
 }: CategoryComponentProps) {
-  const theme = useTheme();
-
   if (category !== null && smallIcon === true)
     return (
       <View
