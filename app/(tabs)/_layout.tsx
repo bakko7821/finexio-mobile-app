@@ -1,5 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import { getContrastColor } from "@/utils/colors";
+import { withOpacity } from "@/utils/colors";
 import { TAB_ROUTES, TABS } from "@/utils/tabs";
 import { Tabs, usePathname, useRouter } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
@@ -19,7 +19,7 @@ export default function TabsLayout() {
         >
           <View
             style={{ backgroundColor: theme.card }}
-            className="overflow-hidden p-1 rounded-full flex-row items-center justify-between gap-2"
+            className="overflow-hidden p-1 rounded-full flex-row items-center"
           >
             {TABS.map((tab) => {
               const routePath = TAB_ROUTES[tab.name];
@@ -31,17 +31,25 @@ export default function TabsLayout() {
                   key={tab.name}
                   onPress={() => router.push(routePath)}
                   style={{
-                    backgroundColor: isActive ? theme.primary : "transparent",
+                    backgroundColor: isActive
+                      ? withOpacity(theme.primary, 0.3)
+                      : "transparent",
                   }}
-                  className="overflow-hidden flex-row rounded-full items-center justify-start gap-2 p-3"
+                  className="flex-col flex-1 rounded-full items-center justify-center gap-1 p-2"
                 >
                   <Icon
                     width={36}
                     height={36}
-                    color={
-                      isActive ? getContrastColor(theme.primary) : theme.text
-                    }
+                    color={isActive ? theme.primary : theme.text}
                   />
+                  {/* <Text
+                    style={{
+                      color: isActive ? theme.primary : theme.text,
+                    }}
+                    className="text-xs font-bold"
+                  >
+                    {tab.label}
+                  </Text> */}
                 </TouchableOpacity>
               );
             })}

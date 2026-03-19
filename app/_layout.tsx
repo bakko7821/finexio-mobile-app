@@ -13,6 +13,7 @@ export default function RootLayout() {
   return (
     <ProgressProvider>
       <DatabaseProvider>
+        {/* <Loader /> */}
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>

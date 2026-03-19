@@ -1,4 +1,4 @@
-import Loader from "@/components/Loader";
+import Loader from "@/components/Loader/Loader";
 import { useProgress } from "@/providers/ProgressProvider";
 import * as SplashScreen from "expo-splash-screen";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -6,6 +6,8 @@ import { getDb } from "./db";
 import { initDatabase, initDefaultWallets } from "./init";
 
 const DatabaseContext = createContext(false);
+
+const MIN_LOADER_TIME = 5000; // ms
 
 export const DatabaseProvider = ({
   children,
@@ -17,6 +19,8 @@ export const DatabaseProvider = ({
 
   useEffect(() => {
     const init = async () => {
+      const startTime = Date.now();
+
       try {
         setProgress(0.1);
 
@@ -29,14 +33,17 @@ export const DatabaseProvider = ({
         await initDefaultWallets(db);
         setProgress(0.9);
 
-        setDbReady(true);
+        const elapsed = Date.now() - startTime;
+
+        if (elapsed < MIN_LOADER_TIME) {
+          await new Promise((r) => setTimeout(r, MIN_LOADER_TIME - elapsed));
+        }
+
+        await SplashScreen.hideAsync();
+
         setProgress(1);
       } catch (e) {
         console.error("DB INIT FAILED", e);
-      } finally {
-        try {
-          await SplashScreen.hideAsync();
-        } catch {}
       }
     };
 
@@ -44,7 +51,7 @@ export const DatabaseProvider = ({
   }, []);
 
   if (!dbReady) {
-    return <Loader />;
+    return <Loader onFinish={() => setDbReady(true)} />;
   }
 
   return (

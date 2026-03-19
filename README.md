@@ -26,7 +26,7 @@
 
 Скачайте и установите APK на своё устройство Android:
 
-[Скачать Finexio.apk](https://github.com/bakko7821/finexio-mobile-app/releases/tag/v1.0.0)
+[Скачать Finexio.apk](https://github.com/bakko7821/finexio-mobile-app/releases/tag/v2.0.0)
 
 ---
 
