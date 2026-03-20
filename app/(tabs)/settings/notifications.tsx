@@ -1,4 +1,4 @@
-import SettingsHeader from "@/components/SettingsHeader";
+import SettingsHeader from "@/components/UI/headers/SettingsHeader";
 import { useTheme } from "@/hooks/useTheme";
 import { Text, View } from "react-native";
 
@@ -10,7 +10,7 @@ export default function NotificationsScreen() {
       style={{ backgroundColor: theme.background }}
       className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
-      <SettingsHeader />
+      <SettingsHeader title="Уведомления" />
       <Text>Notifications Screen</Text>
     </View>
   );

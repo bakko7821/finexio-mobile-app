@@ -1,4 +1,5 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
+import Header from "@/components/UI/headers/Header";
 import CreateNewWalletModal from "@/components/UI/modals/wallet/CreateNewWalletModal";
 import InfoWalletModal from "@/components/UI/modals/wallet/InfoWalletModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
@@ -42,16 +43,7 @@ export default function WalletScreen() {
       style={{ backgroundColor: theme.background }}
       className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
-      <View
-        style={{ backgroundColor: theme.header }}
-        className="flex-col items-start justify-start gap-1 pt-[50px] p-4 w-full"
-      >
-        <View className="w-full flex-row items-center justify-between">
-          <Text style={{ color: theme.text }} className="text-lg font-medium">
-            Кошелёк
-          </Text>
-        </View>
-      </View>
+      <Header title={"Кошелёк"} />
       <View className="w-full flex-row items-center justify-between px-4">
         <View className="flex-col">
           <Text style={{ color: theme.text }} className="text-lg font-medium">

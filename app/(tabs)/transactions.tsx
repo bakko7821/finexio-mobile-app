@@ -1,6 +1,6 @@
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import TransactionList from "@/components/Transactions/TransactionList";
-import MonthHeader from "@/components/UI/MonthHeader";
+import MonthHeader from "@/components/UI/headers/MonthHeader";
 import {
   getTransactionsByCategoryAndDateAsync,
   getTransactionsByDateAsync,
