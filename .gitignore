@@ -11,6 +11,7 @@ expo-env.d.ts
 
 # Visual Studio Code
 .vscode/
+assets/ui/archive
 
 # Native
 .kotlin/

@@ -10,7 +10,7 @@ export default function ProfileScreen() {
       className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
       <SettingsHeader title="Профиль" />
-      <Text>Profile Screen</Text>
+      <Text style={{ color: theme.text }}>Profile Screen</Text>
     </View>
   );
 }

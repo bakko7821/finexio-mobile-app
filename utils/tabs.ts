@@ -7,6 +7,9 @@ import SettingIcon from "@/assets/ui/Settings.svg";
 import TransactionsIcon from "@/assets/ui/Transaction.svg";
 import WalletIcon from "@/assets/ui/Wallet.svg";
 
+import NotificationIcon from "@/assets/ui/notification-3-fill.svg";
+import AccountIcon from "@/assets/ui/user-3-fill.svg";
+
 export type TabName = keyof typeof TAB_ROUTES;
 export type SettingsTabName = keyof typeof SETTINGS_TAB_ROUTES;
 
@@ -39,12 +42,44 @@ export const TABS: {
 ];
 
 // settings tabs
-export const SETTINGS_TAB_ROUTES = {} as const;
+export const SETTINGS_TAB_ROUTES = {
+  account: "/(tabs)/settings/account",
+  notifications: "/(tabs)/settings/notifications",
+} as const;
 
 export const SETTINGS_TAB_PATHNAMES = {} as const;
 
 export const SETTINGS_TABS: {
-  name: SettingsTabName;
-  label: string;
-  icon: TabIcon;
-}[] = [];
+  id: number;
+  title: string;
+  tabs: {
+    name: SettingsTabName;
+    label: string;
+    icon: {
+      color: string;
+      image: TabIcon;
+    };
+  }[];
+}[] = [
+  {
+    id: 0,
+    title: "Кастомизация",
+    tabs: [
+      {
+        name: "account",
+        label: "Аккаунт",
+        icon: { color: "#f80808", image: AccountIcon },
+      },
+      {
+        name: "notifications",
+        label: "Уведомления",
+        icon: { color: "#cb6f07", image: NotificationIcon },
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: "Приложение",
+    tabs: [],
+  },
+];

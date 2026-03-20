@@ -11,7 +11,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: "none" }}
       tabBar={(props) => (
         <View
           style={{ backgroundColor: theme.background }}
