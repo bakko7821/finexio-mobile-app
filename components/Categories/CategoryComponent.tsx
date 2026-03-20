@@ -1,4 +1,3 @@
-import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
 import { Text, View } from "react-native";

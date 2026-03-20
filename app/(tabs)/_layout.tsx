@@ -51,10 +51,10 @@ export default function TabsLayout() {
         </View>
       )}
     >
-      <Tabs.Screen name="transactions" />
       <Tabs.Screen name="categories" />
+      <Tabs.Screen name="transactions" />
       <Tabs.Screen name="wallet" />
-      <Tabs.Screen name="settings" />
+      <Tabs.Screen name="settings/index" />
     </Tabs>
   );
 }

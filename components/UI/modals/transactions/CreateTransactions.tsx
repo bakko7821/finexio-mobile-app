@@ -10,9 +10,9 @@ import {
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { createTransaction } from "@/database/queries/transactions";
-import { Category, SubCategory } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
+import { Category, SubCategory } from "@/utils/types/categories";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";

@@ -2,7 +2,7 @@ import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
-import CustomGraph from "@/components/Categories/CustomGraph";
+import CustomChart from "@/components/Charts/CustomChart";
 import MonthHeader from "@/components/UI/headers/MonthHeader";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
 import Plug from "@/components/UI/Plug";
@@ -62,6 +62,7 @@ export default function CategoriesScreen() {
         });
 
         setChartInfo(data);
+        console.log(data);
 
         setExpensive(await getSumByType({ type: 1, month, year }));
         setIncome(await getSumByType({ type: 2, month, year }));
@@ -159,7 +160,10 @@ export default function CategoriesScreen() {
             </View>
           )}
 
-          <CustomGraph />
+          <CustomChart
+            data={chartInfo}
+            changeType={() => setCategoriesType((prev) => (prev === 1 ? 2 : 1))}
+          />
 
           {/* <PieChart
             data={chartInfo}

@@ -11,7 +11,12 @@ export default function NotificationsScreen() {
       className="flex-1 flex-col gap-2 items-start justify-start relative"
     >
       <SettingsHeader title="Уведомления" />
-      <Text style={{ color: theme.text }}>Notifications Screen</Text>
+      <Text
+        style={{ color: theme.secondary }}
+        className="text-sn font-medium px-4"
+      >
+        Страница находится в разработке.
+      </Text>
     </View>
   );
 }
