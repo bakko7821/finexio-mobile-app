@@ -2,7 +2,7 @@ import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
-import CustomChart from "@/components/Charts/CustomChart";
+import CustomDonut from "@/components/Charts/CustomDonut";
 import MonthHeader from "@/components/UI/headers/MonthHeader";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
 import Plug from "@/components/UI/Plug";
@@ -14,6 +14,7 @@ import { Category } from "@/utils/types/categories";
 import { PieItem } from "@/utils/types/chart";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
+// import { PieChart } from "react-native-gifted-charts";
 
 export default function CategoriesScreen() {
   const theme = useTheme();
@@ -160,15 +161,17 @@ export default function CategoriesScreen() {
             </View>
           )}
 
-          <CustomChart
+          <CustomDonut data={chartInfo} />
+
+          {/* <CustomChart
             data={chartInfo}
             changeType={() => setCategoriesType((prev) => (prev === 1 ? 2 : 1))}
-          />
+          /> */}
 
           {/* <PieChart
             data={chartInfo}
             donut
-            radius={120}
+            radius={110}
             innerRadius={80}
             isAnimated
             animationDuration={800}
