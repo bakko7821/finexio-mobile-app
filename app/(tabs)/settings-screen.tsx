@@ -1,8 +1,11 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   const theme = useTheme();
+  const router = useRouter();
+
   return (
     <View
       style={{ backgroundColor: theme.background }}
@@ -18,13 +21,20 @@ export default function SettingsScreen() {
           </Text>
         </View>
       </View>
-      <View className="w-full flex-1 p-4 items-center justify-center">
-        <Text
-          style={{ color: theme.text }}
-          className="w-[80%] text-2xl font-semibold text-center"
+      <View className="w-full flex-col gap-2 flex-1 px-4 items-start justify-start">
+        <Pressable
+          className="bg-red-300 w-full p-2"
+          onPress={() => router.push("/(tabs)/settings/profile")}
         >
-          Страница находится в разработке
-        </Text>
+          <Text>Profile</Text>
+        </Pressable>
+
+        <Pressable
+          className="bg-red-300 w-full p-2"
+          onPress={() => router.push("/(tabs)/settings/notifications")}
+        >
+          <Text>Notifications</Text>
+        </Pressable>
       </View>
     </View>
   );

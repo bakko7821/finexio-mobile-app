@@ -1,4 +1,5 @@
 import { DatabaseProvider } from "@/database/DatabaseProvider";
+import { useTheme } from "@/hooks/useTheme";
 import { ProgressProvider } from "@/providers/ProgressProvider";
 import Constants from "expo-constants";
 import { Stack } from "expo-router";
@@ -10,11 +11,19 @@ if (Constants.executionEnvironment !== "storeClient") {
 }
 
 export default function RootLayout() {
+  const theme = useTheme();
+
   return (
     <ProgressProvider>
       <DatabaseProvider>
         {/* <Loader /> */}
-        <Stack>
+        <Stack
+          screenOptions={{
+            contentStyle: {
+              backgroundColor: theme.background,
+            },
+          }}
+        >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </DatabaseProvider>

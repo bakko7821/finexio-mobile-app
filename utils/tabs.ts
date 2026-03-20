@@ -12,7 +12,7 @@ export const TAB_ROUTES = {
   categories: "/categories",
   wallet: "/wallet",
   // chart: "/chart",
-  settings: "/settings",
+  settings: "/settings-screen",
 } as const;
 
 export type TabName = keyof typeof TAB_ROUTES;
