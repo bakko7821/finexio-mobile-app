@@ -7,6 +7,7 @@ import SettingIcon from "@/assets/ui/Settings.svg";
 import TransactionsIcon from "@/assets/ui/Transaction.svg";
 import WalletIcon from "@/assets/ui/Wallet.svg";
 
+import PaletteIcon from "@/assets/ui/ArtistPalette.svg";
 import NotificationIcon from "@/assets/ui/notification-3-fill.svg";
 import AccountIcon from "@/assets/ui/user-3-fill.svg";
 
@@ -45,6 +46,7 @@ export const TABS: {
 export const SETTINGS_TAB_ROUTES = {
   account: "/(tabs)/settings/account",
   notifications: "/(tabs)/settings/notifications",
+  personalize: "/(tabs)/settings/personalize",
 } as const;
 
 export const SETTINGS_TAB_PATHNAMES = {} as const;
@@ -63,7 +65,7 @@ export const SETTINGS_TABS: {
 }[] = [
   {
     id: 0,
-    title: "Кастомизация",
+    title: "Пользователь",
     tabs: [
       {
         name: "account",
@@ -80,6 +82,12 @@ export const SETTINGS_TABS: {
   {
     id: 1,
     title: "Приложение",
-    tabs: [],
+    tabs: [
+      {
+        name: "personalize",
+        label: "Персонализация",
+        icon: { color: "#b48f64", image: PaletteIcon },
+      },
+    ],
   },
 ];

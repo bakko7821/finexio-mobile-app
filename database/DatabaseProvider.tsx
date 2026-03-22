@@ -1,7 +1,8 @@
 import Loader from "@/components/Loader/Loader";
 import { useProgress } from "@/providers/ProgressProvider";
+import { useSettings } from "@/store/useSettings";
 import * as SplashScreen from "expo-splash-screen";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getDb } from "./db";
 import { initDatabase, initDefaultWallets } from "./init";
 
@@ -16,8 +17,12 @@ export const DatabaseProvider = ({
 }) => {
   const [dbReady, setDbReady] = useState(false);
   const { setProgress } = useProgress();
+  const didInit = useRef(false);
 
   useEffect(() => {
+    if (didInit.current) return; // защита от повторного init
+    didInit.current = true;
+
     const init = async () => {
       const startTime = Date.now();
 
@@ -31,6 +36,9 @@ export const DatabaseProvider = ({
         setProgress(0.6);
 
         await initDefaultWallets(db);
+        setProgress(0.8);
+
+        await useSettings.getState().load();
         setProgress(0.9);
 
         const elapsed = Date.now() - startTime;
@@ -39,6 +47,7 @@ export const DatabaseProvider = ({
           await new Promise((r) => setTimeout(r, MIN_LOADER_TIME - elapsed));
         }
 
+        setDbReady(true);
         await SplashScreen.hideAsync();
 
         setProgress(1);

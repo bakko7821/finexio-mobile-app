@@ -1,6 +1,5 @@
-import { useTheme } from "@/hooks/useTheme";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import Animated, {
   Easing,
   interpolate,
@@ -16,7 +15,9 @@ import LoaderText from "./LoaderText";
 export default function Loader({ onFinish }: { onFinish?: () => void }) {
   // const { progress } = useProgress();
   const progress = 1;
-  const theme = useTheme();
+  const scheme = useColorScheme();
+
+  const background = scheme === "dark" ? "#0A0F15" : "#FFFFFF";
 
   const p = useSharedValue(0);
   const pulse = useSharedValue(1);
@@ -93,7 +94,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
     <View
       className="justify-center items-center flex-1 p-4 flex-col gap-10"
       style={{
-        backgroundColor: theme.background,
+        backgroundColor: background,
       }}
     >
       {/* Основной элемент */}
@@ -101,7 +102,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
         className="rounded-full items-center justify-center h-[120px] w-[120px]"
         style={[
           {
-            backgroundColor: theme.primary,
+            backgroundColor: "#9d4ae2",
           },
           circleStyle,
         ]}
@@ -120,7 +121,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
             style={{
               fontSize: 48,
               fontWeight: "700",
-              color: theme.background,
+              color: background,
             }}
           >
             F
@@ -128,7 +129,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
         </Animated.View>
       </Animated.View>
       <View className="absolute bottom-4">
-        <LoaderText color={theme.secondary} />
+        <LoaderText color="#9C9C9C" />
       </View>
 
       {/* Вспышка */}
@@ -136,7 +137,7 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
         className="absolute w-[200px] h-[200px] rounded-full"
         style={[
           {
-            backgroundColor: theme.primary,
+            backgroundColor: "#9d4ae2",
           },
           flashStyle,
         ]}

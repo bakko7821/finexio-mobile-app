@@ -2,60 +2,71 @@ import { getRandomColor } from "@/utils/colors";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
-  await db.execAsync(`
-    PRAGMA foreign_keys = ON;
-    
-    CREATE TABLE IF NOT EXISTS categories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      color TEXT NOT NULL,
-      icon TEXT NOT NULL,
-      type INTEGER NOT NULL,
+  try {
+    // 1. pragma отдельно
+    await db.execAsync("PRAGMA foreign_keys = ON;");
 
-      isArchive INTEGER DEFAULT 0,
-      isGas INTEGER DEFAULT 0,
+    // 2. таблицы по одной (или runAsync)
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        color TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        type INTEGER NOT NULL,
+        isArchive INTEGER DEFAULT 0,
+        isGas INTEGER DEFAULT 0,
+        gasType TEXT,
+        gasPrice REAL
+      );
+    `);
 
-      gasType TEXT,
-      gasPrice REAL
-    );
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS subcategories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        value REAL DEFAULT 0,
+        categoryId INTEGER NOT NULL,
+        FOREIGN KEY (categoryId) REFERENCES categories(id)
+          ON DELETE CASCADE
+      );
+    `);
 
-    CREATE TABLE IF NOT EXISTS transactions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      date TEXT NOT NULL,
-      count REAL NOT NULL,
-      categoryId INTEGER NOT NULL,
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        count REAL NOT NULL,
+        categoryId INTEGER NOT NULL,
+        subCategoryId INTEGER,
+        note TEXT,
+        gasValue REAL,
+        FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE,
+        FOREIGN KEY (subCategoryId) REFERENCES subcategories(id) ON DELETE SET NULL
+      );
+    `);
 
-      subCategoryId INTEGER,
-      note TEXT,
-      gasValue REAL,
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS wallets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        color TEXT NOT NULL,
+        value REAL DEFAULT 0
+      );
+    `);
 
-      FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE,
-      FOREIGN KEY (subCategoryId) REFERENCES subcategories(id) ON DELETE SET NULL
-    );
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT
+      );
+    `);
 
-    CREATE TABLE IF NOT EXISTS subcategories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      value REAL DEFAULT 0,
-      categoryId INTEGER NOT NULL,
-
-      FOREIGN KEY (categoryId) REFERENCES categories(id)
-        ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS wallets (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      icon TEXT NOT NULL,
-      color TEXT NOT NULL,
-      value REAL DEFAULT 0
-    )
-
-    CREATE TABLE IF NOT EXISTS settings (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    );
-  `);
+    console.log("DB INIT SUCCESS");
+  } catch (e) {
+    console.error("DB INIT FAILED", e);
+  }
 };
 
 export const initDefaultWallets = async (db: SQLiteDatabase): Promise<void> => {
