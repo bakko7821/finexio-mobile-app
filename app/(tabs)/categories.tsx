@@ -63,7 +63,6 @@ export default function CategoriesScreen() {
         });
 
         setChartInfo(data);
-        console.log(data);
 
         setExpensive(await getSumByType({ type: 1, month, year }));
         setIncome(await getSumByType({ type: 2, month, year }));

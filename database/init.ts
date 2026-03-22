@@ -50,6 +50,11 @@ export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
       color TEXT NOT NULL,
       value REAL DEFAULT 0
     )
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    );
   `);
 };
 

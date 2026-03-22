@@ -1,15 +1,15 @@
-import { constantColors, darkColors, lightColors } from "@/utils/colors";
-import { useColorScheme } from "react-native";
+// hooks/useTheme.ts
+import { useSettings } from "@/store/useSettings";
+import { lightColors, darkColors, constantColors } from "@/utils/colors";
 
-export type Theme = typeof lightColors & typeof constantColors;
+export const useTheme = () => {
+  const { theme, primaryColor } = useSettings();
 
-export const useTheme = (): Theme & { isDark: boolean } => {
-  const colorScheme = useColorScheme();
-  const themeColors = colorScheme === "dark" ? darkColors : lightColors;
+  const base = theme === "dark" ? darkColors : lightColors;
 
   return {
-    ...themeColors,
+    ...base,
     ...constantColors,
-    isDark: colorScheme === "dark",
+    primary: primaryColor,
   };
 };

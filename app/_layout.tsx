@@ -5,6 +5,8 @@ import Constants from "expo-constants";
 import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "../global.css";
+import { useSettings } from "@/store/useSettings";
+import { useEffect } from "react";
 
 if (Constants.executionEnvironment !== "storeClient") {
   SplashScreen.preventAutoHideAsync();
@@ -12,7 +14,11 @@ if (Constants.executionEnvironment !== "storeClient") {
 
 export default function RootLayout() {
   const theme = useTheme();
-  const pathname = usePathname();
+  const loadSettings = useSettings((s) => s.load);
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
 
   return (
     <ProgressProvider>
