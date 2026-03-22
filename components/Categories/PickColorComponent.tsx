@@ -1,6 +1,11 @@
 import { colorsArray, getContrastColor } from "@/utils/colors";
 import React, { useEffect, useMemo, useState } from "react";
-import { InteractionManager, ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  InteractionManager,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface PickColorComponentProps {
   selectedColor: string | null;
@@ -34,6 +39,7 @@ export default function PickColorComponent({
         justifyContent: "center",
         gap: 8,
         paddingBottom: 16,
+        paddingTop: 4,
       }}
     >
       {data.map((color) => {

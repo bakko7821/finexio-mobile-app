@@ -19,7 +19,7 @@ export default function SettingsHeader({ title }: SettingsHeaderProps) {
       <TouchableOpacity onPress={() => router.replace("/(tabs)/settings")}>
         <BackIcon width={24} height={24} color={theme.text} />
       </TouchableOpacity>
-      <Text className="text-base font-medium" style={{ color: theme.text }}>
+      <Text style={{ color: theme.text }} className="text-lg font-medium">
         {title}
       </Text>
       <View className="w-6 h-6" />

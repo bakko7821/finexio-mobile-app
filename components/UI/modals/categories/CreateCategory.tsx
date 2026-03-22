@@ -17,6 +17,7 @@ import PickIconComponent from "@/components/Categories/PickIconComponent";
 import { SubCategoriesList } from "@/components/SubCategories/SubCategoriesList";
 import { createCategory, updateCategory } from "@/database/queries/categories";
 import { deleteSubCategory } from "@/database/queries/subcategories";
+import { getContrastColor } from "@/utils/colors";
 import {
   Category,
   CreateSubCategoryDto,
@@ -24,7 +25,6 @@ import {
   UpdateCategoryDto,
   UpdateSubCategoryDto,
 } from "@/utils/types/categories";
-import { getContrastColor } from "@/utils/colors";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import Plug from "../../Plug";
@@ -242,6 +242,7 @@ export default function CreateCategoryModal({
         style={{ backgroundColor: theme.header }}
         className="rounded-t-3xl p-4 gap-3 flex-col min-h-[80%]"
       >
+        <View className="w-10 h-1.5 bg-gray-400/40 rounded-full self-center mb-3" />
         <View className="flex-row items-center justify-between">
           {isBack && (
             <TouchableOpacity

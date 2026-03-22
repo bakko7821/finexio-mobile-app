@@ -54,7 +54,7 @@ export default function InputModal({
           >
             {title}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onClose}>
             <CrossIcon width={24} height={24} color={theme.text} />
           </TouchableOpacity>
         </View>

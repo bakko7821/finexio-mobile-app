@@ -100,6 +100,7 @@ export default function CreateTransactionsModal({
         style={{ backgroundColor: theme.header }}
         className="rounded-t-3xl gap-3 flex-col p-4"
       >
+        <View className="w-10 h-1.5 bg-gray-400/40 rounded-full self-center mb-3" />
         <View className="w-full flex-row items-center justify-between">
           <Text style={{ color: theme.text }} className="text-base font-medium">
             Новая транзакция ({category.type === 1 ? "Расходы" : "Доходы"})

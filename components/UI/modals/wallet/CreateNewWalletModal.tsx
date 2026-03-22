@@ -109,6 +109,7 @@ export default function CreateNewWalletModal({
         }}
         className="rounded-t-3xl p-4 gap-3 flex-col"
       >
+        <View className="w-10 h-1.5 bg-gray-400/40 rounded-full self-center mb-3" />
         <View className="flex-row w-full justify-between items-center">
           {isBack && (
             <TouchableOpacity onPress={() => backHandle()}>

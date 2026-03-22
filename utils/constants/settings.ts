@@ -1,6 +1,6 @@
-export type ThemeType = "light" | "dark";
+export type ThemeType = "light" | "dark" | "system";
 
 export const defaultSettings = {
-  theme: "dark" as ThemeType,
+  theme: "system" as ThemeType,
   primaryColor: "#9d4ae2",
 };
