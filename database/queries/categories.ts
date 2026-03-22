@@ -189,6 +189,38 @@ export const getCategoriesByType = async (
   return mapCategoriesWithSubs(rows);
 };
 
+export const getCategoriesByTypeAll = async (
+  type: number,
+): Promise<Category[]> => {
+  const db = await getDb();
+
+  const rows = await db.getAllAsync<CategoryWithSubRow>(
+    `
+    SELECT
+      c.id            AS category_id,
+      c.name          AS category_name,
+      c.color         AS category_color,
+      c.icon          AS category_icon,
+      c.type          AS category_type,
+      c.isArchive     AS category_isArchive,
+      c.isGas         AS category_isGas,
+      c.gasType       AS category_gasType,
+      c.gasPrice      AS category_gasPrice,
+
+      s.id            AS sub_id,
+      s.name          AS sub_name,
+      s.value         AS sub_value
+    FROM categories c
+    LEFT JOIN subcategories s ON s.categoryId = c.id
+    WHERE c.type = ?
+    ORDER BY c.id, s.id
+    `,
+    [type],
+  );
+
+  return mapCategoriesWithSubs(rows);
+};
+
 export async function deleteCategory(id: number): Promise<void> {
   const db = await getDb();
 

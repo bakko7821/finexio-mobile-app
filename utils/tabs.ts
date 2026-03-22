@@ -47,6 +47,7 @@ export const SETTINGS_TAB_ROUTES = {
   account: "/(tabs)/settings/account",
   notifications: "/(tabs)/settings/notifications",
   personalize: "/(tabs)/settings/personalize",
+  all_categories: "/(tabs)/settings/all-categories",
 } as const;
 
 export const SETTINGS_TAB_PATHNAMES = {} as const;
@@ -73,9 +74,9 @@ export const SETTINGS_TABS: {
         icon: { color: "#f80808", image: AccountIcon },
       },
       {
-        name: "notifications",
-        label: "Уведомления",
-        icon: { color: "#cb6f07", image: NotificationIcon },
+        name: "all_categories",
+        label: "Все категории",
+        icon: { color: "#E407DC", image: CategoryIcon },
       },
     ],
   },
@@ -87,6 +88,11 @@ export const SETTINGS_TABS: {
         name: "personalize",
         label: "Персонализация",
         icon: { color: "#b48f64", image: PaletteIcon },
+      },
+      {
+        name: "notifications",
+        label: "Уведомления",
+        icon: { color: "#cb6f07", image: NotificationIcon },
       },
     ],
   },

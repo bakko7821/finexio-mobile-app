@@ -1,5 +1,5 @@
-import { Category } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
+import { Category } from "@/utils/types/categories";
 import { Text, View } from "react-native";
 import { RenderIcon } from "../UI/RenderIcon";
 
@@ -20,7 +20,12 @@ export default function CategoryComponent({
         style={{ backgroundColor: category.color }}
         className="p-2 rounded-full items-center justify-center"
       >
-        <RenderIcon name={category.icon} width={24} height={24} />
+        <RenderIcon
+          name={category.icon}
+          width={24}
+          height={24}
+          color={getContrastColor(category.color)}
+        />
       </View>
     );
 

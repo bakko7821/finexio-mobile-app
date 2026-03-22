@@ -1,10 +1,10 @@
 import { useTheme } from "@/hooks/useTheme";
+import { withOpacity } from "@/utils/colors";
 import { Category } from "@/utils/types/categories";
-import { getContrastColor } from "@/utils/colors";
+import { usePathname } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
-  ListRenderItemInfo,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -54,12 +54,21 @@ export default function CategoriesList({
     ).start();
   }, [categories]);
 
+  const pathname = usePathname();
+
   const handlePress = (category: Category) => {
-    setSelectedCategory(category);
-    setIsOpenCreateTransactionModal(true);
+    if (pathname === "/settings/all-categories") {
+      setSelectedCategory(category);
+      setIsOpenInfoCategoryModal(true);
+    } else {
+      setSelectedCategory(category);
+      setIsOpenCreateTransactionModal(true);
+    }
   };
 
   const handleLongPress = (category: Category) => {
+    if (pathname === "/settings/all-categories") return;
+
     setSelectedCategory(category);
     setIsOpenInfoCategoryModal(true);
   };
@@ -71,53 +80,6 @@ export default function CategoriesList({
       </Text>
     );
   }
-
-  const renderItem = ({ item, index }: ListRenderItemInfo<Category>) => {
-    const anim = animValues.current[index];
-    if (!anim) return null;
-
-    return (
-      <Animated.View
-        style={{
-          opacity: anim,
-          transform: [
-            {
-              translateY: anim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [10, 0],
-              }),
-            },
-            {
-              scale: anim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.95, 1],
-              }),
-            },
-          ],
-        }}
-      >
-        <TouchableOpacity
-          style={{ backgroundColor: item.color }}
-          className="p-3 w-full flex-row items-center gap-2 justify-start rounded-full"
-          onPress={() => handlePress(item)}
-          onLongPress={() => handleLongPress(item)}
-        >
-          <RenderIcon
-            name={item.icon}
-            width={24}
-            height={24}
-            color={getContrastColor(item.color)}
-          />
-          <Text
-            style={{ color: getContrastColor(item.color) }}
-            className="text-base font-medium"
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  };
 
   return (
     <>
@@ -154,7 +116,11 @@ export default function CategoriesList({
                 }}
               >
                 <TouchableOpacity
-                  style={{ backgroundColor: item.color }}
+                  style={{
+                    backgroundColor: item.isArchive
+                      ? withOpacity(theme.secondary, 0.4)
+                      : withOpacity(item.color, 0.4),
+                  }}
                   className="p-3 w-full flex-row items-center gap-2 justify-start rounded-full"
                   onPress={() => handlePress(item)}
                   onLongPress={() => handleLongPress(item)}
@@ -163,13 +129,17 @@ export default function CategoriesList({
                     name={item.icon}
                     width={24}
                     height={24}
-                    color={getContrastColor(item.color)}
+                    color={item.isArchive ? theme.secondary : item.color}
                   />
                   <Text
-                    style={{ color: getContrastColor(item.color) }}
+                    style={{
+                      color: item.isArchive ? theme.secondary : item.color,
+                    }}
                     className="text-base font-medium"
                   >
-                    {item.name}
+                    {item.isArchive
+                      ? `${item.name} (Архивная)`
+                      : `${item.name}`}
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
@@ -181,7 +151,7 @@ export default function CategoriesList({
           {categories.map((category, index) => {
             const anim = animValues.current[index];
             if (!anim) return null;
-            
+
             return (
               <Animated.View
                 key={category.name}
@@ -204,7 +174,11 @@ export default function CategoriesList({
                 }}
               >
                 <TouchableOpacity
-                  style={{ backgroundColor: category.color }}
+                  style={{
+                    backgroundColor: category.isArchive
+                      ? withOpacity(theme.secondary, 0.4)
+                      : withOpacity(category.color, 0.4),
+                  }}
                   className="p-3 rounded-full"
                   onPress={() => handlePress(category)}
                   onLongPress={() => handleLongPress(category)}
@@ -213,7 +187,9 @@ export default function CategoriesList({
                     name={category.icon}
                     width={28}
                     height={28}
-                    color={getContrastColor(category.color)}
+                    color={
+                      category.isArchive ? theme.secondary : category.color
+                    }
                   />
                 </TouchableOpacity>
               </Animated.View>

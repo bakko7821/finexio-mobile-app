@@ -65,7 +65,23 @@ export default function InfoCategoryModal({
       };
 
       await updateCategory(category.id, dto);
-      console.log("категория архивированна");
+      setIsOpenArchiveModal(false);
+      onClose();
+      onRefresh?.();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleResetCategory = async () => {
+    if (!category) return;
+
+    try {
+      const dto: UpdateCategoryDto = {
+        isArchive: false,
+      };
+
+      await updateCategory(category.id, dto);
       setIsOpenArchiveModal(false);
       onClose();
       onRefresh?.();
@@ -180,20 +196,25 @@ export default function InfoCategoryModal({
               Изменить
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            className="gap-2 flex-col items-center justify-center"
-            onPress={() => null}
-          >
-            <View
-              style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
-              className="p-3 rounded-full items-center justify-center"
+          {!category.isArchive && (
+            <TouchableOpacity
+              className="gap-2 flex-col items-center justify-center"
+              onPress={() => null}
             >
-              <TransactionIcon width={32} height={32} color={theme.text} />
-            </View>
-            <Text style={{ color: theme.text }} className="text-sm font-medium">
-              Транзакции
-            </Text>
-          </TouchableOpacity>
+              <View
+                style={{ backgroundColor: withOpacity(theme.secondary, 0.4) }}
+                className="p-3 rounded-full items-center justify-center"
+              >
+                <TransactionIcon width={32} height={32} color={theme.text} />
+              </View>
+              <Text
+                style={{ color: theme.text }}
+                className="text-sm font-medium"
+              >
+                Транзакции
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             className="gap-2 flex-col items-center justify-center"
             onPress={() => setIsOpenArchiveModal(true)}
@@ -206,7 +227,7 @@ export default function InfoCategoryModal({
             </View>
 
             <Text style={{ color: theme.text }} className="text-sm font-medium">
-              Архивировать
+              {!category.isArchive ? "Архивировать" : "Восстановить"}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -245,7 +266,9 @@ export default function InfoCategoryModal({
         visible={isOpenArchiveModal}
         category={category}
         onClose={() => setIsOpenArchiveModal(false)}
-        onSubmit={handleArhiveCategory}
+        onSubmit={
+          !category.isArchive ? handleArhiveCategory : handleResetCategory
+        }
       />
     </Modal>
   );

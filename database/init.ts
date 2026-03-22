@@ -1,4 +1,3 @@
-import { getRandomColor } from "@/utils/colors";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export const initDatabase = async (db: SQLiteDatabase): Promise<void> => {
@@ -85,7 +84,7 @@ export const initDefaultWallets = async (db: SQLiteDatabase): Promise<void> => {
       (0, ?, ?, ?, 0),
       (1, ?, ?, ?, 0);
     `,
-    ["Наличные", "money", getRandomColor(), "Карта", "card", getRandomColor()],
+    ["Наличные", "money", "#00AD0C", "Карта", "card", "#e5d311"],
   );
 
   await db.execAsync("PRAGMA user_version = 1;");

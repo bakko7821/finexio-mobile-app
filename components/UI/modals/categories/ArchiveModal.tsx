@@ -1,7 +1,7 @@
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/types/categories";
 import { getContrastColor, withOpacity } from "@/utils/colors";
+import { Category } from "@/utils/types/categories";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";
@@ -20,6 +20,8 @@ export default function ArchiveModal({
   category,
 }: ArchiveModalProps) {
   const theme = useTheme();
+
+  if (!category) return;
 
   return (
     <Modal
@@ -44,7 +46,7 @@ export default function ArchiveModal({
     >
       <View
         style={{ backgroundColor: theme.header }}
-        className="rounded-3xl p-4 gap-3 flex-col w-[85%]"
+        className="rounded-3xl p-4 gap-3 flex-col w-[90%]"
       >
         <View className="w-full flex-row items-center justify-between">
           <View className="flex-row gap-2 items-center justify-center">
@@ -57,21 +59,23 @@ export default function ArchiveModal({
               />
             )}
             <Text style={{ color: theme.text }} className="text-xl font-medium">
-              Скрыть {category?.name} ?
+              {!category?.isArchive
+                ? `Скрыть ${category?.name} ?`
+                : `Восстановить ${category?.name} ?`}
             </Text>
           </View>
           <TouchableOpacity onPress={onClose}>
             <CrossIcon width={24} height={24} color={theme.text} />
           </TouchableOpacity>
         </View>
-        {category && (
+        {!category.isArchive && (
           <>
             <Text
               style={{ color: theme.text }}
               className="text-base font-regular"
             >
               Вы уверенны что хотите скрыть категорию:{" "}
-              <Text>{`"${category.name}"`} ?</Text>
+              <Text className="font-bold">{`"${category.name}"`} ?</Text>
             </Text>
 
             <Text
@@ -79,6 +83,17 @@ export default function ArchiveModal({
               className="text-base font-regular"
             >
               Вы всегда сможете восстановить её, если вдруг понадобиться.
+            </Text>
+          </>
+        )}
+        {category.isArchive && (
+          <>
+            <Text
+              style={{ color: theme.text }}
+              className="text-base font-regular"
+            >
+              Вы хотите восстановить категорию:{" "}
+              <Text className="font-bold">{`"${category.name}"`} ?</Text>
             </Text>
           </>
         )}
@@ -105,7 +120,7 @@ export default function ArchiveModal({
               }}
               className="text-base font-medium"
             >
-              Архивировать
+              {!category?.isArchive ? "Архивировать" : "Восстановить"}
             </Text>
           </TouchableOpacity>
         </View>
