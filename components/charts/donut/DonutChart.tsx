@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { polarToCartesian } from "@/utils/math/arc";
 import { PieItem } from "@/utils/types/chart";
 import { useEffect, useMemo, useState } from "react";
@@ -9,9 +10,11 @@ import DonutSegment from "./DonutSegment";
 interface Props {
   data: PieItem[];
   size?: number;
+  children: React.ReactNode;
 }
 
-export default function DonutChart({ data, size = 220 }: Props) {
+export default function DonutChart({ data, size = 220, children }: Props) {
+  const theme = useTheme();
   const strokeWidth = 32;
   const r = (size - strokeWidth) / 2;
   const cx = size / 2;
@@ -90,36 +93,49 @@ export default function DonutChart({ data, size = 220 }: Props) {
     });
   }, [data]);
 
-  const renderSegments = [...segments].reverse();
+  const emptySegments = [
+    {
+      color: theme.secondary,
+      endAngle: 270,
+      icon: "",
+      startAngle: -90,
+      text: "",
+      value: 0,
+    },
+  ];
 
-  if (data.length > 0)
-    return (
-      <View>
-        <Svg width={size} height={size}>
-          {renderSegments.map((seg) => {
-            const originalIndex = segments.indexOf(seg);
+  const displaySegments = data.length > 0 ? segments : emptySegments;
+  const renderSegments = [...displaySegments].reverse();
 
-            if (originalIndex > activeIndex) return null;
+  return (
+    <View className="items-center justify-center">
+      {children}
+      <Svg width={size} height={size}>
+        {renderSegments.map((seg, index) => {
+          const originalIndex = displaySegments.indexOf(seg);
 
-            return (
-              <DonutSegment
-                key={originalIndex}
-                cx={cx}
-                cy={cy}
-                r={r}
-                strokeWidth={strokeWidth}
-                startAngle={seg.startAngle}
-                endAngle={seg.endAngle}
-                color={seg.color}
-                isActive={originalIndex === activeIndex}
-                onFinish={() => setActiveIndex(originalIndex + 1)}
-              />
-            );
-          })}
-        </Svg>
+          if (originalIndex > activeIndex) return null;
 
-        {/* иконки */}
-        {segments.map((seg, index) => {
+          return (
+            <DonutSegment
+              key={originalIndex}
+              cx={cx}
+              cy={cy}
+              r={r}
+              strokeWidth={strokeWidth}
+              startAngle={seg.startAngle}
+              endAngle={seg.endAngle}
+              color={seg.color}
+              isActive={originalIndex === activeIndex}
+              onFinish={() => setActiveIndex(originalIndex + 1)}
+            />
+          );
+        })}
+      </Svg>
+
+      {/* иконки */}
+      {data.length > 0 &&
+        displaySegments.map((seg, index) => {
           if (index > activeIndex) return null;
 
           const pos = polarToCartesian(cx, cy, r, seg.endAngle);
@@ -134,10 +150,6 @@ export default function DonutChart({ data, size = 220 }: Props) {
             />
           );
         })}
-      </View>
-    );
-
-  return (
-    <View className="bg-red-300" style={{ width: size, height: size }}></View>
+    </View>
   );
 }

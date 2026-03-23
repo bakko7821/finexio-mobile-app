@@ -164,7 +164,43 @@ export default function CategoriesScreen() {
             key={JSON.stringify(chartInfo)}
             data={chartInfo}
             size={200}
-          />
+          >
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => setCategoriesType((prev) => (prev === 1 ? 2 : 1))}
+              className="rounded-full absolute items-center justify-center"
+              style={{
+                zIndex: 999,
+                backgroundColor: theme.header,
+                width: 140,
+                height: 140,
+              }}
+            >
+              <Text
+                style={{ color: theme.text }}
+                className="text-xl font-medium"
+              >
+                {categoriesType === 1 ? "Расходы" : "Доходы"}
+              </Text>
+              <Text
+                style={{
+                  color: categoriesType === 1 ? theme.red : theme.green,
+                }}
+                className="text-2xl font-medium"
+              >
+                {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
+              </Text>
+              <Text
+                style={{
+                  color: categoriesType === 1 ? theme.green : theme.red,
+                  opacity: 0.4,
+                }}
+                className="text-base font-medium"
+              >
+                {categoriesType === 1 ? `+${income}` : `-${expensive}`} ₽
+              </Text>
+            </TouchableOpacity>
+          </DonutChart>
 
           {/* <CustomChart
             data={chartInfo}
