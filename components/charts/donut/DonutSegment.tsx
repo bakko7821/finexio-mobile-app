@@ -1,6 +1,7 @@
 import { describeArc } from "@/utils/math/arc";
 import { useEffect } from "react";
 import Animated, {
+  Easing,
   runOnJS,
   useAnimatedProps,
   useSharedValue,
@@ -48,11 +49,15 @@ export default function DonutSegment({
 
     progress.value = 0;
 
-    progress.value = withTiming(1, { duration: 600 }, (finished) => {
-      if (finished) {
-        runOnJS(onFinish)();
-      }
-    });
+    progress.value = withTiming(
+      1,
+      { duration: 350, easing: Easing.out(Easing.cubic) },
+      (finished) => {
+        if (finished) {
+          runOnJS(onFinish)();
+        }
+      },
+    );
   }, [isActive]);
 
   return (

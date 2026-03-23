@@ -1,13 +1,12 @@
+import { RenderIcon } from "@/components/UI/RenderIcon";
+import { getContrastColor } from "@/utils/colors";
+import { PieItem } from "@/utils/types/chart";
+import { useEffect } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useEffect } from "react";
-import { View } from "react-native";
-import { RenderIcon } from "@/components/UI/RenderIcon";
-import { getContrastColor } from "@/utils/colors";
-import { PieItem } from "@/utils/types/chart";
 
 interface Props {
   x: number;
@@ -22,7 +21,7 @@ export default function DonutIcon({ x, y, active, item }: Props) {
   useEffect(() => {
     if (active) {
       rotation.value = 0;
-      rotation.value = withTiming(360, { duration: 400 });
+      rotation.value = withTiming(360, { duration: 200 });
     }
   }, [active]);
 
@@ -46,6 +45,7 @@ export default function DonutIcon({ x, y, active, item }: Props) {
         width={24}
         height={24}
         color={getContrastColor(item.color)}
+        // color={item.color}
       />
     </Animated.View>
   );

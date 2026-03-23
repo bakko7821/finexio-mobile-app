@@ -160,7 +160,11 @@ export default function CategoriesScreen() {
             </View>
           )}
 
-          <DonutChart data={chartInfo} size={200} />
+          <DonutChart
+            key={JSON.stringify(chartInfo)}
+            data={chartInfo}
+            size={200}
+          />
 
           {/* <CustomChart
             data={chartInfo}
