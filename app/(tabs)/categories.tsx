@@ -2,7 +2,7 @@ import GridIcon from "@/assets/ui/Grid.svg";
 import ListIcon from "@/assets/ui/ListOrdered.svg";
 import PlusIcon from "@/assets/ui/Plus.svg";
 import CategoriesList from "@/components/Categories/CategoriesList";
-import CustomDonut from "@/components/Charts/CustomDonut";
+import DonutChart from "@/components/charts/donut/DonutChart";
 import MonthHeader from "@/components/UI/headers/MonthHeader";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
 import Plug from "@/components/UI/Plug";
@@ -160,7 +160,7 @@ export default function CategoriesScreen() {
             </View>
           )}
 
-          <CustomDonut data={chartInfo} />
+          <DonutChart data={chartInfo} size={200} />
 
           {/* <CustomChart
             data={chartInfo}
