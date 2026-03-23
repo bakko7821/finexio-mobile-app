@@ -24,10 +24,28 @@ export function describeArc(
   startAngle: number,
   endAngle: number,
 ) {
+  const angle = endAngle - startAngle;
+
+  // 🔥 FULL CIRCLE FIX
+  if (Math.abs(angle) >= 360) {
+    const midAngle = startAngle + 180;
+
+    const start = polarToCartesian(cx, cy, r, startAngle);
+    const mid = polarToCartesian(cx, cy, r, midAngle);
+    const end = polarToCartesian(cx, cy, r, endAngle);
+
+    return `
+      M ${start.x} ${start.y}
+      A ${r} ${r} 0 1 1 ${mid.x} ${mid.y}
+      A ${r} ${r} 0 1 1 ${end.x} ${end.y}
+    `;
+  }
+
+  // обычная дуга
   const start = polarToCartesian(cx, cy, r, startAngle);
   const end = polarToCartesian(cx, cy, r, endAngle);
 
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+  const largeArcFlag = angle <= 180 ? "0" : "1";
 
   return `
     M ${start.x} ${start.y}

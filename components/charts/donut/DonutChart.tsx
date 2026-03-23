@@ -90,67 +90,54 @@ export default function DonutChart({ data, size = 220 }: Props) {
     });
   }, [data]);
 
-  return (
-    <View>
-      <Svg width={size} height={size}>
-        {segments.length > 0 && (
-          <>
-            {/* все кроме первого */}
-            {segments.map((seg, index) => {
-              if (index === 0) return null;
-              if (index > activeIndex) return null;
+  const renderSegments = [...segments].reverse();
 
-              return (
-                <DonutSegment
-                  key={index}
-                  cx={cx}
-                  cy={cy}
-                  r={r}
-                  strokeWidth={strokeWidth}
-                  startAngle={seg.startAngle}
-                  endAngle={seg.endAngle}
-                  color={seg.color}
-                  isActive={index === activeIndex}
-                  onFinish={() => setActiveIndex(index + 1)}
-                />
-              );
-            })}
+  if (data.length > 0)
+    return (
+      <View>
+        <Svg width={size} height={size}>
+          {renderSegments.map((seg) => {
+            const originalIndex = segments.indexOf(seg);
 
-            {/* первый сегмент */}
-            {segments[0] && activeIndex >= 0 && (
+            if (originalIndex > activeIndex) return null;
+
+            return (
               <DonutSegment
-                key="first-segment"
+                key={originalIndex}
                 cx={cx}
                 cy={cy}
                 r={r}
                 strokeWidth={strokeWidth}
-                startAngle={segments[0].startAngle}
-                endAngle={segments[0].endAngle}
-                color={segments[0].color}
-                isActive={activeIndex === 0}
-                onFinish={() => setActiveIndex(1)}
+                startAngle={seg.startAngle}
+                endAngle={seg.endAngle}
+                color={seg.color}
+                isActive={originalIndex === activeIndex}
+                onFinish={() => setActiveIndex(originalIndex + 1)}
               />
-            )}
-          </>
-        )}
-      </Svg>
+            );
+          })}
+        </Svg>
 
-      {/* иконки */}
-      {segments.map((seg, index) => {
-        if (index > activeIndex) return null;
+        {/* иконки */}
+        {segments.map((seg, index) => {
+          if (index > activeIndex) return null;
 
-        const pos = polarToCartesian(cx, cy, r, seg.startAngle);
+          const pos = polarToCartesian(cx, cy, r, seg.endAngle);
 
-        return (
-          <DonutIcon
-            item={seg}
-            key={index}
-            x={pos.x}
-            y={pos.y}
-            active={index === activeIndex}
-          />
-        );
-      })}
-    </View>
+          return (
+            <DonutIcon
+              item={seg}
+              key={index}
+              x={pos.x}
+              y={pos.y}
+              active={index === activeIndex}
+            />
+          );
+        })}
+      </View>
+    );
+
+  return (
+    <View className="bg-red-300" style={{ width: size, height: size }}></View>
   );
 }

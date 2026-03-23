@@ -16,26 +16,29 @@ interface Props {
 }
 
 export default function DonutIcon({ x, y, active, item }: Props) {
-  const rotation = useSharedValue(0);
+  const opacity = useSharedValue(0);
 
   useEffect(() => {
     if (active) {
-      rotation.value = 0;
-      rotation.value = withTiming(360, { duration: 200 });
+      opacity.value = 0;
+      opacity.value = withTiming(1, { duration: 300 });
     }
   }, [active]);
 
   const style = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value}deg` }],
+    opacity: opacity.value,
   }));
 
   return (
     <Animated.View
       style={[
         {
+          backgroundColor: item.color,
+          padding: 4,
+          borderRadius: 999,
           position: "absolute",
-          left: x - 12,
-          top: y - 12,
+          left: x - 16,
+          top: y - 16,
         },
         style,
       ]}

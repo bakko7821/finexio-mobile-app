@@ -51,7 +51,7 @@ export default function DonutSegment({
 
     progress.value = withTiming(
       1,
-      { duration: 350, easing: Easing.out(Easing.cubic) },
+      { duration: 300, easing: Easing.out(Easing.cubic) },
       (finished) => {
         if (finished) {
           runOnJS(onFinish)();
@@ -62,7 +62,6 @@ export default function DonutSegment({
 
   return (
     <>
-      {/* основной сегмент */}
       <AnimatedPath
         d={path}
         stroke={color}
