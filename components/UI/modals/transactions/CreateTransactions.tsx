@@ -12,6 +12,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";
+import SelectWalletModal from "../wallet/SelectWalletModal";
 // import NumberInput from "../../NumberInput";
 
 interface CreateTransactionModalProps {
@@ -39,6 +40,8 @@ export default function CreateTransactionsModal({
   const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
   const [wallets, setWallets] = useState<Wallet[] | null>([]);
   const [isVisibleNumberInput, setIsVisibleNumberInput] = useState(true);
+  const [isVisibleSelectWalletModal, setIsVisibleSelectWalletModal] =
+    useState(false);
   const [loadingWallets, setLoadingWallets] = useState(true);
 
   useEffect(() => {
@@ -127,6 +130,7 @@ export default function CreateTransactionsModal({
             >
               {selectedWallet && (
                 <TouchableOpacity
+                  onPress={() => setIsVisibleSelectWalletModal(true)}
                   style={{ backgroundColor: selectedWallet.color }}
                   className="p-3 flex-1 flex-row gap-2"
                 >
@@ -327,6 +331,14 @@ export default function CreateTransactionsModal({
             </TouchableOpacity>
           </View>
         </View>
+        <SelectWalletModal
+          title={"Выберите счёт"}
+          visible={isVisibleSelectWalletModal}
+          wallets={wallets}
+          onClose={() => setIsVisibleSelectWalletModal(false)}
+          selectedWallet={selectedWallet}
+          onSelect={setSelectedWallet}
+        />
         {Platform.OS === "android" && isOpenDateModal && (
           <DateTimePicker
             value={isoToDateSafe(date)}
