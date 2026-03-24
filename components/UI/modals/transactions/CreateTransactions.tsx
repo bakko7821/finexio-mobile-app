@@ -1,5 +1,11 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 // import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { getAllWallets } from "@/database";
@@ -11,9 +17,9 @@ import { Wallet } from "@/utils/types/wallet";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
+import NumberInput from "../../NumberInput";
 import { RenderIcon } from "../../RenderIcon";
 import SelectWalletModal from "../wallet/SelectWalletModal";
-// import NumberInput from "../../NumberInput";
 
 interface CreateTransactionModalProps {
   category: Category | null;
@@ -194,127 +200,126 @@ export default function CreateTransactionsModal({
                 </TouchableOpacity>
               )}
             </View>
-            {/* <CategoryComponent fullsize category={category} />
-          {category.subcategories && category.subcategories.length > 0 && (
-            <View className="w-full flex-row flex-wrap gap-2 items-center justify-start">
-              {category.subcategories.map((subcategory) => {
-                const isSelected = selectedSubCategory?.id === subcategory.id;
+            {category.subcategories && category.subcategories.length > 0 && (
+              <View className="w-full flex-row flex-wrap gap-2 px-2 items-center justify-start">
+                {category.subcategories.map((subcategory) => {
+                  const isSelected = selectedSubCategory?.id === subcategory.id;
 
-                return (
-                  <TouchableOpacity
-                    key={subcategory.id}
-                    onPress={() => setSelectedSubCategory(subcategory)}
-                    style={{
-                      borderColor: category.color,
-                      backgroundColor: isSelected
-                        ? category.color
-                        : "transparent",
-                    }}
-                    className="px-3 py-1 items-center justify-center rounded-lg border-[2px] border-solid"
-                  >
-                    <Text
-                      className="text-sm font-medium"
-                      style={{ color: isSelected ? "#fff" : theme.text }}
+                  return (
+                    <TouchableOpacity
+                      key={subcategory.id}
+                      onPress={() => setSelectedSubCategory(subcategory)}
+                      style={{
+                        borderColor: category.color,
+                        backgroundColor: isSelected
+                          ? category.color
+                          : "transparent",
+                      }}
+                      className="px-3 py-1 items-center justify-center rounded-lg border-[2px] border-solid"
                     >
-                      {subcategory.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-          <View className="flex-col gap-1 items-start justify-start">
-            <TextInput
-              value={noteValue}
-              onChangeText={(text: string) => setNoteValue(text)}
-              onPress={() => setIsVisibleNumberInput(false)}
-              onFocus={() => setIsVisibleNumberInput(false)}
-              onSubmitEditing={() => setIsVisibleNumberInput(true)}
-              placeholderTextColor={theme.secondary}
-              style={{
-                color: theme.text,
-                backgroundColor: theme.card,
-                padding: 12,
-              }}
-              className="text-base font-regular rounded-xl w-full items-center justify-center text-center"
-              placeholder="Заметка..."
-            />
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-sm font-medium"
-            >
-              Значение:
-            </Text>
-            <View
-              style={{ backgroundColor: theme.card }}
-              className="rounded-xl items-center justify-center w-full p-3"
-            >
-              <Text
-                style={{ color: theme.text }}
-                className="text-2xl font-bold"
-              >
-                {countValue} <Text className="text-base font-medium">₽</Text>
-              </Text>
-            </View>
-          </View>
-          {isVisibleNumberInput && (
-            <View className="flex-col gap-1 items-start justify-start">
+                      <Text
+                        className="text-sm font-medium"
+                        style={{ color: isSelected ? "#fff" : theme.text }}
+                      >
+                        {subcategory.name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+            <View className="flex-col gap-1 px-2 items-start justify-start">
+              <TextInput
+                value={noteValue}
+                onChangeText={(text: string) => setNoteValue(text)}
+                onPress={() => setIsVisibleNumberInput(false)}
+                onFocus={() => setIsVisibleNumberInput(false)}
+                onSubmitEditing={() => setIsVisibleNumberInput(true)}
+                placeholderTextColor={theme.secondary}
+                style={{
+                  color: theme.text,
+                  backgroundColor: theme.card,
+                  padding: 12,
+                }}
+                className="text-base font-regular rounded-xl w-full items-center justify-center text-center"
+                placeholder="Заметка..."
+              />
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
-                Калькулятор:
+                Значение:
               </Text>
-
-              <NumberInput
-                openCalendar={() => setIsOpenDateModal(true)}
-                value={countValue}
-                setValue={setCoutValue}
-              />
+              <View
+                style={{ backgroundColor: theme.card }}
+                className="rounded-xl items-center justify-center w-full p-3"
+              >
+                <Text
+                  style={{ color: theme.text }}
+                  className="text-2xl font-bold"
+                >
+                  {countValue} <Text className="text-base font-medium">₽</Text>
+                </Text>
+              </View>
             </View>
-          )}
-
-          {category?.isGas ? (
-            <View className="flex-col gap-1 items-start justify-start">
-              <View className="w-full flex-row items-center justify-between">
+            {isVisibleNumberInput && (
+              <View className="flex-col gap-1 px-2 items-start justify-start">
                 <Text
                   style={{ color: theme.secondary }}
                   className="text-sm font-medium"
                 >
-                  Топливо:
+                  Калькулятор:
                 </Text>
-                <Text
-                  style={{ color: theme.secondary }}
-                  className="text-xs font-medium"
-                >
-                  Вы можете изменить значение.
-                </Text>
+
+                <NumberInput
+                  openCalendar={() => setIsOpenDateModal(true)}
+                  value={countValue}
+                  setValue={setCoutValue}
+                />
               </View>
-              <View className="w-full flex-row items-center justify-between">
-                <Text
-                  style={{ color: category.color }}
-                  className="text-xl font-medium"
-                >
-                  {category.gasType} (
+            )}
+
+            {category?.isGas ? (
+              <View className="flex-col gap-1 px-2 items-start justify-start">
+                <View className="w-full flex-row items-center justify-between">
                   <Text
                     style={{ color: theme.secondary }}
-                    className="text-base"
+                    className="text-sm font-medium"
                   >
-                    {category.gasPrice} ₽ / литр
+                    Топливо:
                   </Text>
-                  )
-                </Text>
-                <TouchableOpacity>
                   <Text
-                    style={{ color: theme.text }}
-                    className="text-base font-medium"
+                    style={{ color: theme.secondary }}
+                    className="text-xs font-medium"
                   >
-                    {gasValue} лит.
+                    Вы можете изменить значение.
                   </Text>
-                </TouchableOpacity>
+                </View>
+                <View className="w-full flex-row items-center justify-between">
+                  <Text
+                    style={{ color: category.color }}
+                    className="text-xl font-medium"
+                  >
+                    {category.gasType} (
+                    <Text
+                      style={{ color: theme.secondary }}
+                      className="text-base"
+                    >
+                      {category.gasPrice} ₽ / литр
+                    </Text>
+                    )
+                  </Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{ color: theme.text }}
+                      className="text-base font-medium"
+                    >
+                      {gasValue} лит.
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          ) : null} */}
+            ) : null}
           </View>
           <View className="p-4">
             <TouchableOpacity
