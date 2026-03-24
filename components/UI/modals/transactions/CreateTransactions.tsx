@@ -1,22 +1,18 @@
 import { useTheme } from "@/hooks/useTheme";
-import {
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 
-import CrossIcon from "@/assets/ui/CrossFilled.svg";
-import CategoryComponent from "@/components/Categories/CategoryComponent";
+// import CategoryComponent from "@/components/Categories/CategoryComponent";
+import { getAllWallets } from "@/database";
 import { createTransaction } from "@/database/queries/transactions";
-import { getContrastColor } from "@/utils/colors";
+import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import { Category, SubCategory } from "@/utils/types/categories";
+import { Wallet } from "@/utils/types/wallet";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
-import NumberInput from "../../NumberInput";
+import { RenderIcon } from "../../RenderIcon";
+// import NumberInput from "../../NumberInput";
 
 interface CreateTransactionModalProps {
   category: Category | null;
@@ -40,7 +36,10 @@ export default function CreateTransactionsModal({
   const [date, setDate] = useState(nowDay);
   const [selectedSubCategory, setSelectedSubCategory] =
     useState<SubCategory | null>(null);
+  const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
+  const [wallets, setWallets] = useState<Wallet[] | null>([]);
   const [isVisibleNumberInput, setIsVisibleNumberInput] = useState(true);
+  const [loadingWallets, setLoadingWallets] = useState(true);
 
   useEffect(() => {
     if (!category?.gasPrice) {
@@ -56,6 +55,23 @@ export default function CreateTransactionsModal({
 
     setGasValue(Number((numericCount / category.gasPrice).toFixed(2)));
   }, [countValue, category?.gasPrice]);
+
+  useEffect(() => {
+    const fetchWallets = async () => {
+      try {
+        const data = await getAllWallets();
+
+        setWallets(data);
+        setSelectedWallet(data[0]);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+
+    fetchWallets();
+
+    fetchWallets().finally(() => setLoadingWallets(false));
+  }, []);
 
   if (category === null) return;
 
@@ -74,6 +90,7 @@ export default function CreateTransactionsModal({
       count: Number(countValue),
       categoryId: category.id,
       note: noteValue || undefined,
+      walletId: selectedWallet?.id || 1,
 
       subCategoryId: selectedSubCategory?.id,
       gasValue: gasValue ? Number(gasValue) : undefined,
@@ -83,34 +100,97 @@ export default function CreateTransactionsModal({
     handleClose();
   };
 
-  return (
-    <Modal
-      isVisible={visible}
-      animationIn="slideInUp"
-      animationOut="slideOutDown"
-      animationInTiming={300}
-      animationOutTiming={300}
-      backdropTransitionOutTiming={300}
-      onBackdropPress={handleClose}
-      onBackButtonPress={handleClose}
-      useNativeDriver
-      style={{ margin: 0, justifyContent: "flex-end" }}
-    >
-      <View
-        style={{ backgroundColor: theme.header }}
-        className="rounded-t-3xl gap-3 flex-col p-4"
+  if (!loadingWallets)
+    return (
+      <Modal
+        isVisible={visible}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        animationInTiming={300}
+        animationOutTiming={300}
+        backdropTransitionOutTiming={300}
+        onBackdropPress={handleClose}
+        onBackButtonPress={handleClose}
+        useNativeDriver
+        style={{ margin: 0, justifyContent: "flex-end" }}
       >
-        <View className="w-10 h-1.5 bg-gray-400/40 rounded-full self-center mb-3" />
-        <View className="w-full flex-row items-center justify-between">
-          <Text style={{ color: theme.text }} className="text-base font-medium">
-            Новая транзакция ({category.type === 1 ? "Расходы" : "Доходы"})
-          </Text>
-          <TouchableOpacity onPress={handleClose}>
-            <CrossIcon width={24} height={24} color={theme.text} />
-          </TouchableOpacity>
-        </View>
-        <View className="w-full flex-col gap-3">
-          <CategoryComponent fullsize category={category} />
+        <View
+          style={{ backgroundColor: theme.header }}
+          className="rounded-t-3xl gap-3 flex-col overflow-hidden"
+        >
+          <View className="w-full flex-col gap-3">
+            <View
+              style={{
+                flexDirection: category.type === 1 ? "row" : "row-reverse",
+              }}
+              className="w-full"
+            >
+              {selectedWallet && (
+                <TouchableOpacity
+                  style={{ backgroundColor: selectedWallet.color }}
+                  className="p-3 flex-1 flex-row gap-2"
+                >
+                  <RenderIcon
+                    name={selectedWallet.icon}
+                    width={40}
+                    height={40}
+                    color={getContrastColor(selectedWallet.color)}
+                  />
+                  <View className="flex-col">
+                    <Text
+                      style={{
+                        color: withOpacity(
+                          getContrastColor(selectedWallet.color),
+                          0.6,
+                        ),
+                      }}
+                      className="text-sm font-medium"
+                    >
+                      {category.type === 1 ? "Со счёта:" : "На счёт:"}
+                    </Text>
+                    <Text
+                      style={{ color: getContrastColor(selectedWallet.color) }}
+                      className="text-base font-medium"
+                    >
+                      {selectedWallet.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {category && (
+                <TouchableOpacity
+                  style={{ backgroundColor: category.color }}
+                  className="p-3 flex-1 flex-row gap-2"
+                >
+                  <RenderIcon
+                    name={category.icon}
+                    width={40}
+                    height={40}
+                    color={getContrastColor(category.color)}
+                  />
+                  <View className="flex-col">
+                    <Text
+                      style={{
+                        color: withOpacity(
+                          getContrastColor(category.color),
+                          0.6,
+                        ),
+                      }}
+                      className="text-sm font-medium"
+                    >
+                      {category.type === 1 ? "Расход на:" : "Доход с:"}
+                    </Text>
+                    <Text
+                      style={{ color: getContrastColor(category.color) }}
+                      className="text-base font-medium"
+                    >
+                      {category.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+            {/* <CategoryComponent fullsize category={category} />
           {category.subcategories && category.subcategories.length > 0 && (
             <View className="w-full flex-row flex-wrap gap-2 items-center justify-start">
               {category.subcategories.map((subcategory) => {
@@ -230,34 +310,36 @@ export default function CreateTransactionsModal({
                 </TouchableOpacity>
               </View>
             </View>
-          ) : null}
+          ) : null} */}
+          </View>
+          <View className="p-4">
+            <TouchableOpacity
+              style={{ backgroundColor: theme.primary }}
+              className="flex-row w-full item-center justify-center p-3 rounded-full"
+              onPress={handleCreateTransaction}
+            >
+              <Text
+                style={{ color: getContrastColor(theme.primary) }}
+                className="text-base font-medium"
+              >
+                Создать
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity
-          style={{ backgroundColor: theme.primary }}
-          className="mt-4 flex-row w-full item-center justify-center p-3 rounded-full"
-          onPress={handleCreateTransaction}
-        >
-          <Text
-            style={{ color: getContrastColor(theme.primary) }}
-            className="text-base font-medium"
-          >
-            Создать
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {Platform.OS === "android" && isOpenDateModal && (
-        <DateTimePicker
-          value={isoToDateSafe(date)}
-          mode="date"
-          display="default"
-          themeVariant={theme.isDark ? "dark" : "light"}
-          onChange={(event, selectedDate) => {
-            setIsOpenDateModal(false);
-            if (!selectedDate) return;
-            setDate(dateToIso(selectedDate));
-          }}
-        />
-      )}
-    </Modal>
-  );
+        {Platform.OS === "android" && isOpenDateModal && (
+          <DateTimePicker
+            value={isoToDateSafe(date)}
+            mode="date"
+            display="default"
+            themeVariant={theme.isDark ? "dark" : "light"}
+            onChange={(event, selectedDate) => {
+              setIsOpenDateModal(false);
+              if (!selectedDate) return;
+              setDate(dateToIso(selectedDate));
+            }}
+          />
+        )}
+      </Modal>
+    );
 }

@@ -188,7 +188,7 @@ export default function CategoriesScreen() {
                 }}
                 className="text-2xl font-medium"
               >
-                {categoriesType === 1 ? `-d${expensive}` : `+${income}`} ₽
+                {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
               </Text>
               <Text
                 style={{

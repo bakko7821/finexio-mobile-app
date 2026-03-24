@@ -23,7 +23,7 @@ export default function WalletScreen() {
   const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchWallets = async () => {
       try {
         const data = await getAllWallets();
 
@@ -33,9 +33,9 @@ export default function WalletScreen() {
       }
     };
 
-    fetchCategories();
+    fetchWallets();
 
-    fetchCategories().finally(() => setLoadingWallets(false));
+    fetchWallets().finally(() => setLoadingWallets(false));
   }, [refreshFlag]);
 
   return (

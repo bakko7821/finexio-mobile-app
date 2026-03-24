@@ -257,7 +257,7 @@ export const getAllTransactionsByCategory = async ({
 
       s.id        AS sub_id,
       s.name      AS sub_name,
-      s.value     AS sub_value
+      s.value     AS sub_value,
 
       w.id    AS wallet_id,
       w.name  AS wallet_name,
@@ -317,7 +317,7 @@ export const getTransactionsByCategoryAndDateAsync = async ({
 
       s.id        AS sub_id,
       s.name      AS sub_name,
-      s.value     AS sub_value
+      s.value     AS sub_value,
 
       w.id    AS wallet_id,
       w.name  AS wallet_name,
@@ -378,7 +378,7 @@ export const getTransactionsByDateAsync = async ({
 
       s.id        AS sub_id,
       s.name      AS sub_name,
-      s.value     AS sub_value
+      s.value     AS sub_value,
 
       w.id    AS wallet_id,
       w.name  AS wallet_name,
@@ -392,7 +392,7 @@ export const getTransactionsByDateAsync = async ({
     LEFT JOIN wallets w ON w.id = t.walletId
     WHERE strftime('%m', t.date) = ?
       AND strftime('%Y', t.date) = ?
-      
+
     ORDER BY t.date DESC
 
     `,
