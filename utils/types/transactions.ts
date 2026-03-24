@@ -1,10 +1,11 @@
 import { Category, SubCategory } from "./categories";
+import { Wallet } from "./wallet";
 
 export type CreateTransactionDto = {
   date: string;
   count: number;
   categoryId: number;
-
+  walletId: number;
   subCategoryId?: number;
   note?: string;
   gasValue?: number;
@@ -15,17 +16,19 @@ export type UpdateTransactionDto = {
   count?: number;
   note?: string;
   gasValue?: number;
-}
+  walletId?: number;
+};
 
 export type Transaction = {
-  id: number
+  id: number;
   date: string;
   count: number;
   categoryId: number;
   category: Category;
+  wallet: Wallet;
 
   subCategoryId?: number;
-  subCategory?: SubCategory
+  subCategory?: SubCategory;
 
   note?: string;
   gasValue?: number;

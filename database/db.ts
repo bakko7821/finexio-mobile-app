@@ -4,7 +4,7 @@ let db: SQLite.SQLiteDatabase | null = null;
 
 export const getDb = async () => {
   if (!db) {
-    db = await SQLite.openDatabaseAsync("finexio2.db");
+    db = await SQLite.openDatabaseAsync("finexio3.db");
   }
   return db;
 };

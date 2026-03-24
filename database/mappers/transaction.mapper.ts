@@ -10,6 +10,12 @@ export type TransactionWithCategoryRow = CategoryWithSubRow & {
 
   transaction_note?: string | null;
   transaction_gasValue?: number | null;
+
+  wallet_id: number;
+  wallet_name: string;
+  wallet_icon: string;
+  wallet_color: string;
+  wallet_value: number | null;
 };
 
 export const mapTransactionsWithCategories = (
@@ -36,6 +42,14 @@ export const mapTransactionsWithCategories = (
         count: row.transaction_count,
         categoryId: row.transaction_categoryId,
         category,
+
+        wallet: {
+          id: row.wallet_id,
+          name: row.wallet_name,
+          icon: row.wallet_icon,
+          color: row.wallet_color,
+          value: row.wallet_value ?? 0,
+        },
 
         subCategoryId: row.transaction_subCategoryId ?? undefined,
         subCategory: subCategory
