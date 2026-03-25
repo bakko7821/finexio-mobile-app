@@ -30,6 +30,7 @@ export default function CreateTransactionsModal({
 }: CreateTransactionModalProps) {
   const theme = useTheme();
 
+  const [refreshFlag, setRefreshFlag] = useState(0);
   const [countValue, setCoutValue] = useState("0");
   const [noteValue, setNoteValue] = useState("");
   const [gasValue, setGasValue] = useState(0);
@@ -57,7 +58,7 @@ export default function CreateTransactionsModal({
     }
 
     setGasValue(Number((numericCount / category.gasPrice).toFixed(2)));
-  }, [countValue, category?.gasPrice]);
+  }, [countValue, category?.gasPrice, refreshFlag]);
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -74,11 +75,12 @@ export default function CreateTransactionsModal({
     fetchWallets();
 
     fetchWallets().finally(() => setLoadingWallets(false));
-  }, []);
+  }, [refreshFlag]);
 
   if (category === null) return;
 
   const handleClose = () => {
+    setRefreshFlag((prev) => prev + 1);
     setNoteValue("");
     setSelectedSubCategory(null);
     setDate(nowDay);
@@ -199,7 +201,7 @@ export default function CreateTransactionsModal({
             </View>
             {/* ПОДКАТЕГОРИИ */}
             {category.subcategories && category.subcategories.length > 0 && (
-              <View className="flex-col p-2 gap-1">
+              <View className="flex-col p-2 py-3 gap-1">
                 <Text
                   style={{ color: theme.secondary }}
                   className="text-sm font-medium"
