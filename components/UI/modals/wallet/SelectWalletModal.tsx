@@ -47,7 +47,7 @@ export default function SelectWalletModal({
         backdropTransitionInTiming={250}
         backdropTransitionOutTiming={200}
         /** ФОН */
-        backdropOpacity={0.5}
+        backdropOpacity={0.8}
         /** ЗАКРЫТИЕ */
         onBackdropPress={onClose}
         onBackButtonPress={onClose}

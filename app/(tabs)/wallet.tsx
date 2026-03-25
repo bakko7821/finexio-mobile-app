@@ -7,7 +7,8 @@ import { getAllWallets } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { Wallet } from "@/utils/types/wallet";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function WalletScreen() {
@@ -22,12 +23,19 @@ export default function WalletScreen() {
 
   const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
 
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshFlag((prev) => prev + 1);
+    }, []),
+  );
+
   useEffect(() => {
     const fetchWallets = async () => {
       try {
         const data = await getAllWallets();
 
         setWallets(data);
+        console.log(data);
       } catch (error: unknown) {
         console.error(error);
       }

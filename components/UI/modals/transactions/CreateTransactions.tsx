@@ -1,11 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import {
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 
 // import CategoryComponent from "@/components/Categories/CategoryComponent";
 import { getAllWallets } from "@/database";
@@ -94,12 +88,14 @@ export default function CreateTransactionsModal({
   };
 
   const handleCreateTransaction = async () => {
+    console.log(selectedWallet?.id);
+
     await createTransaction({
       date: date,
       count: Number(countValue),
       categoryId: category.id,
       note: noteValue || undefined,
-      walletId: selectedWallet?.id || 1,
+      walletId: selectedWallet?.id || 0,
 
       subCategoryId: selectedSubCategory?.id,
       gasValue: gasValue ? Number(gasValue) : undefined,
@@ -125,9 +121,10 @@ export default function CreateTransactionsModal({
       >
         <View
           style={{ backgroundColor: theme.header }}
-          className="rounded-t-3xl gap-3 flex-col overflow-hidden"
+          className="rounded-t-3xl flex-col overflow-hidden"
         >
-          <View className="w-full flex-col gap-3">
+          <View className="w-full flex-col">
+            {/* СЧЕТА + КАТЕГОРИИ*/}
             <View
               style={{
                 flexDirection: category.type === 1 ? "row" : "row-reverse",
@@ -200,35 +197,45 @@ export default function CreateTransactionsModal({
                 </TouchableOpacity>
               )}
             </View>
+            {/* ПОДКАТЕГОРИИ */}
             {category.subcategories && category.subcategories.length > 0 && (
-              <View className="w-full flex-row flex-wrap gap-2 px-2 items-center justify-start">
-                {category.subcategories.map((subcategory) => {
-                  const isSelected = selectedSubCategory?.id === subcategory.id;
+              <View className="flex-col p-2 gap-1">
+                <Text
+                  style={{ color: theme.secondary }}
+                  className="text-sm font-medium"
+                >
+                  Подкатегории:
+                </Text>
+                <View className="w-full flex-row flex-wrap gap-2 items-center justify-start">
+                  {category.subcategories.map((subcategory) => {
+                    const isSelected =
+                      selectedSubCategory?.id === subcategory.id;
 
-                  return (
-                    <TouchableOpacity
-                      key={subcategory.id}
-                      onPress={() => setSelectedSubCategory(subcategory)}
-                      style={{
-                        borderColor: category.color,
-                        backgroundColor: isSelected
-                          ? category.color
-                          : "transparent",
-                      }}
-                      className="px-3 py-1 items-center justify-center rounded-lg border-[2px] border-solid"
-                    >
-                      <Text
-                        className="text-sm font-medium"
-                        style={{ color: isSelected ? "#fff" : theme.text }}
+                    return (
+                      <TouchableOpacity
+                        key={subcategory.id}
+                        onPress={() => setSelectedSubCategory(subcategory)}
+                        style={{
+                          borderColor: category.color,
+                          backgroundColor: isSelected
+                            ? category.color
+                            : "transparent",
+                        }}
+                        className="px-3 py-1 items-center justify-center rounded-lg border-[2px] border-solid"
                       >
-                        {subcategory.name}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
+                        <Text
+                          className="text-sm font-medium"
+                          style={{ color: isSelected ? "#fff" : theme.text }}
+                        >
+                          {subcategory.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
               </View>
             )}
-            <View className="flex-col gap-1 px-2 items-start justify-start">
+            {/* <View className="flex-col gap-1 px-2 items-start justify-start">
               <TextInput
                 value={noteValue}
                 onChangeText={(text: string) => setNoteValue(text)}
@@ -250,27 +257,20 @@ export default function CreateTransactionsModal({
               >
                 Значение:
               </Text>
-              <View
-                style={{ backgroundColor: theme.card }}
-                className="rounded-xl items-center justify-center w-full p-3"
+            </View> */}
+            <View
+              style={{ backgroundColor: theme.card }}
+              className="items-center justify-center w-full p-3"
+            >
+              <Text
+                style={{ color: theme.text }}
+                className="text-3xl font-bold"
               >
-                <Text
-                  style={{ color: theme.text }}
-                  className="text-2xl font-bold"
-                >
-                  {countValue} <Text className="text-base font-medium">₽</Text>
-                </Text>
-              </View>
+                {countValue} <Text className="text-base font-medium">₽</Text>
+              </Text>
             </View>
             {isVisibleNumberInput && (
-              <View className="flex-col gap-1 px-2 items-start justify-start">
-                <Text
-                  style={{ color: theme.secondary }}
-                  className="text-sm font-medium"
-                >
-                  Калькулятор:
-                </Text>
-
+              <View className="flex-col p-2 items-start justify-start">
                 <NumberInput
                   openCalendar={() => setIsOpenDateModal(true)}
                   value={countValue}
