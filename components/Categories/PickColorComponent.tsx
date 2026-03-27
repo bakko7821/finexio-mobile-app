@@ -1,4 +1,4 @@
-import { colorsArray, getContrastColor } from "@/utils/colors";
+import { colorsArray, withOpacity } from "@/utils/colors";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   InteractionManager,
@@ -50,15 +50,19 @@ export default function PickColorComponent({
             key={color.color}
             onPress={() => onSelect(color.color)}
             className="w-[48px] h-[48px] rounded-full flex items-center justify-center p-[6px]"
-            style={{ backgroundColor: color.color }}
+            style={{
+              backgroundColor: isSelected
+                ? withOpacity(color.color, 0.4)
+                : color.color,
+            }}
           >
             {isSelected && (
               <View
                 className="w-full h-full rounded-full"
                 style={{
                   borderWidth: 3,
-                  borderColor: getContrastColor(color.color),
-                  backgroundColor: color.color,
+                  borderColor: color.color,
+                  backgroundColor: "transparent",
                 }}
               />
             )}

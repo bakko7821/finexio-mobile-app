@@ -8,7 +8,7 @@ import { Category } from "@/utils/types/categories";
 type TransactionListProps = {
   onRefresh?: () => void;
   data: GroupedTransactions[];
-  setFilter?: (category: Category) => void;
+  setFilter?: (category: Category | null) => void;
 };
 
 export default function TransactionList({

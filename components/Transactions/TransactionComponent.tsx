@@ -8,7 +8,7 @@ import { RenderIcon } from "../UI/RenderIcon";
 import InfoTransactionModal from "../UI/modals/transactions/InfoTransactionModal";
 
 interface TransactionComponentProps {
-  setFilter?: (category: Category) => void;
+  setFilter?: (category: Category | null) => void;
   transaction: Transaction;
   isArchive?: boolean;
   onRefresh?: () => void;

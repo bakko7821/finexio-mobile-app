@@ -10,7 +10,7 @@ import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { Transaction, UpdateTransactionDto } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
   Text,
@@ -24,7 +24,7 @@ import { RenderIcon } from "../../RenderIcon";
 import DeleteModal from "../categories/DeleteModal";
 
 interface InfoTransactionModalProps {
-  setFilter?: (category: Category) => void;
+  setFilter?: (category: Category | null) => void;
   onRefresh?: () => void;
   transaction: Transaction | null;
   visible: boolean;
@@ -39,6 +39,7 @@ export default function InfoTransactionModal({
   onClose,
 }: InfoTransactionModalProps) {
   const theme = useTheme();
+
   const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
   const [transactionValue, setTransactionsValue] = useState(
     `${transaction?.count}` || "0",
@@ -52,6 +53,18 @@ export default function InfoTransactionModal({
     transaction?.gasValue || 0,
   );
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
+
+  useEffect(() => {
+    if (!transaction || !visible) return;
+
+    setTransactionsValue(String(transaction.count ?? 0));
+    setTransactionNote(transaction.note ?? "");
+    setDate(transaction.date ?? "");
+    setTransactionGasValue(transaction.gasValue ?? 0);
+    setIsEdit(false);
+    setIsOpenDateModal(false);
+    setIsVisibleDeleteModal(false);
+  }, [transaction, visible]);
 
   const handleUpdateTransaction = useCallback(async () => {
     if (!transaction) return;
