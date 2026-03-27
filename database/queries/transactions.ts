@@ -14,10 +14,10 @@ export const createTransaction = async (
 ): Promise<number> => {
   const db = await getDb();
 
-  await db.execAsync("BEGIN TRANSACTION");
+  let insertedId = 0;
 
-  try {
-    const result = await db.runAsync(
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const result = await txn.runAsync(
       `
       INSERT INTO transactions (
         date,
@@ -40,8 +40,7 @@ export const createTransaction = async (
       ],
     );
 
-    // 💡 обновляем баланс
-    await db.runAsync(
+    await txn.runAsync(
       `
       UPDATE wallets
       SET value = value + ?
@@ -50,13 +49,10 @@ export const createTransaction = async (
       [dto.count, dto.walletId],
     );
 
-    await db.execAsync("COMMIT");
+    insertedId = result.lastInsertRowId;
+  });
 
-    return result.lastInsertRowId;
-  } catch (e) {
-    await db.execAsync("ROLLBACK");
-    throw e;
-  }
+  return insertedId;
 };
 
 export const getTransactions = async (): Promise<Transaction[]> => {
@@ -113,17 +109,14 @@ export const updateTransaction = async (
 ): Promise<void> => {
   const db = await getDb();
 
-  await db.execAsync("BEGIN TRANSACTION");
-
-  try {
-    const oldTx = await db.getFirstAsync<{
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const oldTx = await txn.getFirstAsync<{
       count: number;
       walletId: number;
     }>(`SELECT count, walletId FROM transactions WHERE id = ?`, [id]);
 
     if (!oldTx) throw new Error("Transaction not found");
 
-    // --- UPDATE самой транзакции ---
     const fields: string[] = [];
     const values: any[] = [];
 
@@ -150,65 +143,50 @@ export const updateTransaction = async (
 
     if (fields.length > 0) {
       values.push(id);
-
-      await db.runAsync(
+      await txn.runAsync(
         `UPDATE transactions SET ${fields.join(", ")} WHERE id = ?`,
         values,
       );
     }
 
-    // --- ЛОГИКА БАЛАНСА ---
     const newCount = dto.count ?? oldTx.count;
     const newWalletId = dto.walletId ?? oldTx.walletId;
 
-    // 🔹 если wallet не поменялся
     if (oldTx.walletId === newWalletId) {
       const diff = newCount - oldTx.count;
 
       if (diff !== 0) {
-        await db.runAsync(`UPDATE wallets SET value = value + ? WHERE id = ?`, [
-          diff,
-          newWalletId,
-        ]);
+        await txn.runAsync(
+          `UPDATE wallets SET value = value + ? WHERE id = ?`,
+          [diff, newWalletId],
+        );
       }
     } else {
-      // 🔹 перенос между кошельками
-
-      // убрать из старого
-      await db.runAsync(`UPDATE wallets SET value = value - ? WHERE id = ?`, [
+      await txn.runAsync(`UPDATE wallets SET value = value - ? WHERE id = ?`, [
         oldTx.count,
         oldTx.walletId,
       ]);
 
-      // добавить в новый
-      await db.runAsync(`UPDATE wallets SET value = value + ? WHERE id = ?`, [
+      await txn.runAsync(`UPDATE wallets SET value = value + ? WHERE id = ?`, [
         newCount,
         newWalletId,
       ]);
     }
-
-    await db.execAsync("COMMIT");
-  } catch (e) {
-    await db.execAsync("ROLLBACK");
-    throw e;
-  }
+  });
 };
 
 export async function deleteTransaction(id: number): Promise<void> {
   const db = await getDb();
 
-  await db.execAsync("BEGIN TRANSACTION");
-
-  try {
-    const tx = await db.getFirstAsync<{
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const tx = await txn.getFirstAsync<{
       count: number;
       walletId: number;
     }>(`SELECT count, walletId FROM transactions WHERE id = ?`, [id]);
 
     if (!tx) throw new Error("Transaction not found");
 
-    // 💡 откат баланса
-    await db.runAsync(
+    await txn.runAsync(
       `
       UPDATE wallets
       SET value = value - ?
@@ -217,13 +195,8 @@ export async function deleteTransaction(id: number): Promise<void> {
       [tx.count, tx.walletId],
     );
 
-    await db.runAsync(`DELETE FROM transactions WHERE id = ?`, [id]);
-
-    await db.execAsync("COMMIT");
-  } catch (e) {
-    await db.execAsync("ROLLBACK");
-    throw e;
-  }
+    await txn.runAsync(`DELETE FROM transactions WHERE id = ?`, [id]);
+  });
 }
 
 export const getAllTransactionsByCategory = async ({

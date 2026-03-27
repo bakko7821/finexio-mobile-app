@@ -10,7 +10,7 @@ import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { Transaction, UpdateTransactionDto } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Platform,
   Text,
@@ -76,9 +76,19 @@ export default function InfoTransactionModal({
     onRefresh,
   ]);
 
-  useEffect(() => {
-    handleUpdateTransaction();
-  }, [date]);
+  const handleChangeDate = async (selectedDate: Date) => {
+    if (!transaction) return;
+
+    const newDate = dateToIso(selectedDate);
+    setDate(newDate);
+
+    await updateTransaction(transaction.id, {
+      date: newDate,
+    });
+
+    onClose();
+    onRefresh?.();
+  };
 
   const handleDelete = async () => {
     if (!transaction) return;
@@ -321,7 +331,7 @@ export default function InfoTransactionModal({
           onChange={(event, selectedDate) => {
             setIsOpenDateModal(false);
             if (!selectedDate) return;
-            setDate(dateToIso(selectedDate));
+            handleChangeDate(selectedDate);
           }}
         />
       )}

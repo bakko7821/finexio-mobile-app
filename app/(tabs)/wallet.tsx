@@ -35,7 +35,6 @@ export default function WalletScreen() {
         const data = await getAllWallets();
 
         setWallets(data);
-        console.log(data);
       } catch (error: unknown) {
         console.error(error);
       }

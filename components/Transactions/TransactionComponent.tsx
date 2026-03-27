@@ -1,6 +1,6 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Category } from "@/utils/types/categories";
 import { getContrastColor } from "@/utils/colors";
+import { Category } from "@/utils/types/categories";
 import { Transaction } from "@/utils/types/transactions";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
@@ -107,7 +107,7 @@ export default function TransactionComponent({
                   </Text>
                 </Text>
               ) : (
-                transaction.note
+                <Text>{transaction.wallet.name}</Text>
               )}
             </Text>
           </View>
@@ -124,13 +124,15 @@ export default function TransactionComponent({
           {transaction.count} ₽
         </Text>
       </TouchableOpacity>
-      <InfoTransactionModal
-        setFilter={setFilter}
-        visible={isOpenTransactionInfoModal}
-        onClose={() => setIsOpenTransactionInfoModal(false)}
-        transaction={transaction}
-        onRefresh={onRefresh}
-      />
+      {isOpenTransactionInfoModal && (
+        <InfoTransactionModal
+          setFilter={setFilter}
+          visible={isOpenTransactionInfoModal}
+          onClose={() => setIsOpenTransactionInfoModal(false)}
+          transaction={transaction}
+          onRefresh={onRefresh}
+        />
+      )}
     </Animated.View>
   );
 }
