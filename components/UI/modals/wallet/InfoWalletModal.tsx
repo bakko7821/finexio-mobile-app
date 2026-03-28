@@ -1,4 +1,5 @@
 import CrossIcon from "@/assets/ui/CrossFilled.svg";
+import EditIcon from "@/assets/ui/Edit.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { Wallet } from "@/utils/types/wallet";
@@ -66,6 +67,29 @@ export default function InfoWalletModal({
             </TouchableOpacity>
           </View>
           <View
+            className="p-4 items-center justify-around flex-row"
+            style={{ backgroundColor: theme.header }}
+          >
+            <TouchableOpacity className="flex-col gap-1 items-center justify-center">
+              <View
+                className="rounded-full p-3"
+                style={{ backgroundColor: theme.secondary }}
+              >
+                <EditIcon
+                  width={24}
+                  height={24}
+                  color={getContrastColor(theme.secondary)}
+                />
+              </View>
+              <Text
+                className="text-sm font-medium"
+                style={{ color: theme.secondary }}
+              >
+                Изменить
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <View
             style={{ backgroundColor: theme.header }}
             className="p-4 items-center justify-center"
           >
@@ -75,7 +99,7 @@ export default function InfoWalletModal({
             >
               Пока что в разработке.
             </Text>
-          </View>
+          </View> */}
         </View>
       </Modal>
     );
