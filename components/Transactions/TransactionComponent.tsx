@@ -107,22 +107,30 @@ export default function TransactionComponent({
                   </Text>
                 </Text>
               ) : (
-                <Text>{transaction.wallet.name}</Text>
+                <Text>{transaction.note}</Text>
               )}
             </Text>
           </View>
         </View>
 
-        <Text
-          className="text-base font-medium"
-          style={{
-            color: transaction.category.type === 1 ? theme.red : theme.green,
-            textDecorationLine: isArchive ? "line-through" : "none",
-          }}
-        >
-          {transaction.category.type === 1 ? "-" : "+"}
-          {transaction.count} ₽
-        </Text>
+        <View className="flex-row gap-1 items-center justify-center">
+          <Text
+            className="text-base font-medium"
+            style={{
+              color: transaction.category.type === 1 ? theme.red : theme.green,
+              textDecorationLine: isArchive ? "line-through" : "none",
+            }}
+          >
+            {transaction.category.type === 1 ? "-" : "+"}
+            {transaction.count} ₽
+          </Text>
+          <RenderIcon
+            name={transaction.wallet.icon}
+            width={16}
+            height={16}
+            color={transaction.category.type === 1 ? theme.red : theme.green}
+          />
+        </View>
       </TouchableOpacity>
       {isOpenTransactionInfoModal && (
         <InfoTransactionModal

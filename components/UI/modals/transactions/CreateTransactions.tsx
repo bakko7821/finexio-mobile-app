@@ -83,6 +83,7 @@ export default function CreateTransactionsModal({
     setRefreshFlag((prev) => prev + 1);
     setNoteValue("");
     setSelectedSubCategory(null);
+    setSelectedWallet(null);
     setDate(nowDay);
     setCoutValue("0");
     setGasValue(0);
