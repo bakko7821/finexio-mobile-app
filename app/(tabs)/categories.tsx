@@ -5,6 +5,7 @@ import CategoriesList from "@/components/Categories/CategoriesList";
 import DonutChart from "@/components/charts/donut/DonutChart";
 import MonthHeader from "@/components/UI/headers/MonthHeader";
 import CreateCategoryModal from "@/components/UI/modals/categories/CreateCategory";
+import NotificationModal from "@/components/UI/modals/NotificationModal";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByType } from "@/database/queries/categories";
 import { getChartData, getSumByType } from "@/database/queries/chart";
@@ -12,6 +13,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { getMonthYearByOffset, getMonthYearTitle } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { PieItem } from "@/utils/types/chart";
+import { NotificationKey } from "@/utils/types/notifications";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 // import { PieChart } from "react-native-gifted-charts";
@@ -31,6 +33,14 @@ export default function CategoriesScreen() {
   const [loadingChartInfo, setLoadingChartInfo] = useState(true);
   const [income, setIncome] = useState(0);
   const [expensive, setExpensive] = useState(0);
+
+  // NOTIFICATION
+
+  const [isVisibleNotificationModal, setIsVisibleNotificationModal] =
+    useState(false);
+  const [notificationModalTitle, setNotificationModalTitle] = useState("");
+  const [notificationModalKey, setNotificationModalKey] =
+    useState<NotificationKey>("info");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -303,6 +313,12 @@ export default function CategoriesScreen() {
         visible={isVisibleCreateCategoryModal}
         onClose={() => setIsVisibleCreateCategoryModal(false)}
         onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+      />
+      <NotificationModal
+        visible={isVisibleNotificationModal}
+        title={notificationModalTitle}
+        notificationKey={notificationModalKey}
+        onClose={() => setIsVisibleNotificationModal(false)}
       />
     </View>
   );
