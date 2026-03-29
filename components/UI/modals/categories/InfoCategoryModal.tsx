@@ -13,6 +13,7 @@ import { getContrastColor, withOpacity } from "@/utils/colors";
 import { getCurrentMonthAndYear } from "@/utils/date";
 import { Category, UpdateCategoryDto } from "@/utils/types/categories";
 import { getSum } from "@/utils/types/chart";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { Transaction } from "@/utils/types/transactions";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -27,6 +28,7 @@ interface InfoCategoryModalProps {
   category: Category | null;
   visible: boolean;
   onClose: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function InfoCategoryModal({
@@ -34,6 +36,7 @@ export default function InfoCategoryModal({
   category,
   visible,
   onClose,
+  onSubmit,
 }: InfoCategoryModalProps) {
   const theme = useTheme();
   const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
@@ -43,18 +46,23 @@ export default function InfoCategoryModal({
     Transaction[]
   >([]);
 
+  const [isEditCategory, setIsEditCategory] = useState(false);
+  const [isOpenArchiveModal, setIsOpenArchiveModal] = useState(false);
+
   const handleDeleteModal = async () => {
     if (!category) return;
 
-    await deleteCategory(category?.id);
-    console.log("категория удаления");
-    setIsVisibleDeleteModal(false);
-    onClose();
-    onRefresh?.();
+    try {
+      await deleteCategory(category?.id);
+      setIsVisibleDeleteModal(false);
+      onClose();
+      onRefresh?.();
+      onSubmit?.(true, "Категория удалена", "success");
+    } catch (error: unknown) {
+      console.log(error);
+      onSubmit?.(true, "Не удалось удалить категорию", "error");
+    }
   };
-
-  const [isEditCategory, setIsEditCategory] = useState(false);
-  const [isOpenArchiveModal, setIsOpenArchiveModal] = useState(false);
 
   const handleArhiveCategory = async () => {
     if (!category) return;
@@ -65,10 +73,12 @@ export default function InfoCategoryModal({
       };
 
       await updateCategory(category.id, dto);
+      onSubmit?.(true, "Категория архивированна", "success");
       setIsOpenArchiveModal(false);
       onClose();
       onRefresh?.();
     } catch (error) {
+      onSubmit?.(true, "Не удалось архивировать категорию", "error");
       console.error(error);
     }
   };
@@ -82,10 +92,12 @@ export default function InfoCategoryModal({
       };
 
       await updateCategory(category.id, dto);
+      onSubmit?.(true, "Категория восстановленна", "success");
       setIsOpenArchiveModal(false);
       onClose();
       onRefresh?.();
     } catch (error) {
+      onSubmit?.(true, "Не удалось восстановить категорию", "error");
       console.error(error);
     }
   };
@@ -93,6 +105,7 @@ export default function InfoCategoryModal({
   useEffect(() => {
     try {
       if (!category) return;
+
       const fetchTransactionsByCategoryIdAndDate = async () => {
         const { month, year } = getCurrentMonthAndYear();
         const data = await getTransactionsByCategoryAndDateAsync({
@@ -114,6 +127,7 @@ export default function InfoCategoryModal({
       fetchAllTransactionsByCategory();
     } catch (error: unknown) {
       console.error(error);
+      onSubmit?.(true, "Не удалось загрузить транзакции", "warning");
     }
   }, [category]);
 
@@ -259,6 +273,7 @@ export default function InfoCategoryModal({
         category={category}
         visible={isEditCategory}
         onClose={() => setIsEditCategory(false)}
+        onSubmit={onSubmit}
         title={""}
         handleCloseSmallModal={onClose}
       />

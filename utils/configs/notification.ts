@@ -1,10 +1,9 @@
-import { NotificationKey } from "../types/notifications";
-import SuccessIcon from "@/assets/ui/notifications/Success.svg";
-import InfoIcon from "@/assets/ui/notifications/Info.svg";
 import WarningIcon from "@/assets/ui/notifications/CircleWavyWarningFill.svg";
 import ErrorIcon from "@/assets/ui/notifications/ErrorRounded.svg";
+import InfoIcon from "@/assets/ui/notifications/Info.svg";
+import SuccessIcon from "@/assets/ui/notifications/Success.svg";
 import { SvgProps } from "react-native-svg";
-import { useTheme } from "@/hooks/useTheme";
+import { NotificationKey } from "../types/notifications";
 
 export type NotificationConfigItem = {
   icon: React.FC<SvgProps>;
@@ -19,7 +18,7 @@ export const notificationConfig: Record<
   success: {
     icon: SuccessIcon,
     mainColor: "#27b400",
-    titleColor: "",
+    titleColor: "#ffffff",
   },
   warning: {
     icon: WarningIcon,

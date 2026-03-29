@@ -1,9 +1,14 @@
 import CategoriesList from "@/components/Categories/CategoriesList";
 import SettingsHeader from "@/components/UI/headers/SettingsHeader";
+import NotificationModal from "@/components/UI/modals/NotificationModal";
 import Plug from "@/components/UI/Plug";
 import { getCategoriesByTypeAll } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
 import { Category } from "@/utils/types/categories";
+import {
+  NotificationKey,
+  SetNotificationModal,
+} from "@/utils/types/notifications";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
@@ -15,6 +20,20 @@ export default function AllCategoriesScreen() {
   );
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [refreshFlag, setRefreshFlag] = useState(0);
+
+  // NOTIFICATION
+
+  const [isVisibleNotificationModal, setIsVisibleNotificationModal] =
+    useState(false);
+  const [notificationModalTitle, setNotificationModalTitle] = useState("");
+  const [notificationModalKey, setNotificationModalKey] =
+    useState<NotificationKey>("info");
+
+  const setModal: SetNotificationModal = (isVisible, title, key) => {
+    setNotificationModalTitle(title);
+    setNotificationModalKey(key);
+    setIsVisibleNotificationModal(isVisible);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -55,6 +74,7 @@ export default function AllCategoriesScreen() {
             {!loadingCategories ? (
               <CategoriesList
                 categories={incomeCategories}
+                onSubmit={setModal}
                 list={false}
                 onRefresh={() => setRefreshFlag((prev) => prev + 1)}
               />
@@ -81,6 +101,7 @@ export default function AllCategoriesScreen() {
               <CategoriesList
                 categories={expensiveCategories}
                 list={false}
+                onSubmit={setModal}
                 onRefresh={() => setRefreshFlag((prev) => prev + 1)}
               />
             ) : (
@@ -94,6 +115,12 @@ export default function AllCategoriesScreen() {
           </View>
         </View>
       </View>
+      <NotificationModal
+        visible={isVisibleNotificationModal}
+        title={notificationModalTitle}
+        notificationKey={notificationModalKey}
+        onClose={() => setIsVisibleNotificationModal(false)}
+      />
     </View>
   );
 }

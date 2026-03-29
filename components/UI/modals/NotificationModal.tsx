@@ -1,8 +1,7 @@
-import CrossIcon from "@/assets/ui/CrossFilled.svg";
-import { useTheme } from "@/hooks/useTheme";
 import { notificationConfig } from "@/utils/configs/notification";
 import { NotificationKey } from "@/utils/types/notifications";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Text, View } from "react-native";
 import Modal from "react-native-modal";
 
 interface NotificationModalProps {
@@ -20,81 +19,63 @@ export default function NotificationModal({
   onClose,
   children,
 }: NotificationModalProps) {
-  const theme = useTheme();
-  const SCREEN_HEIGHT = Dimensions.get("window").height;
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentConfig = notificationConfig[notificationKey];
   const Icon = currentConfig.icon;
 
+  useEffect(() => {
+    if (visible) {
+      timeoutRef.current = setTimeout(() => {
+        onClose();
+      }, 2500);
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [onClose, visible]);
+
   return (
     <Modal
       isVisible={visible}
+      /** АНИМАЦИИ */
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      /** TIMING */
+      animationInTiming={1500}
+      animationOutTiming={1500}
+      backdropTransitionInTiming={0}
+      backdropTransitionOutTiming={0}
+      /** ФОН */
+      backdropOpacity={0}
+      /** ЗАКРЫТИЕ */
       onBackdropPress={onClose}
       onBackButtonPress={onClose}
-      animationIn="slideInUp"
-      animationOut="slideOutDown"
+      /** PERF */
       useNativeDriver
       hideModalContentWhileAnimating
-      backdropTransitionOutTiming={0}
-      style={{ margin: 0, justifyContent: "flex-end" }}
+      style={{
+        margin: 0,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        paddingTop: 16,
+      }}
     >
       <View
-        style={{
-          minHeight: SCREEN_HEIGHT * 0.25,
-          backgroundColor: theme.header,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          padding: 20,
-          gap: 20,
-        }}
+        style={{ backgroundColor: currentConfig.mainColor }}
+        className="flex-row items-center w-[80%] gap-2 p-4 rounded-full"
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+        <Icon width={24} height={24} color={currentConfig.titleColor} />
+
+        <Text
+          style={{ color: currentConfig.titleColor }}
+          className="text-base font-medium"
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 12,
-              flex: 1,
-              paddingRight: 12,
-            }}
-          >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 999,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: currentConfig.mainColor + "20",
-              }}
-            >
-              <Icon width={22} height={22} />
-            </View>
-
-            <Text
-              style={{
-                color: theme.text,
-                fontSize: 18,
-                fontWeight: "600",
-                flexShrink: 1,
-              }}
-            >
-              {title}
-            </Text>
-          </View>
-
-          <TouchableOpacity activeOpacity={0.7} onPress={onClose}>
-            <CrossIcon width={22} height={22} />
-          </TouchableOpacity>
-        </View>
-
-        <View>{children}</View>
+          {title}
+        </Text>
       </View>
     </Modal>
   );

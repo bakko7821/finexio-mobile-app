@@ -25,6 +25,7 @@ import {
   UpdateCategoryDto,
   UpdateSubCategoryDto,
 } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import Plug from "../../Plug";
@@ -38,6 +39,7 @@ interface CreateCategoryModalProps {
   visible: boolean;
   onClose: () => void;
   onRefresh?: () => void;
+  onSubmit?: SetNotificationModal;
   handleCloseSmallModal?: () => void;
 }
 
@@ -47,6 +49,7 @@ export default function CreateCategoryModal({
   visible,
   onClose,
   onRefresh,
+  onSubmit,
   handleCloseSmallModal,
 }: CreateCategoryModalProps) {
   const theme = useTheme();
@@ -71,6 +74,11 @@ export default function CreateCategoryModal({
   const [selectedIcon, setSelectedIcon] = useState("burger");
   const [selectedColor, setSelectedColor] = useState("#ff0000");
   const [isArchive, setIsArchive] = useState(false);
+
+  const [isOpenCreateNameSubcategories, setIsOpenCreateNameSubcategories] =
+    useState(false);
+  const [subCategoryName, setSubcategoryName] = useState("");
+  const [subcategories, setSubcategories] = useState<SubCategoryFormItem[]>([]);
 
   useEffect(() => {
     if (!category) return;
@@ -97,11 +105,6 @@ export default function CreateCategoryModal({
       })),
     );
   }, [category]);
-
-  const [isOpenCreateNameSubcategories, setIsOpenCreateNameSubcategories] =
-    useState(false);
-  const [subCategoryName, setSubcategoryName] = useState("");
-  const [subcategories, setSubcategories] = useState<SubCategoryFormItem[]>([]);
 
   const createSubCategoryHandle = () => {
     if (!subCategoryName.trim()) return;
@@ -164,20 +167,21 @@ export default function CreateCategoryModal({
       }
 
       await updateCategory(category.id, dto);
+      setSubcategories([]);
+      onRefresh?.();
+      setCategoryNameValue("");
+      setCategoryType(1);
+      setGasTypeValue("");
+      setGasValuePerLitre(0);
+      setSelectedColor("#ff0000");
+      setSelectedIcon("burger");
+      onClose();
+      handleCloseSmallModal?.();
+      onSubmit?.(true, "Успешное изменение категории", "success");
     } catch (error) {
       console.error(error);
+      onSubmit?.(true, "Не удалось изменить категорию", "error");
     }
-
-    onRefresh?.();
-    setSubcategories([]);
-    setCategoryNameValue("");
-    setCategoryType(1);
-    setGasTypeValue("");
-    setGasValuePerLitre(0);
-    setSelectedColor("#ff0000");
-    setSelectedIcon("burger");
-    onClose();
-    handleCloseSmallModal?.();
   };
 
   const createCategoryHandle = async () => {
@@ -219,8 +223,10 @@ export default function CreateCategoryModal({
       setSelectedColor("#ff0000");
       setSelectedIcon("burger");
       onClose();
+      onSubmit?.(true, "Успешное создание категории", "success");
     } catch (error) {
       console.error("Ошибка создания категории:", error);
+      onSubmit?.(true, "Не удалось создать категорию", "error");
     }
   };
 

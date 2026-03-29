@@ -13,17 +13,20 @@ import {
 import InfoCategoryModal from "../UI/modals/categories/InfoCategoryModal";
 import CreateTransactionsModal from "../UI/modals/transactions/CreateTransactions";
 import { RenderIcon } from "../UI/RenderIcon";
+import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface CategoriesListProps {
   categories: Category[];
   list: boolean;
   onRefresh?: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function CategoriesList({
   categories,
   list,
   onRefresh,
+  onSubmit,
 }: CategoriesListProps) {
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -33,10 +36,8 @@ export default function CategoriesList({
     useState(false);
   const [isOpenInfoCategoryModal, setIsOpenInfoCategoryModal] = useState(false);
 
-  // анимации для каждой категории
   const animValues = useRef<Animated.Value[]>([]);
 
-  // эффект: при смене categories плавно показываем иконки
   useEffect(() => {
     animValues.current = categories.map(
       (_, index) => animValues.current[index] ?? new Animated.Value(0),
@@ -208,6 +209,7 @@ export default function CategoriesList({
         onRefresh={onRefresh}
         category={selectedCategory}
         visible={isOpenInfoCategoryModal}
+        onSubmit={onSubmit}
         onClose={() => setIsOpenInfoCategoryModal(false)}
       />
     </>

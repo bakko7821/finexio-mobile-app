@@ -13,7 +13,10 @@ import { useTheme } from "@/hooks/useTheme";
 import { getMonthYearByOffset, getMonthYearTitle } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
 import { PieItem } from "@/utils/types/chart";
-import { NotificationKey } from "@/utils/types/notifications";
+import {
+  NotificationKey,
+  SetNotificationModal,
+} from "@/utils/types/notifications";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 // import { PieChart } from "react-native-gifted-charts";
@@ -42,12 +45,19 @@ export default function CategoriesScreen() {
   const [notificationModalKey, setNotificationModalKey] =
     useState<NotificationKey>("info");
 
+  const setModal: SetNotificationModal = (isVisible, title, key) => {
+    setNotificationModalTitle(title);
+    setNotificationModalKey(key);
+    setIsVisibleNotificationModal(isVisible);
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategoriesByType(categoriesType);
         setCategories(data);
       } catch (error) {
+        setModal(true, "Не удалось загрузить категории", "error");
         console.error(error);
       } finally {
         setLoadingCategories(false);
@@ -78,6 +88,7 @@ export default function CategoriesScreen() {
         setIncome(await getSumByType({ type: 2, month, year }));
       } catch (error: unknown) {
         console.error(error);
+        setModal(true, "Не удалось загрузить график", "error");
       } finally {
         setLoadingChartInfo(false);
       }
@@ -211,56 +222,6 @@ export default function CategoriesScreen() {
               </Text>
             </TouchableOpacity>
           </DonutChart>
-
-          {/* <CustomChart
-            data={chartInfo}
-            changeType={() => setCategoriesType((prev) => (prev === 1 ? 2 : 1))}
-          /> */}
-
-          {/* <PieChart
-            data={chartInfo}
-            donut
-            radius={110}
-            innerRadius={80}
-            isAnimated
-            animationDuration={800}
-            centerLabelComponent={() => (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={() =>
-                  setCategoriesType((prev) => (prev === 1 ? 2 : 1))
-                }
-                style={{
-                  backgroundColor: theme.card,
-                }}
-                className="flex-col items-center justify-center rounded-full w-[170px] h-[170px]"
-              >
-                <Text
-                  style={{ color: theme.text }}
-                  className="text-xl font-medium"
-                >
-                  {categoriesType === 1 ? "Расходы" : "Доходы"}
-                </Text>
-                <Text
-                  style={{
-                    color: categoriesType === 1 ? theme.red : theme.green,
-                  }}
-                  className="text-2xl font-medium"
-                >
-                  {categoriesType === 1 ? `-${expensive}` : `+${income}`} ₽
-                </Text>
-                <Text
-                  style={{
-                    color: categoriesType === 1 ? theme.green : theme.red,
-                    opacity: 0.4,
-                  }}
-                  className="text-base font-medium"
-                >
-                  {categoriesType === 1 ? `+${income}` : `-${expensive}`} ₽
-                </Text>
-              </TouchableOpacity>
-            )}
-          /> */}
         </Animated.View>
       </View>
       <Plug />
@@ -295,6 +256,7 @@ export default function CategoriesScreen() {
           {!loadingCategories ? (
             <CategoriesList
               onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+              onSubmit={setModal}
               categories={categories}
               list={isList}
             />
@@ -311,6 +273,7 @@ export default function CategoriesScreen() {
       <CreateCategoryModal
         title="Новая категория"
         visible={isVisibleCreateCategoryModal}
+        onSubmit={setModal}
         onClose={() => setIsVisibleCreateCategoryModal(false)}
         onRefresh={() => setRefreshFlag((prev) => prev + 1)}
       />
