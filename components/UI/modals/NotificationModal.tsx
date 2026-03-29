@@ -1,8 +1,7 @@
 import { notificationConfig } from "@/utils/configs/notification";
 import { NotificationKey } from "@/utils/types/notifications";
 import { useEffect, useRef } from "react";
-import { Text, View } from "react-native";
-import Modal from "react-native-modal";
+import { Animated, Text, View } from "react-native";
 
 interface NotificationModalProps {
   visible: boolean;
@@ -17,66 +16,73 @@ export default function NotificationModal({
   title,
   notificationKey,
   onClose,
-  children,
 }: NotificationModalProps) {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const opacity = useRef(new Animated.Value(0)).current;
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentConfig = notificationConfig[notificationKey];
   const Icon = currentConfig.icon;
 
   useEffect(() => {
-    if (visible) {
-      timeoutRef.current = setTimeout(() => {
-        onClose();
-      }, 2500);
+    if (!visible) {
+      opacity.setValue(0);
+      return;
     }
+
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    timeoutRef.current = setTimeout(() => {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          onClose();
+        }
+      });
+    }, 3200);
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [onClose, visible]);
+  }, [visible, onClose, opacity]);
+
+  if (!visible) return null;
 
   return (
-    <Modal
-      isVisible={visible}
-      /** АНИМАЦИИ */
-      animationIn="fadeIn"
-      animationOut="fadeOut"
-      /** TIMING */
-      animationInTiming={1500}
-      animationOutTiming={1500}
-      backdropTransitionInTiming={0}
-      backdropTransitionOutTiming={0}
-      /** ФОН */
-      backdropOpacity={0}
-      /** ЗАКРЫТИЕ */
-      onBackdropPress={onClose}
-      onBackButtonPress={onClose}
-      /** PERF */
-      useNativeDriver
-      hideModalContentWhileAnimating
+    <View
+      pointerEvents="none"
+      className="absolute top-14 left-0 right-0 items-center"
       style={{
-        margin: 0,
-        justifyContent: "flex-start",
-        alignItems: "center",
-        paddingTop: 16,
+        zIndex: 9999,
+        elevation: 9999,
       }}
     >
-      <View
-        style={{ backgroundColor: currentConfig.mainColor }}
+      <Animated.View
         className="flex-row items-center w-[80%] gap-2 p-4 rounded-full"
+        style={{
+          opacity,
+          backgroundColor: currentConfig.mainColor,
+        }}
       >
         <Icon width={24} height={24} color={currentConfig.titleColor} />
 
         <Text
-          style={{ color: currentConfig.titleColor }}
-          className="text-base font-medium"
+          className="text-base font-medium flex-shrink"
+          style={{
+            color: currentConfig.titleColor,
+          }}
         >
           {title}
         </Text>
-      </View>
-    </Modal>
+      </Animated.View>
+    </View>
   );
 }

@@ -4,17 +4,20 @@ import { GroupedTransactions } from "@/utils/types/transactions";
 import { Text, View } from "react-native";
 import TransactionComponent from "./TransactionComponent";
 import { Category } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 
 type TransactionListProps = {
   onRefresh?: () => void;
   data: GroupedTransactions[];
   setFilter?: (category: Category | null) => void;
+  onSubmit?: SetNotificationModal;
 };
 
 export default function TransactionList({
   data,
   onRefresh,
   setFilter,
+  onSubmit,
 }: TransactionListProps) {
   const theme = useTheme();
   return (
@@ -75,6 +78,7 @@ export default function TransactionList({
                 isArchive={transaction.category.isArchive}
                 onRefresh={onRefresh}
                 index={idx}
+                onSubmit={onSubmit}
               />
             ))}
           </View>

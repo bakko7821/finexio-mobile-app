@@ -9,11 +9,13 @@ import {
   NotificationKey,
   SetNotificationModal,
 } from "@/utils/types/notifications";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 
 export default function AllCategoriesScreen() {
   const theme = useTheme();
+
   const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
   const [expensiveCategories, setExpensiveCategories] = useState<Category[]>(
     [],
@@ -21,7 +23,7 @@ export default function AllCategoriesScreen() {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [refreshFlag, setRefreshFlag] = useState(0);
 
-  // NOTIFICATION
+  const requestIdRef = useRef(0);
 
   const [isVisibleNotificationModal, setIsVisibleNotificationModal] =
     useState(false);
@@ -35,25 +37,48 @@ export default function AllCategoriesScreen() {
     setIsVisibleNotificationModal(isVisible);
   };
 
+  const fetchCategories = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
+    try {
+      setLoadingCategories(true);
+
+      const [incomeData, expensiveData] = await Promise.all([
+        getCategoriesByTypeAll(2),
+        getCategoriesByTypeAll(1),
+      ]);
+
+      if (requestId !== requestIdRef.current) return;
+
+      setIncomeCategories(incomeData);
+      setExpensiveCategories(expensiveData);
+    } catch (error) {
+      if (requestId !== requestIdRef.current) return;
+
+      console.error("[Categories] fetch error", error);
+      setModal(true, "Не удалось загрузить категории", "error");
+    } finally {
+      if (requestId !== requestIdRef.current) return;
+      setLoadingCategories(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCategories();
+    }, [fetchCategories]),
+  );
+
+  const isFirstRefreshEffect = useRef(true);
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const incomeData = await getCategoriesByTypeAll(2);
-        setIncomeCategories(incomeData);
-
-        const expensiveData = await getCategoriesByTypeAll(1);
-        setExpensiveCategories(expensiveData);
-
-        console.log(expensiveData);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoadingCategories(false);
-      }
-    };
+    if (isFirstRefreshEffect.current) {
+      isFirstRefreshEffect.current = false;
+      return;
+    }
 
     fetchCategories();
-  }, [refreshFlag]);
+  }, [refreshFlag, fetchCategories]);
 
   return (
     <View
@@ -61,6 +86,7 @@ export default function AllCategoriesScreen() {
       className="flex-1 flex-col gap-2"
     >
       <SettingsHeader title="Все категории" />
+
       <View className="w-full flex-1 flex-col gap-3">
         <View className="flex-col gap-2">
           <Text
@@ -70,24 +96,26 @@ export default function AllCategoriesScreen() {
             Доходы
           </Text>
           <Plug />
+
           <View className="w-full px-4">
-            {!loadingCategories ? (
-              <CategoriesList
-                categories={incomeCategories}
-                onSubmit={setModal}
-                list={false}
-                onRefresh={() => setRefreshFlag((prev) => prev + 1)}
-              />
-            ) : (
+            {loadingCategories ? (
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
                 Загрузка категорий...
               </Text>
+            ) : (
+              <CategoriesList
+                categories={incomeCategories}
+                onSubmit={setModal}
+                list={false}
+                onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+              />
             )}
           </View>
         </View>
+
         <View className="flex-col gap-2">
           <Text
             style={{ color: theme.secondary }}
@@ -96,25 +124,27 @@ export default function AllCategoriesScreen() {
             Расходы
           </Text>
           <Plug />
+
           <View className="w-full px-4">
-            {!loadingCategories ? (
-              <CategoriesList
-                categories={expensiveCategories}
-                list={false}
-                onSubmit={setModal}
-                onRefresh={() => setRefreshFlag((prev) => prev + 1)}
-              />
-            ) : (
+            {loadingCategories ? (
               <Text
                 style={{ color: theme.secondary }}
                 className="text-sm font-medium"
               >
                 Загрузка категорий...
               </Text>
+            ) : (
+              <CategoriesList
+                categories={expensiveCategories}
+                list={false}
+                onSubmit={setModal}
+                onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+              />
             )}
           </View>
         </View>
       </View>
+
       <NotificationModal
         visible={isVisibleNotificationModal}
         title={notificationModalTitle}

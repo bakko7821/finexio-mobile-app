@@ -7,6 +7,7 @@ import { createTransaction } from "@/database/queries/transactions";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, isoToDateSafe, nowDay } from "@/utils/date";
 import { Category, SubCategory } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { Wallet } from "@/utils/types/wallet";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ interface CreateTransactionModalProps {
   visible: boolean;
   onClose: () => void;
   onRefresh?: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function CreateTransactionsModal({
@@ -27,6 +29,7 @@ export default function CreateTransactionsModal({
   visible,
   onClose,
   onRefresh,
+  onSubmit,
 }: CreateTransactionModalProps) {
   const theme = useTheme();
 
@@ -91,21 +94,25 @@ export default function CreateTransactionsModal({
   };
 
   const handleCreateTransaction = async () => {
-    console.log(selectedWallet?.id);
+    try {
+      await createTransaction({
+        date: date,
+        count: Number(countValue),
+        categoryId: category.id,
+        note: noteValue || undefined,
+        walletId: selectedWallet?.id || 0,
 
-    await createTransaction({
-      date: date,
-      count: Number(countValue),
-      categoryId: category.id,
-      note: noteValue || undefined,
-      walletId: selectedWallet?.id || 0,
+        subCategoryId: selectedSubCategory?.id,
+        gasValue: gasValue ? Number(gasValue) : undefined,
+      });
 
-      subCategoryId: selectedSubCategory?.id,
-      gasValue: gasValue ? Number(gasValue) : undefined,
-    });
-
-    onRefresh?.();
-    handleClose();
+      onSubmit?.(true, "Транзакция успешно добавленна", "success");
+      onRefresh?.();
+      handleClose();
+    } catch (error: unknown) {
+      console.error(error);
+      onSubmit?.(true, "Не удалось добавить траназкцию", "error");
+    }
   };
 
   if (!loadingWallets)

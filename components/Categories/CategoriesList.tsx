@@ -1,8 +1,9 @@
 import { useTheme } from "@/hooks/useTheme";
 import { withOpacity } from "@/utils/colors";
 import { Category } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { usePathname } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -13,7 +14,6 @@ import {
 import InfoCategoryModal from "../UI/modals/categories/InfoCategoryModal";
 import CreateTransactionsModal from "../UI/modals/transactions/CreateTransactions";
 import { RenderIcon } from "../UI/RenderIcon";
-import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface CategoriesListProps {
   categories: Category[];
@@ -29,6 +29,8 @@ export default function CategoriesList({
   onSubmit,
 }: CategoriesListProps) {
   const theme = useTheme();
+  const pathname = usePathname();
+
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
@@ -36,16 +38,16 @@ export default function CategoriesList({
     useState(false);
   const [isOpenInfoCategoryModal, setIsOpenInfoCategoryModal] = useState(false);
 
-  const animValues = useRef<Animated.Value[]>([]);
+  const animValues = useMemo(() => {
+    return categories.map(() => new Animated.Value(0));
+  }, [categories]);
 
   useEffect(() => {
-    animValues.current = categories.map(
-      (_, index) => animValues.current[index] ?? new Animated.Value(0),
-    );
+    animValues.forEach((anim) => anim.setValue(0));
 
     Animated.stagger(
       50,
-      animValues.current.map((anim) =>
+      animValues.map((anim) =>
         Animated.timing(anim, {
           toValue: 1,
           duration: 200,
@@ -53,16 +55,14 @@ export default function CategoriesList({
         }),
       ),
     ).start();
-  }, [categories]);
-
-  const pathname = usePathname();
+  }, [animValues]);
 
   const handlePress = (category: Category) => {
+    setSelectedCategory(category);
+
     if (pathname === "/settings/all-categories") {
-      setSelectedCategory(category);
       setIsOpenInfoCategoryModal(true);
     } else {
-      setSelectedCategory(category);
       setIsOpenCreateTransactionModal(true);
     }
   };
@@ -91,12 +91,11 @@ export default function CategoriesList({
           showsVerticalScrollIndicator={false}
         >
           {categories.map((item, index) => {
-            const anim = animValues.current[index];
-            if (!anim) return null;
+            const anim = animValues[index];
 
             return (
               <Animated.View
-                key={item.name}
+                key={item.id}
                 style={{
                   opacity: anim,
                   transform: [
@@ -113,7 +112,7 @@ export default function CategoriesList({
                       }),
                     },
                   ],
-                  marginBottom: 8, // spacing между элементами
+                  marginBottom: 8,
                 }}
               >
                 <TouchableOpacity
@@ -138,9 +137,7 @@ export default function CategoriesList({
                     }}
                     className="text-base font-medium"
                   >
-                    {item.isArchive
-                      ? `${item.name} (Архивная)`
-                      : `${item.name}`}
+                    {item.isArchive ? `${item.name} (Архивная)` : item.name}
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
@@ -150,12 +147,11 @@ export default function CategoriesList({
       ) : (
         <View className="w-full flex-row flex-wrap gap-2">
           {categories.map((category, index) => {
-            const anim = animValues.current[index];
-            if (!anim) return null;
+            const anim = animValues[index];
 
             return (
               <Animated.View
-                key={category.name}
+                key={category.id}
                 style={{
                   opacity: anim,
                   transform: [
@@ -203,8 +199,10 @@ export default function CategoriesList({
         onRefresh={onRefresh}
         visible={isOpenCreateTransactionModal}
         onClose={() => setIsOpenCreateTransactionModal(false)}
+        onSubmit={onSubmit}
         category={selectedCategory}
       />
+
       <InfoCategoryModal
         onRefresh={onRefresh}
         category={selectedCategory}

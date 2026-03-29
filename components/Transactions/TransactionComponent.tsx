@@ -1,6 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
 import { Category } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { Transaction } from "@/utils/types/transactions";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
@@ -13,6 +14,7 @@ interface TransactionComponentProps {
   isArchive?: boolean;
   onRefresh?: () => void;
   index: number;
+  onSubmit?: SetNotificationModal;
 }
 export default function TransactionComponent({
   transaction,
@@ -20,6 +22,7 @@ export default function TransactionComponent({
   onRefresh,
   index,
   setFilter,
+  onSubmit,
 }: TransactionComponentProps) {
   const [isOpenTransactionInfoModal, setIsOpenTransactionInfoModal] =
     useState(false);
@@ -139,6 +142,7 @@ export default function TransactionComponent({
           onClose={() => setIsOpenTransactionInfoModal(false)}
           transaction={transaction}
           onRefresh={onRefresh}
+          onSubmit={onSubmit}
         />
       )}
     </Animated.View>

@@ -1,6 +1,7 @@
 import CategoryComponent from "@/components/Categories/CategoryComponent";
 import TransactionList from "@/components/Transactions/TransactionList";
 import MonthHeader from "@/components/UI/headers/MonthHeader";
+import NotificationModal from "@/components/UI/modals/NotificationModal";
 import {
   getTransactionsByCategoryAndDateAsync,
   getTransactionsByDateAsync,
@@ -12,6 +13,10 @@ import {
   groupTransactionsByDate,
 } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
+import {
+  NotificationKey,
+  SetNotificationModal,
+} from "@/utils/types/notifications";
 import { Transaction } from "@/utils/types/transactions";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -34,6 +39,20 @@ export default function TransactionsScreen() {
     const title = getMonthYearTitle(monthOffset);
     return title.charAt(0).toUpperCase() + title.slice(1);
   }, [monthOffset]);
+
+  // NOTIFICATION
+
+  const [isVisibleNotificationModal, setIsVisibleNotificationModal] =
+    useState(false);
+  const [notificationModalTitle, setNotificationModalTitle] = useState("");
+  const [notificationModalKey, setNotificationModalKey] =
+    useState<NotificationKey>("info");
+
+  const setModal: SetNotificationModal = (isVisible, title, key) => {
+    setNotificationModalTitle(title);
+    setNotificationModalKey(key);
+    setIsVisibleNotificationModal(isVisible);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -122,6 +141,7 @@ export default function TransactionsScreen() {
         {transactionsList.length > 0 ? (
           <TransactionList
             onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+            onSubmit={setModal}
             setFilter={(prev) => setFiltredCategory(prev)}
             data={transactionsList}
           />
@@ -134,6 +154,12 @@ export default function TransactionsScreen() {
           </Text>
         )}
       </ScrollView>
+      <NotificationModal
+        visible={isVisibleNotificationModal}
+        title={notificationModalTitle}
+        notificationKey={notificationModalKey}
+        onClose={() => setIsVisibleNotificationModal(false)}
+      />
     </View>
   );
 }

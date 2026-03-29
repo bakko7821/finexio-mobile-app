@@ -8,6 +8,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { dateToIso, formatDateRu, isoToDateSafe } from "@/utils/date";
 import { Category } from "@/utils/types/categories";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { Transaction, UpdateTransactionDto } from "@/utils/types/transactions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useCallback, useEffect, useState } from "react";
@@ -28,6 +29,7 @@ interface InfoTransactionModalProps {
   onRefresh?: () => void;
   transaction: Transaction | null;
   visible: boolean;
+  onSubmit?: SetNotificationModal;
   onClose: () => void;
 }
 
@@ -37,6 +39,7 @@ export default function InfoTransactionModal({
   transaction,
   visible,
   onClose,
+  onSubmit,
 }: InfoTransactionModalProps) {
   const theme = useTheme();
 
@@ -69,22 +72,29 @@ export default function InfoTransactionModal({
   const handleUpdateTransaction = useCallback(async () => {
     if (!transaction) return;
 
-    const dto: UpdateTransactionDto = {
-      note: transactionNote ?? "",
-      date: date ?? "",
-      count: Number(transactionValue),
-      gasValue: transactionGasValue ?? null,
-    };
+    try {
+      const dto: UpdateTransactionDto = {
+        note: transactionNote ?? "",
+        date: date ?? "",
+        count: Number(transactionValue),
+        gasValue: transactionGasValue ?? null,
+      };
 
-    await updateTransaction(transaction.id, dto);
-    onClose();
-    onRefresh?.();
+      await updateTransaction(transaction.id, dto);
+      onSubmit?.(true, "Транзакция измененна", "success");
+      onClose();
+      onRefresh?.();
+    } catch (error: unknown) {
+      console.error(error);
+      onSubmit?.(true, "Не удалось изменить траназкцию", "error");
+    }
   }, [
     transaction,
     transactionNote,
     date,
     transactionValue,
     transactionGasValue,
+    onSubmit,
     onClose,
     onRefresh,
   ]);
@@ -92,25 +102,37 @@ export default function InfoTransactionModal({
   const handleChangeDate = async (selectedDate: Date) => {
     if (!transaction) return;
 
-    const newDate = dateToIso(selectedDate);
-    setDate(newDate);
+    try {
+      const newDate = dateToIso(selectedDate);
+      setDate(newDate);
 
-    await updateTransaction(transaction.id, {
-      date: newDate,
-    });
+      await updateTransaction(transaction.id, {
+        date: newDate,
+      });
 
-    onClose();
-    onRefresh?.();
+      onSubmit?.(true, "Дата измененна", "success");
+      onClose();
+      onRefresh?.();
+    } catch (error: unknown) {
+      console.error(error);
+      onSubmit?.(true, "Не удалось изменить дату", "error");
+    }
   };
 
   const handleDelete = async () => {
     if (!transaction) return;
 
-    await deleteTransaction(transaction?.id);
+    try {
+      await deleteTransaction(transaction?.id);
 
-    setIsVisibleDeleteModal(false);
-    onClose();
-    onRefresh?.();
+      onSubmit?.(true, "Транзакция удаленна", "success");
+      setIsVisibleDeleteModal(false);
+      onClose();
+      onRefresh?.();
+    } catch (error: unknown) {
+      console.error(error);
+      onSubmit?.(true, "Не удалось удалить траназакцию", "error");
+    }
   };
 
   if (!transaction) return null;
