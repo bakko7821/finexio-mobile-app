@@ -1,6 +1,6 @@
+import { useSettings } from "@/store/useSettings";
 import { useEffect } from "react";
 import { Appearance } from "react-native";
-import { useSettings } from "@/store/useSettings";
 
 export const useSystemThemeSync = () => {
   useEffect(() => {

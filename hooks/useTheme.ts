@@ -1,22 +1,18 @@
 import { useSettings } from "@/store/useSettings";
-import { constantColors, darkColors, lightColors } from "@/utils/colors";
-import { useColorScheme } from "react-native";
+import { constantColors } from "@/utils/colors";
+import { themes } from "@/utils/configs/themes";
 
 export const useTheme = () => {
-  const { theme, primaryColor } = useSettings();
-  const system = useColorScheme();
+  const { resolvedTheme, primaryColor } = useSettings();
 
-  const finalTheme =
-    theme === "system" ? (system === "dark" ? "dark" : "light") : theme;
-
-  const isDark = finalTheme === "dark";
-
-  const base = isDark ? darkColors : lightColors;
+  const base = themes[resolvedTheme];
+  const isDark = resolvedTheme === "dark" || resolvedTheme === "dark-cherry";
 
   return {
     ...base,
     ...constantColors,
     primary: primaryColor,
     isDark,
+    themeId: resolvedTheme,
   };
 };

@@ -74,6 +74,16 @@ export default function PersonalizeScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        <View className="w-full gap-2">
+          <Text
+            style={{ color: theme.secondary }}
+            className="text-xl font-medium px-4"
+          >
+            Кастомные темы
+          </Text>
+          <Plug />
+          <View className="w-full gap-1"></View>
+        </View>
       </View>
       <EmptyModal
         visible={isOpenPickColorModal}

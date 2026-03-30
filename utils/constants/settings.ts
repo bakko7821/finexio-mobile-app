@@ -1,6 +1,8 @@
-export type ThemeType = "light" | "dark" | "system";
+import { ThemeId, ThemeMode } from "@/utils/configs/themes";
+
+export type { ThemeId, ThemeMode };
 
 export const defaultSettings = {
-  theme: "system" as ThemeType,
+  theme: "system" as ThemeMode,
   primaryColor: "#9d4ae2",
 };

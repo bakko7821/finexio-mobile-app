@@ -1,23 +1,38 @@
 import { getAllSettings, setSetting } from "@/database/queries/settings";
-import { defaultSettings, ThemeType } from "@/utils/constants/settings";
+import { ThemeId, ThemeMode, themes } from "@/utils/configs/themes";
+import { defaultSettings } from "@/utils/constants/settings";
 import { Appearance } from "react-native";
 import { create } from "zustand";
 
 type SettingsState = {
-  theme: ThemeType;
+  theme: ThemeMode;
   primaryColor: string;
 
-  resolvedTheme: "light" | "dark"; // 💥 важно
+  resolvedTheme: ThemeId;
 
   load: () => Promise<void>;
-  setTheme: (theme: ThemeType) => Promise<void>;
+  setTheme: (theme: ThemeMode) => Promise<void>;
   setPrimaryColor: (color: string) => Promise<void>;
 };
 
-export const useSettings = create<SettingsState>((set, get) => ({
+const getSystemResolvedTheme = (): ThemeId => {
+  const system = Appearance.getColorScheme();
+
+  return system === "dark" ? "dark" : "light";
+};
+
+const resolveTheme = (theme: ThemeMode): ThemeId => {
+  if (theme === "system") return getSystemResolvedTheme();
+
+  if (theme in themes) return theme as ThemeId;
+
+  return "light";
+};
+
+export const useSettings = create<SettingsState>((set) => ({
   ...defaultSettings,
 
-  resolvedTheme: Appearance.getColorScheme() === "dark" ? "dark" : "light",
+  resolvedTheme: getSystemResolvedTheme(),
 
   load: async () => {
     const dbSettings = await getAllSettings();
@@ -27,24 +42,18 @@ export const useSettings = create<SettingsState>((set, get) => ({
       ...dbSettings,
     };
 
-    const systemTheme =
-      Appearance.getColorScheme() === "dark" ? "dark" : "light";
-
     set({
       ...merged,
-      resolvedTheme: merged.theme === "system" ? systemTheme : merged.theme,
+      resolvedTheme: resolveTheme(merged.theme),
     });
   },
 
   setTheme: async (theme) => {
     await setSetting("theme", theme);
 
-    const systemTheme =
-      Appearance.getColorScheme() === "dark" ? "dark" : "light";
-
     set({
       theme,
-      resolvedTheme: theme === "system" ? systemTheme : theme,
+      resolvedTheme: resolveTheme(theme),
     });
   },
 
