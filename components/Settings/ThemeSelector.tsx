@@ -1,6 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
 import { useSettings } from "@/store/useSettings";
-import { getContrastColor } from "@/utils/colors";
 import { themeOptions } from "@/utils/configs/themes";
 import { useState } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
@@ -33,27 +32,32 @@ export default function ThemeSelector() {
           <TouchableOpacity
             onPress={() => handlePress(item.id)}
             key={item.id}
-            className="w-12 h-12 rounded-full items-center justify-center"
-            style={{ backgroundColor: item.preview.background }}
+            className="p-2 rounded-2xl flex-col gap-2 relative"
+            style={{
+              backgroundColor: item.preview.background,
+              borderWidth: 2,
+              borderColor: isActive ? theme.primary : "transparent",
+            }}
           >
-            {isLoading ? (
-              <ActivityIndicator size="small" color={theme.primary} />
-            ) : (
+            <View
+              className="p-2 rounded-2xl"
+              style={{ backgroundColor: item.preview.card }}
+            />
+            <View
+              className="p-1 rounded-2xl"
+              style={{ backgroundColor: item.preview.card }}
+            >
               <View
-                style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: 999,
-                  borderWidth: 2,
-                  borderColor: isActive
-                    ? getContrastColor(item.preview.background)
-                    : item.preview.background,
-                  backgroundColor: isActive
-                    ? getContrastColor(item.preview.background)
-                    : item.preview.background,
-                }}
+                className="p-2 w-10 rounded-lg"
+                style={{ backgroundColor: item.preview.text }}
               />
-            )}
+            </View>
+
+            <View className="absolute inset-0 items-center justify-center">
+              {isLoading && (
+                <ActivityIndicator size="large" color={theme.primary} />
+              )}
+            </View>
           </TouchableOpacity>
         );
       })}
