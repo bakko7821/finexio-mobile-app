@@ -3,9 +3,11 @@ import EditIcon from "@/assets/ui/Edit.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
 import { Wallet } from "@/utils/types/wallet";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";
+import EditWalletModal from "./EditWalletModal";
 
 interface InfoWalletModalProps {
   visible: boolean;
@@ -21,6 +23,7 @@ export default function InfoWalletModal({
   onRefresh,
 }: InfoWalletModalProps) {
   const theme = useTheme();
+  const [isVisibleEditModal, setIsVisibleEditModal] = useState(false);
 
   if (wallet)
     return (
@@ -70,7 +73,10 @@ export default function InfoWalletModal({
             className="p-4 items-center justify-around flex-row"
             style={{ backgroundColor: theme.header }}
           >
-            <TouchableOpacity className="flex-col gap-1 items-center justify-center">
+            <TouchableOpacity
+              className="flex-col gap-1 items-center justify-center"
+              onPress={() => setIsVisibleEditModal(true)}
+            >
               <View
                 className="rounded-full p-3"
                 style={{ backgroundColor: theme.secondary }}
@@ -89,18 +95,12 @@ export default function InfoWalletModal({
               </Text>
             </TouchableOpacity>
           </View>
-          {/* <View
-            style={{ backgroundColor: theme.header }}
-            className="p-4 items-center justify-center"
-          >
-            <Text
-              style={{ color: theme.secondary }}
-              className="text-base font-medium"
-            >
-              Пока что в разработке.
-            </Text>
-          </View> */}
         </View>
+        <EditWalletModal
+          visible={isVisibleEditModal}
+          wallet={wallet}
+          onClose={() => setIsVisibleEditModal(false)}
+        />
       </Modal>
     );
 }

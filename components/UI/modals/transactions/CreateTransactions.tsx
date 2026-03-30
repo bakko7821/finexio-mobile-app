@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import NumberInput from "../../NumberInput";
 import { RenderIcon } from "../../RenderIcon";
-import SelectWalletModal from "../wallet/SelectWalletModal";
+import SelectWalletModal from "../wallets/SelectWalletModal";
 
 interface CreateTransactionModalProps {
   category: Category | null;

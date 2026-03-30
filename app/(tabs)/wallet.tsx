@@ -1,7 +1,7 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
 import Header from "@/components/UI/headers/Header";
-import CreateNewWalletModal from "@/components/UI/modals/wallet/CreateNewWalletModal";
-import InfoWalletModal from "@/components/UI/modals/wallet/InfoWalletModal";
+import CreateNewWalletModal from "@/components/UI/modals/wallets/CreateNewWalletModal";
+import InfoWalletModal from "@/components/UI/modals/wallets/InfoWalletModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
 import { getAllWallets } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
@@ -34,7 +34,6 @@ export default function WalletScreen() {
       try {
         const data = await getAllWallets();
 
-        console.log(data);
         setWallets(data);
       } catch (error: unknown) {
         console.error(error);
