@@ -1,4 +1,5 @@
 import PickColorComponent from "@/components/Categories/PickColorComponent";
+import ThemeSelector from "@/components/Settings/ThemeSelector";
 import ThemeOption from "@/components/ThemeOptions";
 import SettingsHeader from "@/components/UI/headers/SettingsHeader";
 import EmptyModal from "@/components/UI/modals/EmptyBottomModal";
@@ -82,7 +83,7 @@ export default function PersonalizeScreen() {
             Кастомные темы
           </Text>
           <Plug />
-          <View className="w-full gap-1"></View>
+          <ThemeSelector />
         </View>
       </View>
       <EmptyModal

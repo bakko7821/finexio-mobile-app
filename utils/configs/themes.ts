@@ -11,7 +11,7 @@ export const themes = {
     text: "#3D2C1E",
   },
 
-  "dark-cherry": {
+  darkCherry: {
     background: "#160A10",
     header: "#2A111B",
     card: "#3A1624",
@@ -32,20 +32,46 @@ export const themeInfo: Record<
   light: { name: "Light", isDark: false },
   dark: { name: "Dark", isDark: true },
   sandbox: { name: "Sandbox", isDark: false },
-  "dark-cherry": { name: "Dark Cherry", isDark: true },
+  darkCherry: { name: "Dark Cherry", isDark: true },
 };
 
-export const themeOptions = [
+export type ThemeOption = {
+  id: ThemeMode;
+  name: string;
+  preview: {
+    background: string;
+    card: string;
+    text: string;
+  };
+  isDark: boolean;
+};
+
+const themeIds = Object.keys(themes) as ThemeId[];
+
+export const themeOptions: ThemeOption[] = [
   {
-    id: "system" as const,
+    id: "system",
     name: "System",
-    preview: "#8E8E93",
+    preview: {
+      background: "#8E8E93",
+      card: "#C7C7CC",
+      text: "#FFFFFF",
+    },
     isDark: false,
   },
-  ...Object.entries(themes).map(([id, colors]) => ({
-    id: id as ThemeId,
-    name: themeInfo[id as ThemeId].name,
-    preview: colors.background,
-    isDark: themeInfo[id as ThemeId].isDark,
-  })),
+
+  ...themeIds.map((id) => {
+    const colors = themes[id];
+
+    return {
+      id,
+      name: themeInfo[id].name,
+      preview: {
+        background: colors.background,
+        card: colors.card,
+        text: colors.text,
+      },
+      isDark: themeInfo[id].isDark,
+    };
+  }),
 ];

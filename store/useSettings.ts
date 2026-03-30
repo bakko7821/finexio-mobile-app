@@ -1,13 +1,12 @@
 import { getAllSettings, setSetting } from "@/database/queries/settings";
-import { ThemeId, ThemeMode, themes } from "@/utils/configs/themes";
 import { defaultSettings } from "@/utils/constants/settings";
+import { ThemeId, ThemeMode, themes } from "@/utils/configs/themes";
 import { Appearance } from "react-native";
 import { create } from "zustand";
 
 type SettingsState = {
   theme: ThemeMode;
   primaryColor: string;
-
   resolvedTheme: ThemeId;
 
   load: () => Promise<void>;
@@ -16,30 +15,36 @@ type SettingsState = {
 };
 
 const getSystemResolvedTheme = (): ThemeId => {
-  const system = Appearance.getColorScheme();
+  return Appearance.getColorScheme() === "dark" ? "dark" : "light";
+};
 
-  return system === "dark" ? "dark" : "light";
+const isThemeMode = (value: string): value is ThemeMode => {
+  if (value === "system") return true;
+  return value in themes;
 };
 
 const resolveTheme = (theme: ThemeMode): ThemeId => {
   if (theme === "system") return getSystemResolvedTheme();
-
-  if (theme in themes) return theme as ThemeId;
-
-  return "light";
+  return theme in themes ? (theme as ThemeId) : "light";
 };
 
 export const useSettings = create<SettingsState>((set) => ({
   ...defaultSettings,
-
   resolvedTheme: getSystemResolvedTheme(),
 
   load: async () => {
     const dbSettings = await getAllSettings();
 
+    const rawTheme = dbSettings.theme;
+    const safeTheme =
+      typeof rawTheme === "string" && isThemeMode(rawTheme)
+        ? rawTheme
+        : defaultSettings.theme;
+
     const merged = {
       ...defaultSettings,
       ...dbSettings,
+      theme: safeTheme,
     };
 
     set({
