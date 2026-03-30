@@ -31,21 +31,21 @@ export default function NotificationModal({
 
     Animated.timing(opacity, {
       toValue: 1,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
 
     timeoutRef.current = setTimeout(() => {
       Animated.timing(opacity, {
         toValue: 0,
-        duration: 200,
+        duration: 150,
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) {
           onClose();
         }
       });
-    }, 3200);
+    }, 1300);
 
     return () => {
       if (timeoutRef.current) {

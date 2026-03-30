@@ -43,21 +43,73 @@ export const createWallet = async (dto: CreateWalletDto) => {
   }
 };
 
+export const getWalletById = async (id: number): Promise<Wallet | null> => {
+  const db = await getDb();
+
+  const wallet = await db.getFirstAsync<Wallet>(
+    `
+    SELECT
+      w.id,
+      w.name,
+      w.icon,
+      w.color,
+      w.value + COALESCE(SUM(
+        CASE
+          WHEN c.type = 1 THEN -t.count
+          WHEN c.type = 2 THEN  t.count
+          ELSE 0
+        END
+      ), 0) as value
+    FROM wallets w
+    LEFT JOIN transactions t ON t.walletId = w.id
+    LEFT JOIN categories c ON c.id = t.categoryId
+    WHERE w.id = ?
+    GROUP BY w.id, w.name, w.icon, w.color, w.value
+    `,
+    [id],
+  );
+
+  return wallet ?? null;
+};
+
 export const getAllWallets = async (): Promise<Wallet[]> => {
   const db = await getDb();
 
-  const rows = await db.getAllAsync<WalletRow>(
+  return await db.getAllAsync<Wallet>(
     `
     SELECT
-      id    AS wallet_id,
-      name  AS wallet_name,
-      icon  AS wallet_icon,
-      color AS wallet_color,
-      value AS wallet_value
-    FROM wallets
-    ORDER BY id ASC
+      w.id,
+      w.name,
+      w.icon,
+      w.color,
+      w.value + COALESCE(SUM(
+        CASE
+          WHEN c.type = 1 THEN -t.count
+          WHEN c.type = 2 THEN  t.count
+          ELSE 0
+        END
+      ), 0) as value
+    FROM wallets w
+    LEFT JOIN transactions t ON t.walletId = w.id
+    LEFT JOIN categories c ON c.id = t.categoryId
+    GROUP BY w.id, w.name, w.icon, w.color, w.value
+    ORDER BY w.id DESC
     `,
   );
+};
 
-  return mapWallets(rows);
+export const changeWalletValue = async (
+  walletId: number,
+  newValue: number,
+): Promise<void> => {
+  const db = await getDb();
+
+  await db.runAsync(
+    `
+    UPDATE wallets
+    SET value = ?
+    WHERE id = ?
+    `,
+    [newValue, walletId],
+  );
 };
