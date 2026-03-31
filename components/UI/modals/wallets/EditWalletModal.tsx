@@ -5,6 +5,7 @@ import PickIconComponent from "@/components/Categories/PickIconComponent";
 import { updateWallet } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { UpdateWalletDto, Wallet } from "@/utils/types/wallet";
 import { useEffect, useState } from "react";
 import {
@@ -16,13 +17,13 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";
-import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface EditWalletModalProps {
   visible: boolean;
   wallet: Wallet | null;
   onRefresh?: () => void;
   onClose: () => void;
+  onCloseSmallModal?: () => void;
   onSubmit?: SetNotificationModal;
 }
 
@@ -32,6 +33,7 @@ export default function EditWalletModal({
   wallet,
   onRefresh,
   onSubmit,
+  onCloseSmallModal,
 }: EditWalletModalProps) {
   const theme = useTheme();
   const [walletNameValue, setWalletNameValue] = useState("Наличные");
@@ -76,14 +78,18 @@ export default function EditWalletModal({
 
       await updateWallet(wallet.id, dto);
 
+      onSubmit?.(true, "Счёт изменен", "success");
       getBackHandle();
       onRefresh?.();
+      onCloseSmallModal?.();
       onClose?.();
+
       setWalletNameValue("Наличные");
       setSelectedIcon("wallet");
       setSelectedColor("#38c106");
       setWalletValue("0");
     } catch (error: unknown) {
+      onSubmit?.(true, "Не удалось изменить счёт", "error");
       console.error(error);
     }
   };
@@ -223,6 +229,7 @@ export default function EditWalletModal({
                 <TouchableOpacity
                   style={{ backgroundColor: theme.primary }}
                   className="p-3 rounded-full w-full items-center justify-center"
+                  onPress={() => updateWalletHandle()}
                 >
                   <Text
                     style={{ color: getContrastColor(theme.primary) }}

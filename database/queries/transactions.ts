@@ -40,15 +40,6 @@ export const createTransaction = async (
       ],
     );
 
-    await txn.runAsync(
-      `
-      UPDATE wallets
-      SET value = value + ?
-      WHERE id = ?
-      `,
-      [dto.count, dto.walletId],
-    );
-
     insertedId = result.lastInsertRowId;
   });
 

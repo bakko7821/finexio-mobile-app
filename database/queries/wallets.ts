@@ -108,7 +108,7 @@ export const updateWallet = async (
 
   try {
     const existing = await db.getFirstAsync<any>(
-      `SELECT * FROM wallet WHERE id = ?`,
+      `SELECT * FROM wallets WHERE id = ?`,
       [id],
     );
 

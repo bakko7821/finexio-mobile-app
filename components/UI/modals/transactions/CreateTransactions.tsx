@@ -235,7 +235,11 @@ export default function CreateTransactionsModal({
                       >
                         <Text
                           className="text-sm font-medium"
-                          style={{ color: isSelected ? "#fff" : theme.text }}
+                          style={{
+                            color: isSelected
+                              ? getContrastColor(category.color)
+                              : theme.text,
+                          }}
                         >
                           {subcategory.name}
                         </Text>

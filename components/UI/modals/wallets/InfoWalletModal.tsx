@@ -2,6 +2,7 @@ import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import EditIcon from "@/assets/ui/Edit.svg";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { Wallet } from "@/utils/types/wallet";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -14,6 +15,7 @@ interface InfoWalletModalProps {
   wallet: Wallet | null;
   onRefresh?: () => void;
   onClose: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function InfoWalletModal({
@@ -21,6 +23,7 @@ export default function InfoWalletModal({
   onClose,
   wallet,
   onRefresh,
+  onSubmit,
 }: InfoWalletModalProps) {
   const theme = useTheme();
   const [isVisibleEditModal, setIsVisibleEditModal] = useState(false);
@@ -100,6 +103,9 @@ export default function InfoWalletModal({
           visible={isVisibleEditModal}
           wallet={wallet}
           onClose={() => setIsVisibleEditModal(false)}
+          onCloseSmallModal={() => onClose()}
+          onRefresh={onRefresh}
+          onSubmit={onSubmit}
         />
       </Modal>
     );

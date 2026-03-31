@@ -5,6 +5,7 @@ import PickIconComponent from "@/components/Categories/PickIconComponent";
 import { createWallet } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
+import { SetNotificationModal } from "@/utils/types/notifications";
 import { useEffect, useState } from "react";
 import {
   Platform,
@@ -16,7 +17,6 @@ import {
 import Modal from "react-native-modal";
 import Plug from "../../Plug";
 import { RenderIcon } from "../../RenderIcon";
-import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface CreateNewWalletModalProps {
   visible: boolean;
@@ -83,11 +83,14 @@ export default function CreateNewWalletModal({
 
       await createWallet(dto);
 
+      onSubmit?.(true, "Вы создали новый счёт", "success");
+
       onRefresh?.();
       onClose();
       setDefault();
     } catch (e) {
       console.error("Failed to create wallet", e);
+      onSubmit?.(true, "Не удалось создать новый счёт", "error");
     }
   };
 
