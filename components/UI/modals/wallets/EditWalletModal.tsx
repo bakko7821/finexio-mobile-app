@@ -2,9 +2,10 @@ import CrossIcon from "@/assets/ui/CrossFilled.svg";
 import BackArrowIcon from "@/assets/ui/arrow-prev-small-svgrepo-com.svg";
 import PickColorComponent from "@/components/Categories/PickColorComponent";
 import PickIconComponent from "@/components/Categories/PickIconComponent";
+import { updateWallet } from "@/database";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor } from "@/utils/colors";
-import { Wallet } from "@/utils/types/wallet";
+import { UpdateWalletDto, Wallet } from "@/utils/types/wallet";
 import { useEffect, useState } from "react";
 import {
   Platform,
@@ -15,12 +16,14 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { RenderIcon } from "../../RenderIcon";
+import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface EditWalletModalProps {
   visible: boolean;
   wallet: Wallet | null;
   onRefresh?: () => void;
   onClose: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function EditWalletModal({
@@ -28,12 +31,13 @@ export default function EditWalletModal({
   onClose,
   wallet,
   onRefresh,
+  onSubmit,
 }: EditWalletModalProps) {
   const theme = useTheme();
-  const [walletNameValue, setWalletNameValue] = useState("");
-  const [walletValue, setWalletValue] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+  const [walletNameValue, setWalletNameValue] = useState("Наличные");
+  const [walletValue, setWalletValue] = useState("0");
+  const [selectedIcon, setSelectedIcon] = useState("wallet");
+  const [selectedColor, setSelectedColor] = useState("#38c106");
 
   const [isVisiblePickColor, setIsVisiblePickColor] = useState(false);
   const [isVisiblePickIcon, setIsVisiblePickIcon] = useState(false);
@@ -57,6 +61,31 @@ export default function EditWalletModal({
     setIsEdit(false);
     setIsVisiblePickColor(false);
     setIsVisiblePickIcon(false);
+  };
+
+  const updateWalletHandle = async () => {
+    if (!wallet) return;
+
+    try {
+      const dto: UpdateWalletDto = {
+        name: walletNameValue.trim(),
+        color: selectedColor,
+        icon: selectedIcon,
+        value: Number(walletValue),
+      };
+
+      await updateWallet(wallet.id, dto);
+
+      getBackHandle();
+      onRefresh?.();
+      onClose?.();
+      setWalletNameValue("Наличные");
+      setSelectedIcon("wallet");
+      setSelectedColor("#38c106");
+      setWalletValue("0");
+    } catch (error: unknown) {
+      console.error(error);
+    }
   };
 
   if (wallet)

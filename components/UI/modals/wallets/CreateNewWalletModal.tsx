@@ -16,17 +16,20 @@ import {
 import Modal from "react-native-modal";
 import Plug from "../../Plug";
 import { RenderIcon } from "../../RenderIcon";
+import { SetNotificationModal } from "@/utils/types/notifications";
 
 interface CreateNewWalletModalProps {
   visible: boolean;
   onClose: () => void;
   onRefresh?: () => void;
+  onSubmit?: SetNotificationModal;
 }
 
 export default function CreateNewWalletModal({
   visible,
   onClose,
   onRefresh,
+  onSubmit,
 }: CreateNewWalletModalProps) {
   const theme = useTheme();
 

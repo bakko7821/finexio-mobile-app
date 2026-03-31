@@ -1,11 +1,16 @@
 import PlusIcon from "@/assets/ui/Plus.svg";
 import Header from "@/components/UI/headers/Header";
+import NotificationModal from "@/components/UI/modals/NotificationModal";
 import CreateNewWalletModal from "@/components/UI/modals/wallets/CreateNewWalletModal";
 import InfoWalletModal from "@/components/UI/modals/wallets/InfoWalletModal";
 import { RenderIcon } from "@/components/UI/RenderIcon";
 import { getAllWallets } from "@/database/queries/wallets";
 import { useTheme } from "@/hooks/useTheme";
 import { getContrastColor, withOpacity } from "@/utils/colors";
+import {
+  NotificationKey,
+  SetNotificationModal,
+} from "@/utils/types/notifications";
 import { Wallet } from "@/utils/types/wallet";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -22,6 +27,20 @@ export default function WalletScreen() {
   const [loadingWallets, setLoadingWallets] = useState(true);
 
   const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
+
+  // NOTIFICATION
+
+  const [isVisibleNotificationModal, setIsVisibleNotificationModal] =
+    useState(false);
+  const [notificationModalTitle, setNotificationModalTitle] = useState("");
+  const [notificationModalKey, setNotificationModalKey] =
+    useState<NotificationKey>("info");
+
+  const setModal: SetNotificationModal = (isVisible, title, key) => {
+    setNotificationModalTitle(title);
+    setNotificationModalKey(key);
+    setIsVisibleNotificationModal(isVisible);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -129,14 +148,22 @@ export default function WalletScreen() {
       </ScrollView>
       <CreateNewWalletModal
         visible={isOpenNewWalletModal}
+        onSubmit={setModal}
         onClose={() => setIsOpenNewWalletModal(false)}
         onRefresh={() => setRefreshFlag((prev) => prev + 1)}
       />
       <InfoWalletModal
         wallet={selectedWallet}
+        onSubmit={setModal}
         visible={isOpenInfoWalletModal}
         onClose={() => setIsOpenInfoWalletModal(false)}
         onRefresh={() => setRefreshFlag((prev) => prev + 1)}
+      />
+      <NotificationModal
+        visible={isVisibleNotificationModal}
+        title={notificationModalTitle}
+        notificationKey={notificationModalKey}
+        onClose={() => setIsVisibleNotificationModal(false)}
       />
     </View>
   );

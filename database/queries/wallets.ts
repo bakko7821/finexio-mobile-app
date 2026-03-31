@@ -1,4 +1,4 @@
-import { CreateWalletDto, Wallet } from "@/utils/types/wallet";
+import { CreateWalletDto, UpdateWalletDto, Wallet } from "@/utils/types/wallet";
 import { getDb } from "../db";
 import { mapWallets, WalletRow } from "../mappers/wallet.mapper";
 
@@ -98,18 +98,57 @@ export const getAllWallets = async (): Promise<Wallet[]> => {
   );
 };
 
-export const changeWalletValue = async (
-  walletId: number,
-  newValue: number,
-): Promise<void> => {
+export const updateWallet = async (
+  id: number,
+  dto: UpdateWalletDto,
+): Promise<Wallet[]> => {
   const db = await getDb();
 
-  await db.runAsync(
+  await db.execAsync("BEGIN");
+
+  try {
+    const existing = await db.getFirstAsync<any>(
+      `SELECT * FROM wallet WHERE id = ?`,
+      [id],
+    );
+
+    if (!existing) {
+      throw new Error(`Wallet with id ${id} not found`);
+    }
+
+    await db.runAsync(
+      `
+      UPDATE wallets
+      SET
+        name = ?,
+        icon = ?,
+        color = ?,
+        value = ?
+      WHERE id = ?
+      `,
+      [
+        dto.name ?? existing.name,
+        dto.icon ?? existing.icon,
+        dto.color ?? existing.color,
+        dto.value ?? existing.value,
+        id,
+      ],
+    );
+
+    await db.execAsync("COMMIT");
+  } catch (e) {
+    await db.execAsync("ROLLBACK");
+    throw e;
+  }
+
+  const rows = await db.getAllAsync<any>(
     `
-    UPDATE wallets
-    SET value = ?
+    SELECT *
+    FROM wallets
     WHERE id = ?
     `,
-    [newValue, walletId],
+    [id],
   );
+
+  return mapWallets(rows);
 };
