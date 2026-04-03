@@ -1,3 +1,4 @@
+import { useProgress } from "@/providers/ProgressProvider";
 import { useEffect } from "react";
 import { useColorScheme, View } from "react-native";
 import Animated, {
@@ -13,8 +14,8 @@ import Animated, {
 import LoaderText from "./LoaderText";
 
 export default function Loader({ onFinish }: { onFinish?: () => void }) {
-  // const { progress } = useProgress();
-  const progress = 1;
+  const { progress } = useProgress();
+  // const progress = 1;
   const scheme = useColorScheme();
 
   const background = scheme === "dark" ? "#0A0F15" : "#FFFFFF";
